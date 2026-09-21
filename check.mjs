@@ -27,7 +27,14 @@ for (const label of ['AI matched', 'Non-PO verified']) {
 }
 assert.ok((app.match(/aiMatched: true/g) || []).length >= 4, 'Invoice Log needs at least four AI-matched examples');
 assert.ok((app.match(/logOnly: true/g) || []).length >= 4, 'AI-matched examples must remain Invoice-Log-only');
-assert.ok((app.match(/filter\(inv => !inv\.logOnly\)/g) || []).length >= 3, 'Log-only invoices must be excluded from work and approval queues');
+assert.ok((app.match(/filter\(requiresAction\)/g) || []).length >= 3, 'Direct-recording and log-only invoices must be excluded from task and approval queues');
+const invoiceRecords = app.split('\n').filter(line => /^  \{ id: 'INV-/.test(line));
+const directRecords = invoiceRecords.filter(line => line.includes("flowProposal: 'Directly to recording'"));
+const aiRecords = invoiceRecords.filter(line => line.includes('aiMatched: true'));
+assert.ok(directRecords.length >= 3, 'Invoice Log needs representative direct-recording PO and contract matches');
+assert.ok(directRecords.every(line => line.includes('match: 100') && (line.includes("matchBasis: 'po'") || line.includes("matchBasis: 'contract'"))), 'Direct recording must be limited to fully matched purchase orders and contracts');
+assert.ok(aiRecords.length >= 4 && aiRecords.every(line => line.includes("matchBasis: 'non-po'") && line.includes("flowProposal: 'AI generated'") && line.includes("accountPosting: 'AI generated")), 'Every AI-matched non-PO must carry AI flow and account-posting proposals');
+assert.ok(aiRecords.every(line => !line.includes("contract: '") && !line.includes("flowProposal: 'Directly to recording'")), 'Non-PO AI matches must not masquerade as contract matches or direct recording');
 for (const tone of ['good', 'warn', 'bad']) {
   assert.match(css, new RegExp(`\\.log-health\\.${tone}`), `Invoice Log is missing ${tone} status styling`);
   assert.match(css, new RegExp(`\\.account-chip\\.${tone}`), `Invoice Log is missing ${tone} account-column styling`);
@@ -72,4 +79,4 @@ assert.doesNotMatch(app, /copied for review/, 'Payment references must not claim
 assert.match(html, /id="role-select"/, 'Missing Approval role selector');
 assert.ok(existsSync(new URL('./assets/rillion-logo-lime.svg', import.meta.url)), 'Missing official Rillion logo asset');
 assert.doesNotMatch(app, /fetch\s*\(|XMLHttpRequest|WebSocket/, 'The public simulation must not call a backend');
-console.log('Demo contract check passed: navigation, guided tour, real Invoice Log columns, clickable Contracts, role-only Approval, Documents, Payments, eleven ordered Analytics boards, brand, and offline boundary are present.');
+console.log('Demo contract check passed: navigation, guided tour, corrected PO/contract/non-PO matching semantics, real Invoice Log columns, clickable Contracts, role-only Approval, Documents, Payments, eleven ordered Analytics boards, brand, and offline boundary are present.');
