@@ -3,6 +3,7 @@ import { existsSync, readFileSync } from 'node:fs';
 
 const app = readFileSync(new URL('./app.js', import.meta.url), 'utf8');
 const html = readFileSync(new URL('./index.html', import.meta.url), 'utf8');
+const css = readFileSync(new URL('./styles.css', import.meta.url), 'utf8');
 for (const label of ['To Verify', 'Invoice Log', 'Approval', 'Rillion Analytics']) {
   assert.match(app, new RegExp(label), `Missing required destination: ${label}`);
 }
@@ -14,9 +15,29 @@ assert.match(app, /document-detail/, 'Missing document detail route');
 assert.match(app, /class="table-link" data-document=/, 'Document rows need native interactive controls');
 assert.doesNotMatch(app, /<tr data-document=/, 'Document table rows must preserve native table semantics');
 assert.ok(app.indexOf("['Track payments'") < app.indexOf("['Explore Analytics'"), 'Payments must precede Analytics in the guided tour');
-for (const asset of ['executive-dashboard', 'invoice-log', 'payables-aging', 'spend-report', 'ap-cash-flow']) {
+assert.ok(app.indexOf("['Verify captured invoices'") < app.indexOf("['Follow the Invoice Log'"), 'Invoice Log must follow To Verify in the guided tour');
+for (const field of ['Vendor invoice no.', 'Flow proposal', 'Account posting', 'Accounting date', 'Purchase order', 'Match']) {
+  assert.match(app, new RegExp(field.replace('.', '\\.')), `Invoice Log is missing ${field}`);
+}
+for (const label of ['PO matched', 'PO variance', 'PO missing', 'Matched', 'Review', 'Exception']) {
+  assert.match(app, new RegExp(label), `Invoice Log is missing status: ${label}`);
+}
+for (const tone of ['good', 'warn', 'bad']) {
+  assert.match(css, new RegExp(`\\.log-health\\.${tone}`), `Invoice Log is missing ${tone} status styling`);
+}
+const analyticsAssets = ['invoice-log', 'active-invoices', 'payables-aging', 'invoice-flow-tracking', 'spend-report', 'ap-cash-flow', 'vendor-payment-analyzer', 'executive-dashboard', 'procurement-overview', 'procurement-trend'];
+for (const asset of analyticsAssets) {
   assert.ok(existsSync(new URL(`./assets/analytics/${asset}.png`, import.meta.url)), `Missing Analytics asset: ${asset}`);
 }
+const analyticsOrder = ['Invoice log', 'Active invoices', 'AP aging', 'Invoice flow tracking', 'Spend report', 'AP cash flow', 'Vendor payment analyzer', 'Executive dashboard', 'Procurement overview', 'Procurement trend'];
+for (let index = 1; index < analyticsOrder.length; index++) {
+  assert.ok(app.indexOf(`title: '${analyticsOrder[index - 1]}'`) < app.indexOf(`title: '${analyticsOrder[index]}'`), `Analytics board order is wrong near ${analyticsOrder[index]}`);
+}
+for (const group of ['AP Reports', 'Performance Tracking Reports', 'Business Reports', 'Executive Dashboard', 'Procurement Reports']) {
+  assert.match(app, new RegExp(`group: '${group}'`), `Missing Analytics group: ${group}`);
+}
+assert.match(html, /class="tour-launch"/, 'Guided tour launch must be visible immediately');
+assert.match(html, /6-step walkthrough/, 'Guided tour launch needs a recognizable description');
 for (const role of ['AP review', 'Department manager', 'Finance controller']) {
   assert.match(app, new RegExp(role), `Missing approval role: ${role}`);
 }
@@ -35,4 +56,4 @@ assert.doesNotMatch(app, /copied for review/, 'Payment references must not claim
 assert.match(html, /id="role-select"/, 'Missing Approval role selector');
 assert.ok(existsSync(new URL('./assets/rillion-logo-lime.svg', import.meta.url)), 'Missing official Rillion logo asset');
 assert.doesNotMatch(app, /fetch\s*\(|XMLHttpRequest|WebSocket/, 'The public simulation must not call a backend');
-console.log('Demo contract check passed: navigation, role-only Approval entry, Documents, four-state Payments, Analytics, brand, and offline boundary are present.');
+console.log('Demo contract check passed: navigation, guided tour, three-state Invoice Log, role-only Approval, Documents, Payments, ten ordered Analytics boards, brand, and offline boundary are present.');

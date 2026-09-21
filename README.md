@@ -1,6 +1,6 @@
 # Rillion interactive demo
 
-A public, login-free simulation of a Rillion accounts-payable workflow. It uses fictional Northstar Manufacturing data and is not connected to Demo51 or any production service. The click-through includes To Verify, Invoice Log, role-grouped approvals, a Documents inbox and detail flow, four Payments states, and five representative Rillion Analytics views. The upper-right Approval role selector is the primary path to AP review, Department manager, and Finance controller approvals; the sidebar uses the official lime Rillion logo asset.
+A public, login-free simulation of a Rillion accounts-payable workflow. It uses fictional Northstar Manufacturing data and is not connected to Demo51 or any production service. The click-through includes To Verify, a Demo51-style Invoice Log with labeled green/yellow/red PO and match states, role-grouped approvals, a Documents inbox and detail flow, four Payments states, and ten Rillion Analytics boards grouped in platform order. The upper-right Approval role selector is the primary path to AP review, Department manager, and Finance controller approvals; a prominent Guided tour control is visible on arrival; and the sidebar uses the official lime Rillion logo asset.
 
 Explore the live demo at <https://taste4458.github.io/rillion-demo-site/>.
 

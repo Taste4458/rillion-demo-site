@@ -182,11 +182,15 @@ Payments follows the Demo51 operational sequence with four native tab controls: 
 
 ### Guided Tour
 
-The six-step tour follows the operational story from queue to invoice verification, invoice log, approvals, Payments, and Analytics. Payments is always step 5, immediately before Analytics at step 6, so the story closes with reporting only after the payment state is understood.
+The six-step tour follows the operational story from queue to invoice verification, invoice log, approvals, Payments, and Analytics. Payments is always step 5, immediately before Analytics at step 6, so the story closes with reporting only after the payment state is understood. Its launch control is visible in the top bar on first paint, uses a compass-style product icon, and explicitly says “Guided tour” and “6-step walkthrough.” A short two-cycle arrival cue helps first-time visitors discover it without stealing focus or looping indefinitely.
+
+### Invoice Log
+
+Invoice Log follows To Verify in both navigation and the guided tour. Its horizontally contained operational grid mirrors Demo51's evidence density with company, vendor invoice, flow proposal, account posting, accounting date, due date, total, currency, purchase order, match, and workflow status. PO and match use the same labeled three-state language: green means matched, yellow means review or variance, and red means exception or missing PO. Text and a dot accompany every color so state never depends on color alone.
 
 ### Analytics
 
-Rillion Analytics uses a compact report index beside one dominant reference screen. Five supplied product screenshots—Executive dashboard, Invoice log, Payables aging, Spend report, and AP cash flow—are framed as demonstration data and navigated with explicit report buttons plus previous/next controls. The screenshots remain evidence; the surrounding shell supplies hierarchy, context, keyboard operation, and the public-simulation boundary.
+Rillion Analytics uses a grouped board index beside one dominant reference screen. Ten supplied product views follow the real platform hierarchy: AP Reports (Invoice Log, Active Invoices, AP Aging), Performance Tracking Reports (Invoice Flow Tracking), Business Reports (Spend Report, AP Cash Flow, Vendor Payment Analyzer), Executive Dashboard, and Procurement Reports (Procurement Overview, Procurement Trend). Explicit board buttons and previous/next controls support both direct and sequential exploration. Browser chrome in user-supplied captures is clipped by the presentation frame without modifying the source assets. The screenshots remain evidence; the surrounding shell supplies hierarchy, context, keyboard operation, and the public-simulation boundary.
 
 ### Approval Relay
 
@@ -200,6 +204,7 @@ The signature component is a vertical sequence of completed, active, and future 
 - **Do** label simulated data plainly and keep all prospect-facing content synthetic.
 - **Do** provide visible empty, disabled, hover, and keyboard-focus states.
 - **Do** keep Payments immediately before Analytics in the guided-tour sequence.
+- **Do** keep the Guided tour launch visible above the fold and the Analytics boards in platform group order.
 
 ### Don't:
 

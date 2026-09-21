@@ -7,5 +7,17 @@
     "spend-report.png": 24,
     "ap-cash-flow.png": 28,
     "executive-dashboard.png": 33
+  },
+  "liveScreenshots": {
+    "source": "analytics.rillionprime.com demonstration environment",
+    "suppliedBy": "Sam Stull",
+    "captured": "2026-09-21",
+    "assets": [
+      "active-invoices.png",
+      "invoice-flow-tracking.png",
+      "vendor-payment-analyzer.png",
+      "procurement-overview.png",
+      "procurement-trend.png"
+    ]
   }
 }
