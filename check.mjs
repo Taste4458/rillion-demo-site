@@ -22,14 +22,20 @@ for (const field of ['Vendor invoice no.', 'Flow proposal', 'Account posting', '
 for (const label of ['PO matched', 'PO variance', 'PO missing', 'Matched', 'Review', 'Exception']) {
   assert.match(app, new RegExp(label), `Invoice Log is missing status: ${label}`);
 }
+for (const label of ['AI matched', 'Non-PO verified']) {
+  assert.match(app, new RegExp(label), `Invoice Log is missing non-PO automation status: ${label}`);
+}
+assert.ok((app.match(/aiMatched: true/g) || []).length >= 4, 'Invoice Log needs at least four AI-matched examples');
+assert.ok((app.match(/logOnly: true/g) || []).length >= 4, 'AI-matched examples must remain Invoice-Log-only');
+assert.ok((app.match(/filter\(inv => !inv\.logOnly\)/g) || []).length >= 3, 'Log-only invoices must be excluded from work and approval queues');
 for (const tone of ['good', 'warn', 'bad']) {
   assert.match(css, new RegExp(`\\.log-health\\.${tone}`), `Invoice Log is missing ${tone} status styling`);
 }
-const analyticsAssets = ['invoice-log', 'active-invoices', 'payables-aging', 'invoice-flow-tracking', 'spend-report', 'ap-cash-flow', 'vendor-payment-analyzer', 'executive-dashboard', 'procurement-overview', 'procurement-trend'];
+const analyticsAssets = ['invoice-log', 'active-invoices', 'payables-aging', 'invoice-flow-tracking', 'invoice-summary', 'spend-report', 'ap-cash-flow', 'vendor-payment-analyzer', 'executive-dashboard', 'procurement-overview', 'procurement-trend'];
 for (const asset of analyticsAssets) {
   assert.ok(existsSync(new URL(`./assets/analytics/${asset}.png`, import.meta.url)), `Missing Analytics asset: ${asset}`);
 }
-const analyticsOrder = ['Invoice log', 'Active invoices', 'AP aging', 'Invoice flow tracking', 'Spend report', 'AP cash flow', 'Vendor payment analyzer', 'Executive dashboard', 'Procurement overview', 'Procurement trend'];
+const analyticsOrder = ['Invoice log', 'Active invoices', 'AP aging', 'Invoice flow tracking', 'Invoice summary', 'Spend report', 'AP cash flow', 'Vendor payment analyzer', 'Executive dashboard', 'Procurement overview', 'Procurement trend'];
 for (let index = 1; index < analyticsOrder.length; index++) {
   assert.ok(app.indexOf(`title: '${analyticsOrder[index - 1]}'`) < app.indexOf(`title: '${analyticsOrder[index]}'`), `Analytics board order is wrong near ${analyticsOrder[index]}`);
 }
@@ -56,4 +62,4 @@ assert.doesNotMatch(app, /copied for review/, 'Payment references must not claim
 assert.match(html, /id="role-select"/, 'Missing Approval role selector');
 assert.ok(existsSync(new URL('./assets/rillion-logo-lime.svg', import.meta.url)), 'Missing official Rillion logo asset');
 assert.doesNotMatch(app, /fetch\s*\(|XMLHttpRequest|WebSocket/, 'The public simulation must not call a backend');
-console.log('Demo contract check passed: navigation, guided tour, three-state Invoice Log, role-only Approval, Documents, Payments, ten ordered Analytics boards, brand, and offline boundary are present.');
+console.log('Demo contract check passed: navigation, guided tour, non-PO AI-matched Invoice Log examples, role-only Approval, Documents, Payments, eleven ordered Analytics boards, brand, and offline boundary are present.');

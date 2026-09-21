@@ -35,7 +35,7 @@ The source reference is the authenticated Demo51 environment and its invoice, re
 - No production APIs, credentials, customer data, lead forms, behavioral tracking, telemetry, or remote writes.
 - It must identify itself as a product simulation rather than a live Rillion tenant.
 - The navigation mirrors Demo51's primary hierarchy while keeping secondary areas representative and read-only.
-- Invoices includes interactive To Verify and Invoice Log branches; Invoice Log exposes flow/accounting evidence and labeled green, yellow, and red PO/match states; Reports contains AP performance; Rillion Analytics includes ten board click-throughs grouped in platform order.
+- Invoices includes interactive To Verify and Invoice Log branches; Invoice Log exposes flow/accounting evidence, labeled green/yellow/red PO and match states, and log-only non-PO AI-matched examples; Reports contains AP performance; Rillion Analytics includes eleven board click-throughs grouped in platform order.
 - A persistent Approval role selector lists the synthetic workflow roles and is the primary navigation path to each role's grouped approval work.
 - Documents includes a status-tabbed inbox and a synthetic document-detail workspace with preview, metadata, flow, lines, comments, and simulated approval actions.
 - Payments includes Ready for payment, Awaiting approval, In progress, and Completed click-throughs with synthetic filters, records, and reversible simulated actions.
@@ -52,7 +52,7 @@ Use the current Rillion identity and product terminology. Preserve the friendly-
 - Current Rillion brand guidelines, logo assets, font files, UI color tokens, and interaction rules.
 - The sidebar uses the official lime Rillion logo asset on the deep-green product frame.
 - Prospect-safe Rillion Analytics reference screens supplied in `User stories Analytics&BI.pptx`.
-- User-supplied screenshots from the Rillion Analytics demonstration environment for Active Invoices, Invoice Flow Tracking, Vendor Payment Analyzer, Procurement Overview, and Procurement Trend.
+- Seven navigation-free screenshots supplied from the Rillion Analytics demonstration environment for Active Invoices, Invoice Flow Tracking, Invoice Summary, Vendor Payment Analyzer, Executive Dashboard, Procurement Overview, and Procurement Trend.
 - No public performance claims, customer endorsements, or production analytics are authorized for this artifact.
 
 ## Product Principles

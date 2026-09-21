@@ -5,17 +5,19 @@
     "invoice-log.png": 4,
     "payables-aging.png": 10,
     "spend-report.png": 24,
-    "ap-cash-flow.png": 28,
-    "executive-dashboard.png": 33
+    "ap-cash-flow.png": 28
   },
   "liveScreenshots": {
     "source": "analytics.rillionprime.com demonstration environment",
     "suppliedBy": "Sam Stull",
     "captured": "2026-09-21",
+    "treatment": "Navigation-free dashboard captures displayed without cropping",
     "assets": [
       "active-invoices.png",
       "invoice-flow-tracking.png",
+      "invoice-summary.png",
       "vendor-payment-analyzer.png",
+      "executive-dashboard.png",
       "procurement-overview.png",
       "procurement-trend.png"
     ]
