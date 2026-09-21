@@ -30,8 +30,7 @@ const navTree = [
   { id: 'documents', label: 'Documents', icon: 'documents', badge: '3' },
   { id: 'payments', label: 'Payments', icon: 'payments' },
   { group: 'reports', label: 'Reports', icon: 'reports', children: [
-    { id: 'reports', label: 'AP performance' },
-    { id: 'approval-report', label: 'Approval' }
+    { id: 'reports', label: 'AP performance' }
   ] },
   { id: 'administration', label: 'Administration', icon: 'administration' },
   { id: 'system', label: 'System', icon: 'system' },
@@ -78,18 +77,48 @@ const documents = [
   { id: 'DOC-6', arrived: 'May 15, 2026', type: 'Check request', name: 'Facility permit', description: 'Permit requires coding correction', created: 'May 15, 2026', createdBy: 'Morgan Patel', lines: 1, status: 'return-to-ap', company: 'Northstar Manufacturing', responsibleRole: 'AP review', amount: 890, documentNo: 'CR-2026-04741', requestCategory: 'Permit', payee: 'City of Riverton' }
 ];
 
+const paymentTabs = [
+  ['ready', 'Ready for payment', 66],
+  ['awaiting', 'Awaiting approval', 8],
+  ['in-progress', 'In progress', 16],
+  ['completed', 'Completed', 10]
+];
+
+const payments = [
+  { id: '0976000052', tab: 'ready', company: '30', vendor: 'ADS Security', invoiceDate: 'Sep 7, 2026', dueDate: 'Oct 7, 2026', amount: 1510, method: 'ACH', approver: 'Frank Jonsson', approvalDate: 'Aug 30, 2026' },
+  { id: '0976000048', tab: 'ready', company: '30', vendor: 'Advanced Building Systems', invoiceDate: 'Sep 7, 2026', dueDate: 'Oct 7, 2026', amount: 1470, method: 'Check', approver: 'Adri Meijer', approvalDate: 'Aug 30, 2026' },
+  { id: '0976000005', tab: 'ready', company: '30', vendor: 'CDW', invoiceDate: 'Sep 21, 2026', dueDate: 'Oct 21, 2026', amount: 1040, method: 'ACH', approver: 'Maria Hansson', approvalDate: 'Aug 30, 2026' },
+  { id: '0976000002', tab: 'ready', company: '30', vendor: 'Absolute Laser', invoiceDate: 'Sep 21, 2026', dueDate: 'Oct 21, 2026', amount: 1010, method: 'Virtual card', approver: 'Maria Hansson', approvalDate: 'Aug 30, 2026' },
+  { id: '0976000003', tab: 'ready', company: '30', vendor: 'Accurate Welding', invoiceDate: 'Sep 21, 2026', dueDate: 'Oct 21, 2026', amount: 1020, method: 'Check', approver: 'Logan Cressey', approvalDate: 'Aug 30, 2026' },
+  { id: '0976000001', tab: 'ready', company: '30', vendor: 'DME Company', invoiceDate: 'Sep 21, 2026', dueDate: 'Oct 21, 2026', amount: 1000, method: 'ACH', approver: 'Maria Hansson', approvalDate: 'Aug 30, 2026' },
+  { id: '0976000021', tab: 'awaiting', company: '30', vendor: 'Beacon Office Supply', invoiceDate: 'Sep 18, 2026', dueDate: 'Oct 18, 2026', amount: 2860, method: 'ACH', approver: 'Department manager', status: 'Manager review' },
+  { id: '0976000024', tab: 'awaiting', company: '30', vendor: 'Clearwater Freight', invoiceDate: 'Sep 19, 2026', dueDate: 'Oct 19, 2026', amount: 4380, method: 'Check', approver: 'Finance controller', status: 'Final approval' },
+  { id: '0976000027', tab: 'awaiting', company: '30', vendor: 'North Coast Packaging', invoiceDate: 'Sep 20, 2026', dueDate: 'Oct 20, 2026', amount: 1975, method: 'Virtual card', approver: 'AP review', status: 'Exception review' },
+  { id: '0976000030', tab: 'in-progress', company: '30', vendor: 'Metro Industrial', invoiceDate: 'Sep 14, 2026', amount: 6420, method: 'ACH', sentBy: 'Alex Nguyen', sentOn: 'Sep 21, 2026', status: 'Submitted to bank' },
+  { id: '0976000033', tab: 'in-progress', company: '30', vendor: 'Riverside Logistics', invoiceDate: 'Sep 16, 2026', amount: 960, method: 'Check', sentBy: 'Morgan Patel', sentOn: 'Sep 21, 2026', status: 'Payment file created' },
+  { id: '0976000036', tab: 'in-progress', company: '30', vendor: 'Summit Packaging', invoiceDate: 'Sep 17, 2026', amount: 8750, method: 'ACH', sentBy: 'Alex Nguyen', sentOn: 'Sep 21, 2026', status: 'Processing' },
+  { id: '0976000007', tab: 'completed', company: '30', vendor: 'Polychemtex Inc', invoiceDate: 'Oct 6, 2026', amount: 1060, method: 'Check', sentBy: 'Christina Ciocoi', sentOn: 'Sep 21, 2026', paymentDate: 'Sep 22, 2026', reference: 'TRC6716/3890', status: 'Settled' },
+  { id: '0976000010', tab: 'completed', company: '30', vendor: 'Absolute Laser', invoiceDate: 'Oct 11, 2026', amount: 1090, method: 'Check', sentBy: 'Kevin Witkowski', sentOn: 'Sep 21, 2026', paymentDate: 'Sep 22, 2026', reference: 'TR2EBB0/2722', status: 'Settled' },
+  { id: '0976000015', tab: 'completed', company: '30', vendor: 'City Transport', invoiceDate: 'Oct 26, 2026', amount: 1140, method: 'ACH', sentBy: 'Johan Eriksson', sentOn: 'Sep 21, 2026', paymentDate: 'Sep 22, 2026', reference: 'TRB7241', status: 'Settled' },
+  { id: '0976000013', tab: 'completed', company: '30', vendor: 'Advanced Building Systems', invoiceDate: 'Oct 21, 2026', amount: 1120, method: 'Check', sentBy: 'Sam Carter', sentOn: 'Sep 21, 2026', paymentDate: 'Sep 22, 2026', reference: 'TRA2B16/7743', status: 'Settled' },
+  { id: '0976000009', tab: 'completed', company: '30', vendor: 'DME Company', invoiceDate: 'Oct 11, 2026', amount: 1080, method: 'ACH', sentBy: 'Adri Meijer', sentOn: 'Sep 21, 2026', paymentDate: 'Sep 22, 2026', reference: 'TR43080', status: 'Settled' },
+  { id: '0976000017', tab: 'completed', company: '30', vendor: 'Star Telecom', invoiceDate: 'Oct 31, 2026', amount: 1160, method: 'Virtual card', sentBy: 'Logan Meek', sentOn: 'Sep 21, 2026', paymentDate: 'Sep 22, 2026', reference: 'TRE5370/7304', status: 'Settled' }
+];
+
 const state = {
   view: location.hash.slice(1) || 'dashboard', selected: invoices[0], approved: new Set(),
   expanded: new Set(['invoices', 'reports']), tour: -1, query: '', fieldsExpanded: false,
   logFilter: 'all', approvalFilter: 'all', roleFilter: 'all', analytics: 0,
-  documentTab: 'being-checked', documentCompany: 'all', documentType: 'all', selectedDocument: documents[0], documentOutcomes: new Map()
+  documentTab: 'being-checked', documentCompany: 'all', documentType: 'all', selectedDocument: documents[0], documentOutcomes: new Map(),
+  paymentTab: 'ready', paymentQuery: '', paymentVendor: 'all', paymentMethod: 'all', paymentDate: '', paymentSelection: new Set(), paymentMoves: new Map()
 };
 
 const workspace = document.querySelector('#workspace');
 const money = value => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
+const escapeHtml = value => String(value).replace(/[&<>"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[character]);
 const approvalRole = inv => approvalRoles.find(role => role.id === inv.role);
-const allViews = [...navTree.flatMap(item => item.children || [item]).map(item => item.id).filter(Boolean), 'document-detail'];
-const labels = { ...Object.fromEntries(navTree.flatMap(item => item.children ? item.children.map(child => [child.id, child.label]) : [[item.id, item.label]])), 'document-detail': 'Document detail' };
+const allViews = [...navTree.flatMap(item => item.children || [item]).map(item => item.id).filter(Boolean), 'document-detail', 'approval-report'];
+const labels = { ...Object.fromEntries(navTree.flatMap(item => item.children ? item.children.map(child => [child.id, child.label]) : [[item.id, item.label]])), 'document-detail': 'Document detail', 'approval-report': 'Approval' };
 
 function renderNav() {
   document.querySelector('#nav').innerHTML = navTree.map(item => {
@@ -150,7 +179,7 @@ function invoicePanel(inv) {
 function relay(inv) {
   const approved = state.approved.has(inv.id);
   const fields = [['Vendor', inv.vendor], ['Invoice number', inv.id], ['Due date', inv.due], ['PO number', inv.po], ['Total amount', money(inv.amount)], ...(state.fieldsExpanded ? [['Invoice date', 'Apr 2, 2026'], ['Payment terms', 'Net 30'], ['Currency', 'USD']] : [])];
-  return `<div class="stack right-stack"><section class="panel"><div class="panel-head"><h3>Approval relay</h3><button class="link-button" data-view="approval-report">Approval report</button></div><div class="relay">
+  return `<div class="stack right-stack"><section class="panel"><div class="panel-head"><h3>Approval relay</h3></div><div class="relay">
     <div class="relay-step done"><span class="relay-mark"></span><div><strong>Capture complete</strong><small>Invoice received and fields extracted</small></div></div>
     <div class="relay-step done"><span class="relay-mark"></span><div><strong>AP review complete</strong><small>Matched to PO ${inv.po}</small></div></div>
     <div class="relay-step ${approved ? 'done' : 'active'}"><span class="relay-mark"></span><div><strong>${approved ? `${approvalRole(inv).label} approved` : approvalRole(inv).label}</strong><small>${approved ? `Approved by ${inv.owner}` : `${inv.owner} · approval required`}</small></div></div>
@@ -224,7 +253,55 @@ function analytics() {
 }
 
 function reports() {
-  workspace.innerHTML = pageIntro('AP performance', 'A synthetic view of invoice throughput, exceptions, and approval speed.', '<button class="primary-button" data-action="export">Download synthetic CSV</button>') + `<div class="report-grid"><section class="panel"><div class="panel-head"><h3>Invoices processed</h3><span>Last 6 months</span></div><div class="chart">${[54, 66, 58, 81, 74, 92].map((value, index) => `<div class="bar" style="height:${value}%"><span>${['Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr'][index]}</span></div>`).join('')}</div></section><section class="panel"><div class="panel-head"><h3>Operational health</h3></div><div class="metric-list">${[['94%', 'touchless match'], ['1.8 days', 'approval cycle'], ['3.2%', 'exception rate'], ['100%', 'audit trail coverage']].map(([value, label]) => `<div class="metric"><strong>${value}</strong><span>${label}</span></div>`).join('')}</div><button class="report-link" data-view="approval-report">Open Approval report</button></section></div>`;
+  workspace.innerHTML = pageIntro('AP performance', 'A synthetic view of invoice throughput, exceptions, and approval speed.', '<button class="primary-button" data-action="export">Download synthetic CSV</button>') + `<div class="report-grid"><section class="panel"><div class="panel-head"><h3>Invoices processed</h3><span>Last 6 months</span></div><div class="chart">${[54, 66, 58, 81, 74, 92].map((value, index) => `<div class="bar" style="height:${value}%"><span>${['Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr'][index]}</span></div>`).join('')}</div></section><section class="panel"><div class="panel-head"><h3>Operational health</h3></div><div class="metric-list">${[['94%', 'touchless match'], ['1.8 days', 'approval cycle'], ['3.2%', 'exception rate'], ['100%', 'audit trail coverage']].map(([value, label]) => `<div class="metric"><strong>${value}</strong><span>${label}</span></div>`).join('')}</div></section></div>`;
+}
+
+const paymentTabFor = payment => state.paymentMoves.get(payment.id) || payment.tab;
+
+function paymentTabCount(tab) {
+  const base = paymentTabs.find(item => item[0] === tab)[2];
+  return payments.reduce((count, payment) => {
+    const current = paymentTabFor(payment);
+    if (current === payment.tab) return count;
+    if (payment.tab === tab) return count - 1;
+    if (current === tab) return count + 1;
+    return count;
+  }, base);
+}
+
+function paymentRow(payment) {
+  const selected = state.paymentSelection.has(payment.id);
+  const select = `<td><input type="checkbox" data-payment-select="${payment.id}" aria-label="Select invoice ${payment.id}" ${selected ? 'checked' : ''}></td>`;
+  const invoice = `<td><button class="payment-link" data-payment-invoice="${payment.id}">${payment.id}</button></td>`;
+  const common = `${invoice}<td>${payment.company}</td><td>${payment.vendor}</td><td>${payment.invoiceDate}</td>`;
+  if (state.paymentTab === 'ready') return `<tr>${select}${common}<td>${payment.dueDate}</td><td>${money(payment.amount)}</td><td>${payment.method}</td><td>${payment.approver}</td><td>${payment.approvalDate}</td></tr>`;
+  if (state.paymentTab === 'awaiting') return `<tr>${common}<td>${payment.dueDate}</td><td>${money(payment.amount)}</td><td>${payment.approver}</td><td><span class="status approval">${payment.status}</span></td></tr>`;
+  if (state.paymentTab === 'in-progress') return `<tr>${common}<td>${money(payment.amount)}</td><td>${payment.method}</td><td>${payment.sentBy || 'Alex Nguyen'}</td><td>${payment.sentOn || 'Today'}</td><td><span class="status match">${payment.status || 'Submitted'}</span></td></tr>`;
+  return `<tr>${common}<td>${money(payment.amount)}</td><td>${payment.method}</td><td>${payment.sentBy || 'Alex Nguyen'}</td><td>${payment.sentOn || 'Today'}</td><td>${payment.paymentDate || 'Today'}</td><td><button class="payment-link" data-payment-reference="${payment.reference || `SIM-${payment.id.slice(-4)}`}">${payment.reference || `SIM-${payment.id.slice(-4)}`}</button></td><td><span class="status paid">${payment.status || 'Settled'}</span></td></tr>`;
+}
+
+function paymentsPage() {
+  const query = state.paymentQuery.toLowerCase().trim();
+  const dateField = state.paymentTab === 'completed' ? 'paymentDate' : state.paymentTab === 'in-progress' ? 'invoiceDate' : 'dueDate';
+  const dateLabel = state.paymentTab === 'completed' ? 'Payment date' : state.paymentTab === 'in-progress' ? 'Invoice date' : 'Due date';
+  const records = payments.filter(payment => paymentTabFor(payment) === state.paymentTab)
+    .filter(payment => !query || `${payment.id} ${payment.vendor}`.toLowerCase().includes(query))
+    .filter(payment => state.paymentVendor === 'all' || payment.vendor === state.paymentVendor)
+    .filter(payment => state.paymentMethod === 'all' || payment.method === state.paymentMethod)
+    .filter(payment => !state.paymentDate || (payment[dateField] && new Date(payment[dateField]) >= new Date(`${state.paymentDate}T00:00:00`)));
+  const vendors = [...new Set(payments.map(payment => payment.vendor))].sort();
+  const methods = [...new Set(payments.map(payment => payment.method))].sort();
+  const selectedCount = state.paymentSelection.size;
+  const heads = {
+    ready: ['<span class="sr-only">Select</span>', 'Invoice no.', 'Company', 'Vendor', 'Invoice date', 'Due date', 'Amount', 'Payment method', 'Last approver(s)', 'Invoice approval date'],
+    awaiting: ['Invoice no.', 'Company', 'Vendor', 'Invoice date', 'Due date', 'Amount', 'Current approver', 'Status'],
+    'in-progress': ['Invoice no.', 'Company', 'Vendor', 'Invoice date', 'Amount', 'Payment method', 'Payment sent by', 'Payment sent on', 'Status'],
+    completed: ['Invoice no.', 'Company', 'Vendor', 'Invoice date', 'Amount', 'Payment method', 'Payment sent by', 'Payment sent on', 'Payment date', 'Payment reference ID', 'Status']
+  }[state.paymentTab];
+  const total = records.reduce((sum, payment) => sum + payment.amount, 0);
+  const batchActions = state.paymentTab === 'ready' ? `<div class="payment-batch"><button class="icon-control" data-action="payment-export" aria-label="Download synthetic payment list">↓</button><button data-action="payment-outside" ${selectedCount ? '' : 'disabled'}>Pay outside Rillion</button><button data-action="payment-send" ${selectedCount ? '' : 'disabled'}>Send for payment</button><span>${selectedCount ? `${selectedCount} selected` : 'Select invoices to continue'}</span></div>` : '<div class="payment-batch"><button class="icon-control" data-action="payment-export" aria-label="Download synthetic payment list">↓</button></div>';
+  workspace.innerHTML = `<div class="payments-head"><div><h2>Payments</h2><div class="payment-tabs" role="tablist" aria-label="Payment status">${paymentTabs.map(([id, label]) => `<button role="tab" data-payment-tab="${id}" aria-selected="${state.paymentTab === id}">${label} <span>(${paymentTabCount(id)})</span></button>`).join('')}</div></div><div class="payment-head-actions"><button data-action="payment-manage">Manage</button><button data-action="payment-portal">Payment portal ↗</button></div></div>
+    <section class="panel payments-panel"><div class="payment-filters"><label><span>Invoice number</span><input id="payment-query" value="${escapeHtml(state.paymentQuery)}" placeholder="Invoice number"></label><label><span>Vendor</span><select id="payment-vendor"><option value="all">Name or number</option>${vendors.map(vendor => `<option ${state.paymentVendor === vendor ? 'selected' : ''}>${vendor}</option>`).join('')}</select></label><label><span>Payment method</span><select id="payment-method"><option value="all">All methods</option>${methods.map(method => `<option ${state.paymentMethod === method ? 'selected' : ''}>${method}</option>`).join('')}</select></label><label class="payment-date"><span>${dateLabel}</span><input id="payment-date" type="date" value="${state.paymentDate}" aria-label="${dateLabel} from"></label></div>${batchActions}<div class="table-wrap payment-table">${records.length ? dataTable(heads, records.map(paymentRow).join('')) : emptyState('No matching payments', 'Clear a filter or choose another payment status.')}</div><div class="payment-total"><span>Showing ${records.length} representative ${records.length === 1 ? 'invoice' : 'invoices'} · ${paymentTabCount(state.paymentTab)} total</span><strong>${money(total)} USD</strong></div></section>`;
 }
 
 function tablePage(kind) {
@@ -242,7 +319,6 @@ function overviewPage(kind) {
   const pages = {
     profile: ['My profile', 'Your demo identity and approval authority.', [['Role', 'AP Manager'], ['Company', 'Northstar Manufacturing'], ['Approval limit', '$50,000'], ['Language', 'English']]],
     budget: ['Budget requests', 'Plan and approve spend before it becomes a requisition.', [['Open requests', '4'], ['Awaiting your approval', '2'], ['Approved this month', '11'], ['Available budget', '$184,200']]],
-    payments: ['Payments', 'Monitor approved invoices as they move to scheduled payment.', [['Ready for payment', '14'], ['Scheduled this week', '$84,310'], ['On hold', '2'], ['Exported to ERP', '66']]],
     administration: ['Administration', 'A representative view of configuration ownership.', [['Companies', '3 active'], ['Users', '42 active'], ['Approval roles', '12 configured'], ['Integrations', 'ERP connected']]],
     system: ['System', 'A read-only overview of the synthetic demo environment.', [['Environment', 'Interactive simulation'], ['Data source', 'Synthetic browser data'], ['Authentication', 'Not required'], ['External writes', 'Disabled']]]
   };
@@ -267,6 +343,7 @@ function render() {
   else if (state.view === 'approval-report') approvalReport();
   else if (state.view === 'analytics') analytics();
   else if (state.view === 'reports') reports();
+  else if (state.view === 'payments') paymentsPage();
   else if (['tasks', 'requisitions', 'contracts'].includes(state.view)) tablePage(state.view);
   else overviewPage(state.view);
 }
@@ -314,6 +391,17 @@ function downloadReport() {
   toast('Synthetic report downloaded');
 }
 
+function downloadPayments() {
+  const csvCell = value => `"${String(value ?? '').replaceAll('"', '""')}"`;
+  const records = payments.filter(payment => paymentTabFor(payment) === state.paymentTab);
+  const csv = [['Invoice number', 'Company', 'Vendor', 'Invoice date', 'Due or payment date', 'Amount USD', 'Payment method', 'Status'], ...records.map(payment => [payment.id, payment.company, payment.vendor, payment.invoiceDate, payment.dueDate || payment.paymentDate || '', payment.amount, payment.method, payment.status || state.paymentTab])].map(row => row.map(csvCell).join(',')).join('\n');
+  const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+  const link = Object.assign(document.createElement('a'), { href: url, download: `rillion-synthetic-payments-${state.paymentTab}.csv` });
+  link.click();
+  URL.revokeObjectURL(url);
+  toast(`Synthetic ${paymentTabs.find(([id]) => id === state.paymentTab)[1]} CSV downloaded`);
+}
+
 function openInvoice(id) {
   state.selected = invoices.find(inv => inv.id === id) || state.selected;
   state.fieldsExpanded = false;
@@ -329,6 +417,9 @@ document.addEventListener('click', event => {
   const logFilter = event.target.closest('[data-log-filter]')?.dataset.logFilter;
   const approvalFilter = event.target.closest('[data-approval-filter]')?.dataset.approvalFilter;
   const analyticsIndex = event.target.closest('[data-analytics]')?.dataset.analytics;
+  const paymentTab = event.target.closest('[data-payment-tab]')?.dataset.paymentTab;
+  const paymentInvoice = event.target.closest('[data-payment-invoice]')?.dataset.paymentInvoice;
+  const paymentReference = event.target.closest('[data-payment-reference]')?.dataset.paymentReference;
   const action = event.target.closest('[data-action]')?.dataset.action;
   if (group) { state.expanded.has(group) ? state.expanded.delete(group) : state.expanded.add(group); renderNav(); return; }
   if (view) { navigate(view); return; }
@@ -338,13 +429,17 @@ document.addEventListener('click', event => {
   if (logFilter) { state.logFilter = logFilter; invoiceLog(); return; }
   if (approvalFilter) { state.approvalFilter = approvalFilter; approvalReport(); return; }
   if (analyticsIndex !== undefined) { state.analytics = Number(analyticsIndex); analytics(); return; }
+  if (paymentTab) { state.paymentTab = paymentTab; state.paymentDate = ''; state.paymentSelection.clear(); paymentsPage(); return; }
+  if (paymentInvoice) { toast(`Invoice ${paymentInvoice} opened in the synthetic payment list`); return; }
+  if (paymentReference) { toast(`Payment reference ${paymentReference} opened for review`); return; }
   if (action === 'approve') { state.approved.add(state.selected.id); render(); toast(`${state.selected.id} approved and ready for payment`); }
   if (action === 'fields') { state.fieldsExpanded = !state.fieldsExpanded; render(); }
-  if (action === 'reset') { state.approved.clear(); state.documentOutcomes.clear(); state.selected = invoices[0]; state.selectedDocument = documents[0]; state.fieldsExpanded = false; state.logFilter = 'all'; state.approvalFilter = 'all'; state.roleFilter = 'all'; state.documentTab = 'being-checked'; state.documentCompany = 'all'; state.documentType = 'all'; state.analytics = 0; state.view = 'dashboard'; state.query = ''; document.querySelector('#search').value = ''; history.replaceState(null, '', '#dashboard'); render(); toast('Demo reset'); }
+  if (action === 'reset') { state.approved.clear(); state.documentOutcomes.clear(); state.paymentSelection.clear(); state.paymentMoves.clear(); state.selected = invoices[0]; state.selectedDocument = documents[0]; state.fieldsExpanded = false; state.logFilter = 'all'; state.approvalFilter = 'all'; state.roleFilter = 'all'; state.documentTab = 'being-checked'; state.documentCompany = 'all'; state.documentType = 'all'; state.paymentTab = 'ready'; state.paymentQuery = ''; state.paymentVendor = 'all'; state.paymentMethod = 'all'; state.paymentDate = ''; state.analytics = 0; state.view = 'dashboard'; state.query = ''; document.querySelector('#search').value = ''; history.replaceState(null, '', '#dashboard'); render(); toast('Demo reset'); }
   if (action === 'tour') { state.tour = 0; showTour(); }
   if (action === 'tour-next') { state.tour++; if (state.tour >= tours.length) { document.querySelector('#tour').hidden = true; state.tour = -1; toast('Tour complete — explore anything'); } else showTour(); }
   if (action === 'tour-close') { document.querySelector('#tour').hidden = true; state.tour = -1; }
   if (action === 'export') downloadReport();
+  if (action === 'payment-export') downloadPayments();
   if (action === 'analytics-prev' && state.analytics > 0) { state.analytics--; analytics(); }
   if (action === 'analytics-next') { state.analytics = (state.analytics + 1) % analyticsReports.length; analytics(); }
   if (action === 'document-prev') { const index = documents.findIndex(doc => doc.id === state.selectedDocument.id); if (index > 0) { state.selectedDocument = documents[index - 1]; documentDetail(); } }
@@ -353,6 +448,17 @@ document.addEventListener('click', event => {
   if (action === 'document-approve') { state.documentOutcomes.set(state.selectedDocument.id, 'approved'); renderNav(); documentDetail(); toast(`${state.selectedDocument.name} approved`); }
   if (action === 'document-return') { state.documentOutcomes.set(state.selectedDocument.id, 'return-to-ap'); renderNav(); documentDetail(); toast(`${state.selectedDocument.name} returned to AP`); }
   if (action === 'document-email') toast('Synthetic email prepared — nothing was sent');
+  if (action === 'payment-manage') toast('Payment settings opened in this simulation');
+  if (action === 'payment-portal') toast('Synthetic payment portal preview — no external site opened');
+  if (action === 'payment-send' || action === 'payment-outside') {
+    const destination = action === 'payment-send' ? 'in-progress' : 'completed';
+    const count = state.paymentSelection.size;
+    state.paymentSelection.forEach(id => state.paymentMoves.set(id, destination));
+    state.paymentSelection.clear();
+    state.paymentTab = destination;
+    paymentsPage();
+    toast(`${count} ${count === 1 ? 'invoice' : 'invoices'} moved to ${destination === 'completed' ? 'Completed' : 'In progress'} in this simulation`);
+  }
 });
 
 document.addEventListener('keydown', event => {
@@ -374,6 +480,14 @@ document.querySelector('#role-select').addEventListener('change', event => {
 document.addEventListener('change', event => {
   if (event.target.matches('#document-company')) { state.documentCompany = event.target.value; documentsInbox(); }
   if (event.target.matches('#document-type')) { state.documentType = event.target.value; documentsInbox(); }
+  if (event.target.matches('#payment-query')) { state.paymentQuery = event.target.value; paymentsPage(); }
+  if (event.target.matches('#payment-vendor')) { state.paymentVendor = event.target.value; paymentsPage(); }
+  if (event.target.matches('#payment-method')) { state.paymentMethod = event.target.value; paymentsPage(); }
+  if (event.target.matches('#payment-date')) { state.paymentDate = event.target.value; paymentsPage(); }
+  if (event.target.matches('[data-payment-select]')) {
+    event.target.checked ? state.paymentSelection.add(event.target.dataset.paymentSelect) : state.paymentSelection.delete(event.target.dataset.paymentSelect);
+    paymentsPage();
+  }
 });
 
 window.addEventListener('hashchange', () => {

@@ -160,7 +160,7 @@ Cards use gently rounded 12px corners, controls use 8px, and status chips use co
 
 ### Navigation
 
-Desktop navigation is a vertical deep-green rail with the official lime Rillion logo, authored line icons, and the recognizable Demo51 hierarchy. Invoices and Reports are expandable groups; their child destinations use an indented dot treatment so To Verify, Invoice Log, AP performance, and Approval remain visibly subordinate. Active state uses lime fill and deep-green copy. Mobile navigation becomes a horizontal rail with accessible names and no badges.
+Desktop navigation is a vertical deep-green rail with the official lime Rillion logo, authored line icons, and the recognizable Demo51 hierarchy. Invoices and Reports are expandable groups; their child destinations use an indented dot treatment so To Verify, Invoice Log, and AP performance remain visibly subordinate. AP performance is the only Reports child. Approval is intentionally absent from the sidebar and direct calls to action because the persistent role selector is its primary navigation path. Active state uses lime fill and deep-green copy. Mobile navigation becomes a horizontal rail with accessible names and no badges.
 
 The upper-right Approval role selector is a native select control that lists all synthetic workflow roles. Choosing a role opens the Approval report and makes that role the active grouping lens; approvals remain nested beneath explicit role headings so responsibility is never inferred from a person name alone.
 
@@ -175,6 +175,10 @@ The Demo51-inspired inbox uses five status tabs—Inbound, To be processed, Bein
 ### Document Detail
 
 The detail workspace keeps the source document, indexed metadata, approval flow, document lines, and comments visible together. A deep-green toolbar contains navigation and simulated Save, Approve, Return to AP, and Send to email actions. On desktop the workspace is three columns; at 1180px the side stack moves below, and at 820px it becomes one column with the toolbar horizontally scrollable rather than widening the page.
+
+### Payments Workspace
+
+Payments follows the Demo51 operational sequence with four native tab controls: Ready for payment, Awaiting approval, In progress, and Completed. Dynamic tab counts and totals reflect the current synthetic browser state. A shared filter row narrows records by invoice, vendor, payment method, and date; a payment-specific CSV export respects the active view. Ready for payment gates Pay outside Rillion and Send for payment behind invoice selection, then simulates the selected transition locally. Completed exposes payment dates, reference IDs, settled status, and a reference-review action. Manage and Payment portal remain truthful simulated actions confirmed by toasts. Wide payment tables scroll inside their surface and never widen the 390px page.
 
 ### Guided Tour
 

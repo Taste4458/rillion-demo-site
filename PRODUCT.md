@@ -35,9 +35,10 @@ The source reference is the authenticated Demo51 environment and its invoice, re
 - No production APIs, credentials, customer data, lead forms, behavioral tracking, telemetry, or remote writes.
 - It must identify itself as a product simulation rather than a live Rillion tenant.
 - The navigation mirrors Demo51's primary hierarchy while keeping secondary areas representative and read-only.
-- Invoices includes interactive To Verify and Invoice Log branches; Reports includes Approval; Rillion Analytics includes five report click-throughs.
-- A persistent Approval role selector lists the synthetic workflow roles and opens each role's approvals as grouped work beneath the role heading.
+- Invoices includes interactive To Verify and Invoice Log branches; Reports contains AP performance; Rillion Analytics includes five report click-throughs.
+- A persistent Approval role selector lists the synthetic workflow roles and is the primary navigation path to each role's grouped approval work.
 - Documents includes a status-tabbed inbox and a synthetic document-detail workspace with preview, metadata, flow, lines, comments, and simulated approval actions.
+- Payments includes Ready for payment, Awaiting approval, In progress, and Completed click-throughs with synthetic filters, records, and reversible simulated actions.
 - The guided tour visits Payments immediately before Rillion Analytics.
 
 ## Brand Commitments

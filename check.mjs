@@ -20,7 +20,19 @@ for (const asset of ['executive-dashboard', 'invoice-log', 'payables-aging', 'sp
 for (const role of ['AP review', 'Department manager', 'Finance controller']) {
   assert.match(app, new RegExp(role), `Missing approval role: ${role}`);
 }
+const reportsNav = app.match(/\{ group: 'reports'[\s\S]*?\n  \] \},/);
+assert.ok(reportsNav, 'Missing Reports navigation group');
+assert.doesNotMatch(reportsNav[0], /approval-report/, 'Approval must not appear under Reports');
+assert.doesNotMatch(app, /data-view="approval-report"/, 'Approval shortcuts must defer to the role selector');
+for (const paymentTab of ['Ready for payment', 'Awaiting approval', 'In progress', 'Completed']) {
+  assert.match(app, new RegExp(paymentTab), `Missing Payments tab: ${paymentTab}`);
+}
+assert.match(app, /data-payment-tab/, 'Payments tabs must be interactive');
+assert.match(app, /payment-send/, 'Payments needs a simulated send action');
+assert.match(app, /id="payment-date"/, 'Payments date filter must be wired to state');
+assert.match(app, /function downloadPayments\(\)/, 'Payments download must export payment records');
+assert.doesNotMatch(app, /copied for review/, 'Payment references must not claim an unperformed clipboard action');
 assert.match(html, /id="role-select"/, 'Missing Approval role selector');
 assert.ok(existsSync(new URL('./assets/rillion-logo-lime.svg', import.meta.url)), 'Missing official Rillion logo asset');
 assert.doesNotMatch(app, /fetch\s*\(|XMLHttpRequest|WebSocket/, 'The public simulation must not call a backend');
-console.log('Demo contract check passed: navigation, roles, brand asset, Documents, Payments tour, Analytics, and offline boundary are present.');
+console.log('Demo contract check passed: navigation, role-only Approval entry, Documents, four-state Payments, Analytics, brand, and offline boundary are present.');
