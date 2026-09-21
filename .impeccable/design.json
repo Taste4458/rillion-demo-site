@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-21T18:31:40Z",
+  "generatedAt": "2026-09-21T19:52:06Z",
   "title": "Design System: Rillion Interactive Demo",
   "extensions": {
     "colorMeta": {
@@ -70,6 +70,48 @@
       "css": ".ds-nav-group{width:236px;padding:8px 12px;background:#0F3732;color:#E7EEE9;font:400 13px/1.45 Gellix,Arial,sans-serif}.ds-nav-group button{width:100%;display:flex;align-items:center;gap:10px;padding:7px 10px;border:0;border-radius:6px;background:transparent;color:inherit;text-align:left;cursor:pointer}.ds-nav-group button:hover{background:rgba(255,255,255,.08)}.ds-nav-group button:focus-visible{outline:3px solid #2F54EB;outline-offset:3px}.ds-nav-parent{color:#C9F0AB!important;background:rgba(201,240,171,.08)!important}.ds-nav-parent svg{width:24px;height:24px;padding:4px;border:1px solid currentColor;border-radius:7px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.ds-nav-group b{margin-left:auto;min-width:24px;padding:2px 7px;border-radius:12px;background:#C9F0AB;color:#0F3732;font-size:12px;font-weight:400;text-align:center}.ds-nav-parent i{width:7px;height:7px;margin-left:2px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg) translateY(-2px)}.ds-nav-children{display:grid;gap:2px}.ds-nav-child{padding-left:48px!important}.ds-nav-child>span{width:5px;height:5px;border-radius:50%;background:currentColor}.ds-nav-child.ds-nav-current{background:#C9F0AB;color:#0F3732;font-weight:600}.ds-nav-current b{background:#0F3732;color:#fff}@media(max-width:520px){.ds-nav-group{width:100%;display:flex;overflow:auto}.ds-nav-children{display:contents}.ds-nav-parent,.ds-nav-child{min-width:max-content}.ds-nav-parent b,.ds-nav-parent i{display:none}.ds-nav-child{width:auto!important;padding:8px 11px!important}.ds-nav-child>span{display:none}}"
     },
     {
+      "name": "Rillion Brand Mark",
+      "kind": "custom",
+      "description": "Official lime Rillion SVG on the deep-green product rail, with at least half a rendered logo height of clearspace and its native aspect ratio preserved.",
+      "html": "<a class=\"ds-wordmark\" href=\"#dashboard\" aria-label=\"Rillion demo home\"><img src=\"assets/rillion-logo-lime.svg\" alt=\"Rillion\"></a>",
+      "css": ".ds-wordmark{display:block;width:92px;margin:0 10px 28px;background:#0F3732;text-decoration:none}.ds-wordmark img{display:block;width:100%;height:auto}@media(max-width:820px){.ds-wordmark{width:82px;margin:5px 0 15px 4px}}"
+    },
+    {
+      "name": "Approval Role Selector",
+      "kind": "input",
+      "description": "Upper-right native selector that opens Approval and filters its explicit role groups.",
+      "html": "<label class=\"ds-role\"><span>Approval role</span><select><option>All roles · 5</option><option>AP review · 1</option><option>Department manager · 3</option><option>Finance controller · 1</option></select></label>",
+      "css": ".ds-role{display:grid;gap:2px}.ds-role span{color:#626961;font-size:11px;font-weight:600}.ds-role select{min-width:188px;height:38px;padding:0 34px 0 11px;border:1px solid #CFD6CD;border-radius:8px;background:#fff;color:#0F3732;font:600 15px/1.45 Gellix,Arial,sans-serif;cursor:pointer}.ds-role select:focus-visible{outline:3px solid #2F54EB;outline-offset:3px}@media(max-width:520px){.ds-role,.ds-role select{width:100%}}"
+    },
+    {
+      "name": "Role-Grouped Approval",
+      "kind": "card",
+      "description": "Approval decisions nested beneath an explicit workflow role, with ownership context and decision count.",
+      "html": "<section class=\"ds-role-group\"><header><div><h3>Department manager</h3><p>Confirms business purpose and cost ownership.</p></div><span>3 approvals</span></header><div class=\"ds-role-table\">Approval decision table</div></section>",
+      "css": ".ds-role-group{overflow:hidden;border:1px solid #CFD6CD;border-radius:12px;background:#fff;box-shadow:0 5px 16px rgba(24,28,23,.09)}.ds-role-group header{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:15px 18px;background:#0F3732;color:#F6F1DC}.ds-role-group h3{margin:0;font-size:17px}.ds-role-group p{margin:3px 0 0;color:rgba(246,241,220,.76)}.ds-role-group header>span{flex:none;padding:4px 8px;border-radius:6px;background:#C9F0AB;color:#0F3732;font-size:12px;font-weight:700}.ds-role-table{padding:16px}@media(max-width:520px){.ds-role-group header{align-items:flex-start;flex-direction:column;gap:10px}}"
+    },
+    {
+      "name": "Documents Inbox",
+      "kind": "custom",
+      "description": "Demo51-inspired document queue with five status tabs, native filters, and semantic document-name buttons inside a scrollable data table.",
+      "html": "<section class=\"ds-docs\"><div class=\"ds-doc-tabs\" aria-label=\"Document status\"><button aria-pressed=\"false\">Inbound</button><button aria-pressed=\"false\">To be processed</button><button aria-pressed=\"true\">Being checked</button><button aria-pressed=\"false\">Processed</button><button aria-pressed=\"false\">Return to AP</button></div><label>Company<select><option>All companies</option></select></label><div class=\"ds-doc-table\"><table><tbody><tr><td><button class=\"ds-doc-link\">Check Request for HH</button></td></tr></tbody></table></div></section>",
+      "css": ".ds-docs{overflow:hidden;border:1px solid #CFD6CD;border-radius:12px;background:#fff}.ds-doc-tabs{display:flex;gap:6px;overflow:auto;padding:14px}.ds-doc-tabs button{min-height:38px;padding:7px 10px;border:1px solid #CFD6CD;border-radius:6px;background:#fff;color:#0F3732;font-weight:600;white-space:nowrap}.ds-doc-tabs button[aria-pressed=\"true\"]{border-color:#0F3732;box-shadow:inset 0 -3px #0F3732}.ds-doc-table{overflow:auto}.ds-doc-table table{min-width:1180px}.ds-doc-link{border:0;background:transparent;color:#0F3732;font-weight:700;text-decoration:underline;text-underline-offset:3px;cursor:pointer}.ds-doc-link:hover{text-decoration-thickness:2px}.ds-doc-link:focus-visible{outline:3px solid #2F54EB;outline-offset:3px}"
+    },
+    {
+      "name": "Document Detail Workspace",
+      "kind": "custom",
+      "description": "Three-column source, index, and flow workspace with a contained horizontal action toolbar; collapses to one column at mobile widths.",
+      "html": "<section class=\"ds-document-detail\"><div class=\"ds-document-toolbar\"><button>Documents</button><button>Previous</button><button>Next</button><button>Save in simulation</button><button class=\"approve\">Approve</button><button>Return to AP</button><button>Send to email</button></div><div class=\"ds-document-grid\"><article>Document image</article><article>Document index</article><aside>Flow · lines · comments</aside></div></section>",
+      "css": ".ds-document-toolbar{display:flex;align-items:center;gap:7px;padding:10px 16px;overflow:auto;background:#0F3732;color:#F6F1DC}.ds-document-toolbar button{min-height:36px;padding:7px 10px;border:1px solid rgba(246,241,220,.28);border-radius:6px;background:transparent;color:inherit;font-weight:600;white-space:nowrap}.ds-document-toolbar .approve{border-color:#C9F0AB;background:#C9F0AB;color:#0F3732}.ds-document-grid{display:grid;grid-template-columns:minmax(430px,1.25fr) minmax(260px,.62fr) minmax(400px,1fr);gap:12px;align-items:start}.ds-document-grid>*{min-width:0;padding:16px;border:1px solid #CFD6CD;border-radius:12px;background:#fff}@media(max-width:1180px){.ds-document-grid{grid-template-columns:minmax(420px,1fr) minmax(260px,.7fr)}.ds-document-grid aside{grid-column:1/-1}}@media(max-width:820px){.ds-document-toolbar{max-width:100%;overflow-x:auto}.ds-document-grid{grid-template-columns:minmax(0,1fr)}.ds-document-grid aside{grid-column:auto}}"
+    },
+    {
+      "name": "Guided Tour Sequence",
+      "kind": "custom",
+      "description": "Six-step operational tour; Payments is step 5 immediately before Analytics at step 6.",
+      "html": "<ol class=\"ds-tour-order\"><li>Work queue</li><li>To Verify</li><li>Invoice Log</li><li>Approval</li><li>Payments</li><li>Analytics</li></ol>",
+      "css": ".ds-tour-order{display:grid;gap:6px;margin:0;padding-left:24px;color:#313730;font:400 15px/1.45 Gellix,Arial,sans-serif}.ds-tour-order li:nth-child(5){color:#0F3732;font-weight:700}.ds-tour-order li::marker{font-variant-numeric:tabular-nums}"
+    },
+    {
       "name": "Analytics Report Stage",
       "kind": "custom",
       "description": "Compact report index beside one dominant, evidence-rich Analytics reference screen.",
@@ -80,13 +122,13 @@
   "narrative": {
     "northStar": "The Approval Relay",
     "overview": "The interface treats invoice processing as accountable handoffs around a shared evidence record. It is operational and data-dense, but the hierarchy stays calm: the active invoice leads, the approval owner follows, and navigation recedes.",
-    "keyCharacteristics": ["Deep-green product frame with a sand work surface.", "White evidence surfaces with thin neutral rules and restrained elevation.", "Lime reserved for primary actions, active navigation, and successful match states.", "Persistent ownership: every workflow state names the next responsible role."],
+    "keyCharacteristics": ["Deep-green product frame with a sand work surface.", "Official lime Rillion SVG on green with protected clearspace.", "White evidence surfaces with thin neutral rules and restrained elevation.", "Lime reserved for primary actions, active navigation, and successful match states.", "Persistent ownership: every workflow state names the next responsible role.", "Documents preserve source, index, flow, lines, and comments in one responsive workspace."],
     "rules": [
       {"name": "The Rarity Rule", "body": "Lime identifies the current action or a verified positive state; it does not decorate neutral content.", "section": "colors"},
       {"name": "The Evidence Rule", "body": "Money and measurements use tabular numerals; labels remain short and literal.", "section": "typography"},
       {"name": "The Evidence-First Rule", "body": "Elevation may separate work surfaces, but it must never outrank document content or approval state.", "section": "elevation"}
     ],
-    "dos": ["Do keep the active invoice, evidence, and accountable next role visible together.", "Do label simulated data plainly and keep all prospect-facing content synthetic.", "Do provide visible empty, disabled, hover, and keyboard-focus states."],
-    "donts": ["Don't use customer data, production credentials, or a live Demo51 connection.", "Don't turn the workspace into a wall of equal KPI cards.", "Don't use gradients, decorative glass, glow shadows, or Unicode glyphs as an icon system."]
+    "dos": ["Do keep the active invoice, evidence, and accountable next role visible together.", "Do label simulated data plainly and keep all prospect-facing content synthetic.", "Do provide visible empty, disabled, hover, and keyboard-focus states.", "Do keep Payments immediately before Analytics in the guided-tour sequence."],
+    "donts": ["Don't use customer data, production credentials, or a live Demo51 connection.", "Don't turn the workspace into a wall of equal KPI cards.", "Don't use gradients, decorative glass, glow shadows, or Unicode glyphs as an icon system.", "Don't make an entire table row act like a link when a semantic document button can name the destination."]
   }
 }

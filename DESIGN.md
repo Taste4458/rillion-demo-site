@@ -68,6 +68,7 @@ This is a synthetic product simulation, not a live tenant. The approved composit
 **Key Characteristics:**
 
 - Deep-green product frame with a sand work surface.
+- Official Rillion lime logo artwork on the deep-green rail, with clearspace kept free of controls and decoration.
 - White evidence surfaces with thin neutral rules and restrained elevation.
 - Lime reserved for primary actions, active navigation, and successful match states.
 - Persistent ownership: every workflow state names the next responsible role.
@@ -111,9 +112,13 @@ The palette is Rillion's own: grounded greens, warm sand, and precise light acce
 
 **The Evidence Rule.** Money and measurements use tabular numerals; labels remain short and literal.
 
+## Brand Mark
+
+Use the official `assets/rillion-logo-lime.svg` artwork without redrawing, recoloring, stretching, or adding effects. It appears lime on Rillion Green and retains clearspace of at least half the rendered logo height on all sides; the desktop rail uses additional lower space to separate branding from navigation. The image keeps its native aspect ratio and has an accessible `Rillion` alternative.
+
 ## Layout
 
-Desktop uses a fixed 216px navigation rail and a three-part workspace: task queue, dominant invoice document, and approval/evidence rail. The layout collapses at 1180px, moving the approval evidence below the primary work. At 820px it becomes one column with a 113px horizontal icon navigation header; the invoice precedes the queue and no horizontal page overflow is allowed.
+Desktop uses a fixed 236px navigation rail and a three-part workspace: task queue, dominant invoice document, and approval/evidence rail. Document detail uses three columns: source preview, indexed fields, and a stacked flow/lines/comments rail. The layout collapses at 1180px, moving secondary evidence below the primary work. At 820px it becomes one column with a horizontal navigation header; document detail becomes one column, its toolbar scrolls horizontally inside the viewport, and no horizontal page overflow is allowed. The 390px contract keeps the role selector, logo, document actions, and all primary content reachable.
 
 Spacing follows a compact 6/10/16/24px rhythm. Groups are tight inside evidence blocks and separated generously between workflow regions.
 
@@ -155,7 +160,25 @@ Cards use gently rounded 12px corners, controls use 8px, and status chips use co
 
 ### Navigation
 
-Desktop navigation is a vertical deep-green rail with authored line icons and the recognizable Demo51 hierarchy. Invoices and Reports are expandable groups; their child destinations use an indented dot treatment so To Verify, Invoice Log, AP performance, and Approval remain visibly subordinate. Active state uses lime fill and deep-green copy. Mobile navigation becomes a horizontal rail with accessible names and no badges.
+Desktop navigation is a vertical deep-green rail with the official lime Rillion logo, authored line icons, and the recognizable Demo51 hierarchy. Invoices and Reports are expandable groups; their child destinations use an indented dot treatment so To Verify, Invoice Log, AP performance, and Approval remain visibly subordinate. Active state uses lime fill and deep-green copy. Mobile navigation becomes a horizontal rail with accessible names and no badges.
+
+The upper-right Approval role selector is a native select control that lists all synthetic workflow roles. Choosing a role opens the Approval report and makes that role the active grouping lens; approvals remain nested beneath explicit role headings so responsibility is never inferred from a person name alone.
+
+### Role-Grouped Approval
+
+Approval metrics and status filters precede one section per selected role. Each section uses a deep-green heading, short ownership description, and lime count chip, followed by a standard decision table. “All roles” renders every group; a selected role renders only its group. Empty role/status intersections provide a named recovery message.
+
+### Documents Inbox
+
+The Demo51-inspired inbox uses five status tabs—Inbound, To be processed, Being checked, Processed, and Return to AP—plus native Company and Document type filters. The wide operational table remains horizontally scrollable. Document names are semantic buttons with authored underline, hover, and global focus treatment; rows themselves are not interactive controls.
+
+### Document Detail
+
+The detail workspace keeps the source document, indexed metadata, approval flow, document lines, and comments visible together. A deep-green toolbar contains navigation and simulated Save, Approve, Return to AP, and Send to email actions. On desktop the workspace is three columns; at 1180px the side stack moves below, and at 820px it becomes one column with the toolbar horizontally scrollable rather than widening the page.
+
+### Guided Tour
+
+The six-step tour follows the operational story from queue to invoice verification, invoice log, approvals, Payments, and Analytics. Payments is always step 5, immediately before Analytics at step 6, so the story closes with reporting only after the payment state is understood.
 
 ### Analytics
 
@@ -172,9 +195,11 @@ The signature component is a vertical sequence of completed, active, and future 
 - **Do** keep the active invoice, evidence, and accountable next role visible together.
 - **Do** label simulated data plainly and keep all prospect-facing content synthetic.
 - **Do** provide visible empty, disabled, hover, and keyboard-focus states.
+- **Do** keep Payments immediately before Analytics in the guided-tour sequence.
 
 ### Don't:
 
 - **Don't** use customer data, production credentials, or a live Demo51 connection.
 - **Don't** turn the workspace into a wall of equal KPI cards.
 - **Don't** use gradients, decorative glass, glow shadows, or Unicode glyphs as an icon system.
+- **Don't** make an entire table row act like a link when a semantic document button can name the destination.

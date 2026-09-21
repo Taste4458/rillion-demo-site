@@ -38,12 +38,18 @@ const navTree = [
   { id: 'analytics', label: 'Rillion Analytics', icon: 'analytics' }
 ];
 
+const approvalRoles = [
+  { id: 'ap-review', label: 'AP review', description: 'Validates coding, source evidence, and exceptions before approval.' },
+  { id: 'department-manager', label: 'Department manager', description: 'Confirms the purchase, business purpose, and cost ownership.' },
+  { id: 'finance-controller', label: 'Finance controller', description: 'Reviews financial control and final posting readiness.' }
+];
+
 const invoices = [
-  { id: 'INV-20481', vendor: 'Atlas Industrial Supply', amount: 12480, status: 'Manager approval', type: 'approval', po: '4500821', match: 98, due: 'Apr 30, 2026', owner: 'Alex Nguyen', confidence: 99, lines: [['Industrial gearbox — Model X200', 4, 2450], ['Mounting kit', 4, 320], ['Freight', 1, 1400]] },
-  { id: 'INV-77821', vendor: 'Precision Tools Co.', amount: 3265, status: 'Manager approval', type: 'approval', po: '4500838', match: 96, due: 'May 4, 2026', owner: 'Jordan Lee', confidence: 97, lines: [['CNC tooling set', 1, 3265]] },
-  { id: 'INV-99314', vendor: 'Summit Packaging', amount: 8750, status: 'PO exception', type: 'exception', po: '4500792', match: 72, due: 'May 7, 2026', owner: 'AP review', confidence: 84, lines: [['Protective packaging', 50, 175]] },
-  { id: 'INV-66102', vendor: 'Riverside Logistics', amount: 960, status: 'AP review', type: 'match', po: '4500841', match: 91, due: 'May 12, 2026', owner: 'Morgan Patel', confidence: 94, lines: [['Regional freight', 1, 960]] },
-  { id: 'INV-55277', vendor: 'Core Facility Services', amount: 4320, status: 'Manager approval', type: 'approval', po: '4500770', match: 100, due: 'May 15, 2026', owner: 'Alex Nguyen', confidence: 99, lines: [['Quarterly maintenance', 1, 4320]] }
+  { id: 'INV-20481', vendor: 'Atlas Industrial Supply', amount: 12480, status: 'Manager approval', type: 'approval', po: '4500821', match: 98, due: 'Apr 30, 2026', owner: 'Alex Nguyen', role: 'department-manager', confidence: 99, lines: [['Industrial gearbox — Model X200', 4, 2450], ['Mounting kit', 4, 320], ['Freight', 1, 1400]] },
+  { id: 'INV-77821', vendor: 'Precision Tools Co.', amount: 3265, status: 'Manager approval', type: 'approval', po: '4500838', match: 96, due: 'May 4, 2026', owner: 'Jordan Lee', role: 'department-manager', confidence: 97, lines: [['CNC tooling set', 1, 3265]] },
+  { id: 'INV-99314', vendor: 'Summit Packaging', amount: 8750, status: 'PO exception', type: 'exception', po: '4500792', match: 72, due: 'May 7, 2026', owner: 'AP review', role: 'ap-review', confidence: 84, lines: [['Protective packaging', 50, 175]] },
+  { id: 'INV-66102', vendor: 'Riverside Logistics', amount: 960, status: 'AP review', type: 'match', po: '4500841', match: 91, due: 'May 12, 2026', owner: 'Morgan Patel', role: 'finance-controller', confidence: 94, lines: [['Regional freight', 1, 960]] },
+  { id: 'INV-55277', vendor: 'Core Facility Services', amount: 4320, status: 'Manager approval', type: 'approval', po: '4500770', match: 100, due: 'May 15, 2026', owner: 'Alex Nguyen', role: 'department-manager', confidence: 99, lines: [['Quarterly maintenance', 1, 4320]] }
 ];
 
 const analyticsReports = [
@@ -54,16 +60,36 @@ const analyticsReports = [
   { title: 'AP cash flow', image: 'assets/analytics/ap-cash-flow.png', copy: 'See upcoming payment demand by date, currency, company, and invoice status to support cash planning.' }
 ];
 
+const documentTabs = [
+  ['inbound', 'Inbound'],
+  ['to-be-processed', 'To be processed'],
+  ['being-checked', 'Being checked'],
+  ['processed', 'Processed'],
+  ['return-to-ap', 'Return to AP']
+];
+
+const documents = [
+  { id: 'DOC-10', arrived: 'May 22, 2026', type: 'Check request', name: 'Community grant request', description: 'Donation request for Habitat for Humanity', created: 'May 22, 2026', createdBy: 'Sam Carter', lines: 1, status: 'being-checked', company: 'Northstar Manufacturing', responsibleRole: 'Finance controller', amount: 5000, documentNo: 'CR-2026-04827', requestCategory: 'Donation', payee: 'Indianapolis Habitat for Humanity' },
+  { id: 'DOC-11', arrived: 'May 22, 2026', type: 'Employee expense reimbursement', name: 'Lakeside trip', description: 'Hotel and travel reimbursement', created: 'May 22, 2026', createdBy: 'Sam Carter', lines: 1, status: 'being-checked', company: 'Northstar Manufacturing', responsibleRole: 'AP review', amount: 1840, documentNo: 'ER-2026-00518', requestCategory: 'Travel', payee: 'Taylor Brooks' },
+  { id: 'DOC-9', arrived: 'May 19, 2026', type: 'Check request', name: 'Community sponsorship', description: 'Annual neighborhood sponsorship', created: 'May 19, 2026', createdBy: 'Matt Wilson', lines: 1, status: 'being-checked', company: 'Northstar Manufacturing', responsibleRole: 'Department manager', amount: 2500, documentNo: 'CR-2026-04791', requestCategory: 'Sponsorship', payee: 'Riverton Community Fund' },
+  { id: 'DOC-12', arrived: 'May 23, 2026', type: 'Check request', name: 'Safety training deposit', description: 'Deposit for plant safety workshop', created: 'May 23, 2026', createdBy: 'Jordan Lee', lines: 2, status: 'inbound', company: 'Northstar Services', responsibleRole: 'AP review', amount: 3200, documentNo: 'CR-2026-04843', requestCategory: 'Training', payee: 'SafetyWorks Institute' },
+  { id: 'DOC-8', arrived: 'May 18, 2026', type: 'Employee expense reimbursement', name: 'Customer workshop', description: 'Travel and workshop materials', created: 'May 18, 2026', createdBy: 'Avery Morgan', lines: 4, status: 'to-be-processed', company: 'Northstar Services', responsibleRole: 'AP review', amount: 2765, documentNo: 'ER-2026-00492', requestCategory: 'Travel', payee: 'Avery Morgan' },
+  { id: 'DOC-7', arrived: 'May 16, 2026', type: 'Check request', name: 'Equipment certification', description: 'Annual equipment certification', created: 'May 16, 2026', createdBy: 'Alex Nguyen', lines: 1, status: 'processed', company: 'Northstar Manufacturing', responsibleRole: 'Finance controller', amount: 4125, documentNo: 'CR-2026-04762', requestCategory: 'Compliance', payee: 'Midwest Certification Group' },
+  { id: 'DOC-6', arrived: 'May 15, 2026', type: 'Check request', name: 'Facility permit', description: 'Permit requires coding correction', created: 'May 15, 2026', createdBy: 'Morgan Patel', lines: 1, status: 'return-to-ap', company: 'Northstar Manufacturing', responsibleRole: 'AP review', amount: 890, documentNo: 'CR-2026-04741', requestCategory: 'Permit', payee: 'City of Riverton' }
+];
+
 const state = {
   view: location.hash.slice(1) || 'dashboard', selected: invoices[0], approved: new Set(),
   expanded: new Set(['invoices', 'reports']), tour: -1, query: '', fieldsExpanded: false,
-  logFilter: 'all', approvalFilter: 'all', analytics: 0
+  logFilter: 'all', approvalFilter: 'all', roleFilter: 'all', analytics: 0,
+  documentTab: 'being-checked', documentCompany: 'all', documentType: 'all', selectedDocument: documents[0], documentOutcomes: new Map()
 };
 
 const workspace = document.querySelector('#workspace');
 const money = value => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
-const allViews = navTree.flatMap(item => item.children || [item]).map(item => item.id).filter(Boolean);
-const labels = Object.fromEntries(navTree.flatMap(item => item.children ? item.children.map(child => [child.id, child.label]) : [[item.id, item.label]]));
+const approvalRole = inv => approvalRoles.find(role => role.id === inv.role);
+const allViews = [...navTree.flatMap(item => item.children || [item]).map(item => item.id).filter(Boolean), 'document-detail'];
+const labels = { ...Object.fromEntries(navTree.flatMap(item => item.children ? item.children.map(child => [child.id, child.label]) : [[item.id, item.label]])), 'document-detail': 'Document detail' };
 
 function renderNav() {
   document.querySelector('#nav').innerHTML = navTree.map(item => {
@@ -81,9 +107,10 @@ function renderNav() {
 
 function navButton(item, child = false) {
   const active = state.view === item.id;
+  const badge = item.id === 'documents' ? documents.filter(doc => documentStatus(doc) === 'being-checked').length : item.badge;
   return `<button class="nav-item ${child ? 'nav-subitem' : ''} ${active ? 'active' : ''}" data-view="${item.id}" ${active ? 'aria-current="page"' : ''} aria-label="${item.label}">
     ${child ? '<span class="sub-dot" aria-hidden="true"></span>' : `<span class="icon">${icons[item.icon]}</span>`}
-    <span class="nav-label">${item.label}</span>${item.badge ? `<span class="nav-badge">${item.badge}</span>` : ''}
+    <span class="nav-label">${item.label}</span>${badge ? `<span class="nav-badge">${badge}</span>` : ''}
   </button>`;
 }
 
@@ -94,7 +121,7 @@ function status(inv) {
 
 function filtered() {
   const query = state.query.toLowerCase().trim();
-  return query ? invoices.filter(inv => `${inv.id} ${inv.vendor} ${inv.po} ${inv.owner}`.toLowerCase().includes(query)) : invoices;
+  return query ? invoices.filter(inv => `${inv.id} ${inv.vendor} ${inv.po} ${inv.owner} ${approvalRole(inv).label}`.toLowerCase().includes(query)) : invoices;
 }
 
 function queue() {
@@ -126,7 +153,7 @@ function relay(inv) {
   return `<div class="stack right-stack"><section class="panel"><div class="panel-head"><h3>Approval relay</h3><button class="link-button" data-view="approval-report">Approval report</button></div><div class="relay">
     <div class="relay-step done"><span class="relay-mark"></span><div><strong>Capture complete</strong><small>Invoice received and fields extracted</small></div></div>
     <div class="relay-step done"><span class="relay-mark"></span><div><strong>AP review complete</strong><small>Matched to PO ${inv.po}</small></div></div>
-    <div class="relay-step ${approved ? 'done' : 'active'}"><span class="relay-mark"></span><div><strong>${approved ? 'Manager approved' : 'Manager approval'}</strong><small>${approved ? 'Approved by Alex Nguyen' : 'Your approval is required'}</small></div></div>
+    <div class="relay-step ${approved ? 'done' : 'active'}"><span class="relay-mark"></span><div><strong>${approved ? `${approvalRole(inv).label} approved` : approvalRole(inv).label}</strong><small>${approved ? `Approved by ${inv.owner}` : `${inv.owner} · approval required`}</small></div></div>
     <div class="relay-step ${approved ? 'active' : ''}"><span class="relay-mark"></span><div><strong>Payment scheduled</strong><small>${approved ? 'Ready for ERP export' : 'Sent to ERP after approval'}</small></div></div>
     <button class="primary-button full" data-action="approve" ${approved ? 'disabled' : ''}>${approved ? 'Invoice approved' : 'Review and approve'}</button></div></section>
     <section class="panel"><div class="panel-head"><h3>Extracted fields</h3><button class="link-button" data-action="fields">${state.fieldsExpanded ? 'Show less' : 'View all'}</button></div><div class="evidence">${fields.map(([label, value]) => `<div class="evidence-row"><span>${label}</span><strong>${value}</strong></div>`).join('')}</div></section>
@@ -148,11 +175,47 @@ function invoiceLog() {
   workspace.innerHTML = pageIntro('Invoice Log', 'Follow every captured invoice from AP review through approval and transfer.', '<button class="primary-button" data-view="to-verify">Open To Verify</button>') + `<div class="filter-tabs" aria-label="Filter invoice log">${filters.map(([id, label]) => `<button data-log-filter="${id}" aria-pressed="${state.logFilter === id}">${label}</button>`).join('')}</div><section class="panel table-wrap">${rows ? dataTable(['Invoice', 'Vendor', 'Amount', 'Purchase order', 'Owner', 'Status'], rows) : emptyState('No matching invoices', 'Clear the search or choose another status.')}</section>`;
 }
 
+function documentStatus(doc) { const outcome = state.documentOutcomes.get(doc.id); return outcome === 'approved' ? 'processed' : outcome || doc.status; }
+function documentStatusLabel(value) { return documentTabs.find(([id]) => id === value)?.[1] || (value === 'approved' ? 'Approved' : value); }
+
+function documentsInbox() {
+  const companies = [...new Set(documents.map(doc => doc.company))];
+  const types = [...new Set(documents.map(doc => doc.type))];
+  const matches = documents.filter(doc => documentStatus(doc) === state.documentTab && (state.documentCompany === 'all' || doc.company === state.documentCompany) && (state.documentType === 'all' || doc.type === state.documentType));
+  const tabs = documentTabs.map(([id, label]) => {
+    const count = documents.filter(doc => documentStatus(doc) === id).length;
+    return `<button data-document-tab="${id}" aria-pressed="${state.documentTab === id}"><span class="document-tab-mark" aria-hidden="true"></span>${label}<small>${count}</small></button>`;
+  }).join('');
+  const rows = matches.map(doc => `<tr data-document-row><td><span class="document-state ${documentStatus(doc)}">${documentStatusLabel(documentStatus(doc))}</span></td><td>${doc.arrived}</td><td>${doc.type}</td><td><button class="table-link" data-document="${doc.id}" aria-label="Open ${doc.name}">${doc.name}</button></td><td>${doc.description}</td><td>${doc.created}</td><td>${doc.createdBy}</td><td>${doc.lines}</td><td>${doc.id.replace('DOC-', '')}</td></tr>`).join('');
+  workspace.innerHTML = pageIntro('Documents', 'Route check requests, reimbursements, and supporting records through role-based review.', '<span class="simulation-label">Synthetic document workspace</span>') + `<section class="panel document-inbox"><div class="document-controls"><div class="document-tabs" aria-label="Document status">${tabs}</div><div class="document-filters"><label>Company<select id="document-company"><option value="all">All companies</option>${companies.map(company => `<option value="${company}" ${state.documentCompany === company ? 'selected' : ''}>${company}</option>`).join('')}</select></label><label>Document type<select id="document-type"><option value="all">All document types</option>${types.map(type => `<option value="${type}" ${state.documentType === type ? 'selected' : ''}>${type}</option>`).join('')}</select></label></div></div><div class="table-wrap">${rows ? dataTable(['Status', 'Arrived', 'Document type', 'Name', 'Description', 'Created', 'Created by', 'Lines', 'Document ID'], rows) : emptyState('No documents in this view', 'Choose another status, company, or document type.')}</div></section>`;
+}
+
+function documentDetail() {
+  const doc = state.selectedDocument;
+  const outcome = state.documentOutcomes.get(doc.id);
+  const currentStatus = documentStatus(doc);
+  const complete = currentStatus === 'processed';
+  const index = documents.findIndex(item => item.id === doc.id);
+  const statusCopy = outcome === 'approved' ? '<span class="status paid">Approved</span>' : `<span class="status ${currentStatus === 'return-to-ap' ? 'exception' : complete ? 'match' : 'approval'}">${documentStatusLabel(currentStatus)}</span>`;
+  workspace.innerHTML = `<div class="document-toolbar"><button data-view="documents">← Documents</button><span>${index + 1} of ${documents.length}</span><button data-action="document-prev" ${index === 0 ? 'disabled' : ''}>Previous</button><button data-action="document-next" ${index === documents.length - 1 ? 'disabled' : ''}>Next</button><button data-action="document-save">Save in simulation</button><button class="document-approve" data-action="document-approve" ${complete ? 'disabled' : ''}>${outcome === 'approved' ? 'Approved' : complete ? 'Processed' : 'Approve'}</button><button data-action="document-return">Return to AP</button><button data-action="document-email">Send to email</button></div>
+    <div class="document-detail-grid">
+      <section class="panel document-preview"><div class="document-pane-title">Document image</div><div class="document-paper"><div class="request-brand"><strong>Northstar Manufacturing</strong><span>${doc.documentNo}</span></div><h2>${doc.type}</h2><p class="request-subtitle">Non-PO payment authorization · synthetic demonstration record</p><div class="request-grid"><div><span>Document number</span><strong>${doc.documentNo}</strong></div><div><span>Submission date</span><strong>${doc.created}</strong></div><div><span>Requested pay date</span><strong>June 5, 2026</strong></div><div><span>Request category</span><strong>${doc.requestCategory}</strong></div></div><h3>Requester and entity</h3><div class="request-grid"><div><span>Requester name</span><strong>${doc.createdBy}</strong></div><div><span>Department</span><strong>Procurement</strong></div><div><span>Company</span><strong>${doc.company}</strong></div><div><span>Responsible role</span><strong>${doc.responsibleRole}</strong></div></div><h3>Payee</h3><div class="request-grid"><div><span>Payee name</span><strong>${doc.payee}</strong></div><div><span>Payment method</span><strong>Electronic check</strong></div></div><div class="request-total"><span>Net amount payable</span><strong>${money(doc.amount)}</strong></div></div></section>
+      <section class="panel document-fields"><div class="document-pane-title">Document</div><dl><dt>Document ID</dt><dd>${doc.id.replace('DOC-', '')}</dd><dt>Document type</dt><dd>${doc.type}</dd><dt>Company</dt><dd>${doc.company}</dd><dt>Name</dt><dd>${doc.name}</dd><dt>Description</dt><dd>${doc.description}</dd><dt>Created by user</dt><dd>${doc.createdBy}</dd><dt>Responsible role</dt><dd>${doc.responsibleRole}</dd><dt>Status</dt><dd>${statusCopy}</dd></dl><h3>Index</h3><div class="document-index">Requester and entity<br>Payee<br>Payment detail</div></section>
+      <div class="document-side-stack"><section class="panel document-flow"><div class="document-pane-title">Flow</div><div class="flow-role done">AP review</div><span aria-hidden="true">↓</span><div class="flow-role ${complete ? 'done' : 'active'}">${doc.responsibleRole}</div></section><section class="panel"><div class="document-pane-title">Document lines</div><div class="table-wrap">${dataTable(['Approved', 'Registered', 'Description', 'Filename'], `<tr><td>${complete ? 'Yes' : 'Waiting'}</td><td>${doc.responsibleRole}</td><td>${doc.name}</td><td>${doc.documentNo}.pdf</td></tr>`)}</div></section><section class="panel"><div class="document-pane-title">Comments</div><div class="empty compact"><p>No comments yet. This synthetic record is ready for review.</p></div></section></div>
+    </div>`;
+}
+
 function approvalReport() {
   const filters = [['all', 'All decisions'], ['waiting', 'Waiting'], ['approved', 'Approved']];
   const matches = invoices.filter(inv => state.approvalFilter === 'all' || (state.approvalFilter === 'approved' ? state.approved.has(inv.id) : !state.approved.has(inv.id)));
-  const rows = matches.map(inv => `<tr data-invoice="${inv.id}" tabindex="0" role="link" aria-label="Open ${inv.id} assigned to ${inv.owner}"><td>${inv.owner}</td><td><strong>${inv.id}</strong><small>${inv.vendor}</small></td><td>${money(inv.amount)}</td><td>${state.approved.has(inv.id) ? 'Completed today' : inv.due}</td><td>${state.approved.has(inv.id) ? '<span class="status paid">Approved</span>' : '<span class="status approval">Waiting</span>'}</td></tr>`).join('');
-  workspace.innerHTML = pageIntro('Approval', 'See who owns each decision, how long approvals take, and which invoices need attention.', '<button class="primary-button" data-action="export">Download synthetic CSV</button>') + `<div class="approval-overview"><section class="panel approval-metric"><strong>1.8 days</strong><span>average approval cycle</span></section><section class="panel approval-metric"><strong>92%</strong><span>approved on time</span></section><section class="panel approval-metric"><strong>3</strong><span>waiting on managers</span></section></div><div class="filter-tabs" aria-label="Filter approval report">${filters.map(([id, label]) => `<button data-approval-filter="${id}" aria-pressed="${state.approvalFilter === id}">${label}</button>`).join('')}</div><section class="panel table-wrap">${dataTable(['Approver', 'Invoice', 'Amount', 'Decision date', 'Status'], rows)}</section>`;
+  const roles = approvalRoles.filter(role => state.roleFilter === 'all' || role.id === state.roleFilter);
+  const waiting = invoices.filter(inv => !state.approved.has(inv.id) && (state.roleFilter === 'all' || inv.role === state.roleFilter)).length;
+  const groups = roles.map(role => {
+    const decisions = matches.filter(inv => inv.role === role.id);
+    const rows = decisions.map(inv => `<tr data-invoice="${inv.id}" tabindex="0" role="link" aria-label="Open ${inv.id} assigned to ${inv.owner}"><td>${inv.owner}</td><td><strong>${inv.id}</strong><small>${inv.vendor}</small></td><td>${money(inv.amount)}</td><td>${state.approved.has(inv.id) ? 'Completed today' : inv.due}</td><td>${state.approved.has(inv.id) ? '<span class="status paid">Approved</span>' : '<span class="status approval">Waiting</span>'}</td></tr>`).join('');
+    return `<section class="panel role-group"><div class="role-group-head"><div><h3>${role.label}</h3><p>${role.description}</p></div><span>${decisions.length} ${decisions.length === 1 ? 'approval' : 'approvals'}</span></div>${rows ? `<div class="table-wrap">${dataTable(['Approver', 'Invoice', 'Amount', 'Decision date', 'Status'], rows)}</div>` : emptyState(`No ${state.approvalFilter === 'approved' ? 'approved' : 'waiting'} decisions`, 'Choose another status or approval role.')}</section>`;
+  }).join('');
+  workspace.innerHTML = pageIntro('Approval', 'Choose a role to see its approval work, decision owner, due date, and status.', '<button class="primary-button" data-action="export">Download synthetic CSV</button>') + `<div class="approval-overview"><section class="panel approval-metric"><strong>1.8 days</strong><span>average approval cycle</span></section><section class="panel approval-metric"><strong>92%</strong><span>approved on time</span></section><section class="panel approval-metric"><strong>${waiting}</strong><span>waiting in selected roles</span></section></div><div class="filter-tabs" aria-label="Filter approval report">${filters.map(([id, label]) => `<button data-approval-filter="${id}" aria-pressed="${state.approvalFilter === id}">${label}</button>`).join('')}</div><div class="role-groups">${groups}</div>`;
 }
 
 function analytics() {
@@ -179,7 +242,6 @@ function overviewPage(kind) {
   const pages = {
     profile: ['My profile', 'Your demo identity and approval authority.', [['Role', 'AP Manager'], ['Company', 'Northstar Manufacturing'], ['Approval limit', '$50,000'], ['Language', 'English']]],
     budget: ['Budget requests', 'Plan and approve spend before it becomes a requisition.', [['Open requests', '4'], ['Awaiting your approval', '2'], ['Approved this month', '11'], ['Available budget', '$184,200']]],
-    documents: ['Documents', 'Find the records attached to invoices, contracts, and approvals.', [['Invoice documents', '128'], ['Purchase orders', '96'], ['Contracts', '8'], ['Other files', '3']]],
     payments: ['Payments', 'Monitor approved invoices as they move to scheduled payment.', [['Ready for payment', '14'], ['Scheduled this week', '$84,310'], ['On hold', '2'], ['Exported to ERP', '66']]],
     administration: ['Administration', 'A representative view of configuration ownership.', [['Companies', '3 active'], ['Users', '42 active'], ['Approval roles', '12 configured'], ['Integrations', 'ERP connected']]],
     system: ['System', 'A read-only overview of the synthetic demo environment.', [['Environment', 'Interactive simulation'], ['Data source', 'Synthetic browser data'], ['Authentication', 'Not required'], ['External writes', 'Disabled']]]
@@ -195,10 +257,13 @@ function emptyState(title, copy) { return `<div class="empty"><h3>${title}</h3><
 function render() {
   if (!allViews.includes(state.view)) state.view = 'dashboard';
   renderNav();
+  document.querySelector('#role-select').value = state.roleFilter;
   document.querySelector('#page-title').textContent = state.view === 'dashboard' ? 'Good morning, Alex' : labels[state.view] || 'Rillion';
   if (state.view === 'dashboard') dashboard();
   else if (state.view === 'to-verify') toVerify();
   else if (state.view === 'invoice-log') invoiceLog();
+  else if (state.view === 'documents') documentsInbox();
+  else if (state.view === 'document-detail') documentDetail();
   else if (state.view === 'approval-report') approvalReport();
   else if (state.view === 'analytics') analytics();
   else if (state.view === 'reports') reports();
@@ -218,6 +283,7 @@ const tours = [
   ['Verify captured invoices', 'To Verify keeps extracted fields and source evidence together before an invoice enters the log.', 'to-verify'],
   ['Follow the Invoice Log', 'The log keeps status, ownership, and purchasing evidence visible from receipt through transfer.', 'invoice-log'],
   ['Measure approvals', 'The Approval report shows who owns each decision and how quickly work moves.', 'approval-report'],
+  ['Track payments', 'Payments keeps approved invoices visible as they move from posting readiness to scheduled payment and ERP export.', 'payments'],
   ['Explore Analytics', 'Move through five operational dashboards covering automation, aging, spend, and cash flow.', 'analytics']
 ];
 
@@ -258,6 +324,8 @@ document.addEventListener('click', event => {
   const group = event.target.closest('[data-nav-group]')?.dataset.navGroup;
   const view = event.target.closest('[data-view]')?.dataset.view;
   const invoice = event.target.closest('[data-invoice]')?.dataset.invoice;
+  const documentId = event.target.closest('[data-document]')?.dataset.document;
+  const documentTab = event.target.closest('[data-document-tab]')?.dataset.documentTab;
   const logFilter = event.target.closest('[data-log-filter]')?.dataset.logFilter;
   const approvalFilter = event.target.closest('[data-approval-filter]')?.dataset.approvalFilter;
   const analyticsIndex = event.target.closest('[data-analytics]')?.dataset.analytics;
@@ -265,18 +333,26 @@ document.addEventListener('click', event => {
   if (group) { state.expanded.has(group) ? state.expanded.delete(group) : state.expanded.add(group); renderNav(); return; }
   if (view) { navigate(view); return; }
   if (invoice) { openInvoice(invoice); return; }
+  if (documentId) { state.selectedDocument = documents.find(doc => doc.id === documentId) || state.selectedDocument; navigate('document-detail'); return; }
+  if (documentTab) { state.documentTab = documentTab; documentsInbox(); return; }
   if (logFilter) { state.logFilter = logFilter; invoiceLog(); return; }
   if (approvalFilter) { state.approvalFilter = approvalFilter; approvalReport(); return; }
   if (analyticsIndex !== undefined) { state.analytics = Number(analyticsIndex); analytics(); return; }
   if (action === 'approve') { state.approved.add(state.selected.id); render(); toast(`${state.selected.id} approved and ready for payment`); }
   if (action === 'fields') { state.fieldsExpanded = !state.fieldsExpanded; render(); }
-  if (action === 'reset') { state.approved.clear(); state.selected = invoices[0]; state.fieldsExpanded = false; state.logFilter = 'all'; state.approvalFilter = 'all'; state.analytics = 0; state.view = 'dashboard'; state.query = ''; document.querySelector('#search').value = ''; history.replaceState(null, '', '#dashboard'); render(); toast('Demo reset'); }
+  if (action === 'reset') { state.approved.clear(); state.documentOutcomes.clear(); state.selected = invoices[0]; state.selectedDocument = documents[0]; state.fieldsExpanded = false; state.logFilter = 'all'; state.approvalFilter = 'all'; state.roleFilter = 'all'; state.documentTab = 'being-checked'; state.documentCompany = 'all'; state.documentType = 'all'; state.analytics = 0; state.view = 'dashboard'; state.query = ''; document.querySelector('#search').value = ''; history.replaceState(null, '', '#dashboard'); render(); toast('Demo reset'); }
   if (action === 'tour') { state.tour = 0; showTour(); }
   if (action === 'tour-next') { state.tour++; if (state.tour >= tours.length) { document.querySelector('#tour').hidden = true; state.tour = -1; toast('Tour complete — explore anything'); } else showTour(); }
   if (action === 'tour-close') { document.querySelector('#tour').hidden = true; state.tour = -1; }
   if (action === 'export') downloadReport();
   if (action === 'analytics-prev' && state.analytics > 0) { state.analytics--; analytics(); }
   if (action === 'analytics-next') { state.analytics = (state.analytics + 1) % analyticsReports.length; analytics(); }
+  if (action === 'document-prev') { const index = documents.findIndex(doc => doc.id === state.selectedDocument.id); if (index > 0) { state.selectedDocument = documents[index - 1]; documentDetail(); } }
+  if (action === 'document-next') { const index = documents.findIndex(doc => doc.id === state.selectedDocument.id); if (index < documents.length - 1) { state.selectedDocument = documents[index + 1]; documentDetail(); } }
+  if (action === 'document-save') toast(`${state.selectedDocument.name} saved in this simulation`);
+  if (action === 'document-approve') { state.documentOutcomes.set(state.selectedDocument.id, 'approved'); renderNav(); documentDetail(); toast(`${state.selectedDocument.name} approved`); }
+  if (action === 'document-return') { state.documentOutcomes.set(state.selectedDocument.id, 'return-to-ap'); renderNav(); documentDetail(); toast(`${state.selectedDocument.name} returned to AP`); }
+  if (action === 'document-email') toast('Synthetic email prepared — nothing was sent');
 });
 
 document.addEventListener('keydown', event => {
@@ -288,6 +364,16 @@ document.querySelector('#search').addEventListener('input', event => {
   state.query = event.target.value;
   if (!['dashboard', 'invoice-log', 'to-verify', 'tasks'].includes(state.view)) state.view = 'invoice-log';
   render();
+});
+
+document.querySelector('#role-select').addEventListener('change', event => {
+  state.roleFilter = event.target.value;
+  navigate('approval-report');
+});
+
+document.addEventListener('change', event => {
+  if (event.target.matches('#document-company')) { state.documentCompany = event.target.value; documentsInbox(); }
+  if (event.target.matches('#document-type')) { state.documentType = event.target.value; documentsInbox(); }
 });
 
 window.addEventListener('hashchange', () => {

@@ -36,6 +36,9 @@ The source reference is the authenticated Demo51 environment and its invoice, re
 - It must identify itself as a product simulation rather than a live Rillion tenant.
 - The navigation mirrors Demo51's primary hierarchy while keeping secondary areas representative and read-only.
 - Invoices includes interactive To Verify and Invoice Log branches; Reports includes Approval; Rillion Analytics includes five report click-throughs.
+- A persistent Approval role selector lists the synthetic workflow roles and opens each role's approvals as grouped work beneath the role heading.
+- Documents includes a status-tabbed inbox and a synthetic document-detail workspace with preview, metadata, flow, lines, comments, and simulated approval actions.
+- The guided tour visits Payments immediately before Rillion Analytics.
 
 ## Brand Commitments
 
@@ -45,6 +48,7 @@ Use the current Rillion identity and product terminology. Preserve the friendly-
 
 - Authenticated read-only access to Demo51 through the Demo51 MCP and Ego browser.
 - Current Rillion brand guidelines, logo assets, font files, UI color tokens, and interaction rules.
+- The sidebar uses the official lime Rillion logo asset on the deep-green product frame.
 - Prospect-safe Rillion Analytics reference screens supplied in `User stories Analytics&BI.pptx`.
 - No public performance claims, customer endorsements, or production analytics are authorized for this artifact.
 

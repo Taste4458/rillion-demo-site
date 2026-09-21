@@ -11,7 +11,7 @@
   <a class="skip-link" href="#workspace">Skip to workspace</a>
   <div class="app-shell">
     <aside class="sidebar" aria-label="Primary navigation">
-      <a class="wordmark" href="#dashboard" aria-label="Rillion demo home">rillion<span>.</span></a>
+      <a class="wordmark" href="#dashboard" aria-label="Rillion demo home"><img src="assets/rillion-logo-lime.svg" alt="Rillion" width="962" height="340"></a>
       <nav id="nav"></nav>
       <div class="sidebar-foot">
         <button class="nav-item" data-action="tour"><span class="icon"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M9.8 9a2.4 2.4 0 1 1 3.6 2.1c-.9.5-1.4 1.1-1.4 2.2M12 17h.01"></path></svg></span><span>Guided tour</span></button>
@@ -31,7 +31,18 @@
           <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"></circle><path d="m16 16 4 4"></path></svg>
           <input id="search" type="search" placeholder="Search invoices, vendors, PO numbers…" autocomplete="off">
         </label>
-        <button class="quiet-button" data-action="tour">Explore the workflow</button>
+        <div class="topbar-actions">
+          <label class="role-switcher" for="role-select">
+            <span>Approval role</span>
+            <select id="role-select">
+              <option value="all">All roles · 5</option>
+              <option value="ap-review">AP review · 1</option>
+              <option value="department-manager">Department manager · 3</option>
+              <option value="finance-controller">Finance controller · 1</option>
+            </select>
+          </label>
+          <button class="quiet-button" data-action="tour">Explore the workflow</button>
+        </div>
       </header>
 
       <main id="workspace" tabindex="-1"></main>
