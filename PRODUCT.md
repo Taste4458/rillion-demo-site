@@ -32,9 +32,10 @@ The source reference is the authenticated Demo51 environment and its invoice, re
 - Synthetic company, vendor, invoice, purchase-order, contract, and employee data only.
 - Guided tour and free exploration with deterministic reset.
 - Representative interactions are simulated locally in the browser.
-- No production APIs, credentials, customer data, lead forms, analytics, or remote writes.
+- No production APIs, credentials, customer data, lead forms, behavioral tracking, telemetry, or remote writes.
 - It must identify itself as a product simulation rather than a live Rillion tenant.
-- Initial scope models the core prospect story rather than every Demo51 administration screen.
+- The navigation mirrors Demo51's primary hierarchy while keeping secondary areas representative and read-only.
+- Invoices includes interactive To Verify and Invoice Log branches; Reports includes Approval; Rillion Analytics includes five report click-throughs.
 
 ## Brand Commitments
 
@@ -44,6 +45,7 @@ Use the current Rillion identity and product terminology. Preserve the friendly-
 
 - Authenticated read-only access to Demo51 through the Demo51 MCP and Ego browser.
 - Current Rillion brand guidelines, logo assets, font files, UI color tokens, and interaction rules.
+- Prospect-safe Rillion Analytics reference screens supplied in `User stories Analytics&BI.pptx`.
 - No public performance claims, customer endorsements, or production analytics are authorized for this artifact.
 
 ## Product Principles

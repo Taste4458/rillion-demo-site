@@ -1,0 +1,11 @@
+{
+  "source": "User stories Analytics&BI.pptx",
+  "usage": "Prospect-safe Rillion Analytics reference screens supplied by the user",
+  "assets": {
+    "invoice-log.png": 4,
+    "payables-aging.png": 10,
+    "spend-report.png": 24,
+    "ap-cash-flow.png": 28,
+    "executive-dashboard.png": 33
+  }
+}

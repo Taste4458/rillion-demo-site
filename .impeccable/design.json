@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-21T17:27:41Z",
+  "generatedAt": "2026-09-21T18:31:40Z",
   "title": "Design System: Rillion Interactive Demo",
   "extensions": {
     "colorMeta": {
@@ -30,7 +30,7 @@
       "kind": "button",
       "refersTo": "button-primary",
       "description": "The single current workflow action.",
-      "html": "<button class=\"ds-btn-primary\">REVIEW AND APPROVE</button>",
+      "html": "<button class=\"ds-btn-primary\">Review and approve</button>",
       "css": ".ds-btn-primary{background:#C9F0AB;color:#0F3732;padding:10px 15px;border:1px solid #B5DD98;border-radius:8px;font:700 15px/1.45 Gellix,Arial,sans-serif}.ds-btn-primary:hover{background:#B7E796}.ds-btn-primary:focus-visible{outline:3px solid #2F54EB;outline-offset:3px}"
     },
     {
@@ -44,7 +44,7 @@
       "name": "Match Chip",
       "kind": "chip",
       "description": "Verified positive match status.",
-      "html": "<span class=\"ds-chip\">MATCH 98%</span>",
+      "html": "<span class=\"ds-chip\">Match 98%</span>",
       "css": ".ds-chip{display:inline-flex;background:#C9F0AB;color:#0F3732;padding:3px 7px;border-radius:5px;font:600 11px/1.2 Gellix,Arial,sans-serif}"
     },
     {
@@ -61,6 +61,20 @@
       "description": "Current product area in the deep-green frame.",
       "html": "<button class=\"ds-nav-active\">Invoices</button>",
       "css": ".ds-nav-active{background:#C9F0AB;color:#0F3732;padding:10px 12px;border:0;border-radius:8px;font:600 15px/1.45 Gellix,Arial,sans-serif}.ds-nav-active:focus-visible{outline:3px solid #2F54EB;outline-offset:3px}"
+    },
+    {
+      "name": "Grouped Navigation",
+      "kind": "nav",
+      "description": "Expandable Demo51-aligned product groups with visibly subordinate destinations.",
+      "html": "<nav class=\"ds-nav-group\" aria-label=\"Invoice navigation\"><button class=\"ds-nav-parent\" aria-expanded=\"true\"><svg aria-hidden=\"true\" viewBox=\"0 0 24 24\"><path d=\"M6 3h12v18H6Zm3 5h6M9 12h6M9 16h4\"></path></svg><span>Invoices</span><b>27</b><i aria-hidden=\"true\"></i></button><div class=\"ds-nav-children\"><button class=\"ds-nav-child ds-nav-current\" aria-current=\"page\"><span aria-hidden=\"true\"></span>To verify<b>5</b></button><button class=\"ds-nav-child\"><span aria-hidden=\"true\"></span>Invoice log<b>128</b></button></div></nav>",
+      "css": ".ds-nav-group{width:236px;padding:8px 12px;background:#0F3732;color:#E7EEE9;font:400 13px/1.45 Gellix,Arial,sans-serif}.ds-nav-group button{width:100%;display:flex;align-items:center;gap:10px;padding:7px 10px;border:0;border-radius:6px;background:transparent;color:inherit;text-align:left;cursor:pointer}.ds-nav-group button:hover{background:rgba(255,255,255,.08)}.ds-nav-group button:focus-visible{outline:3px solid #2F54EB;outline-offset:3px}.ds-nav-parent{color:#C9F0AB!important;background:rgba(201,240,171,.08)!important}.ds-nav-parent svg{width:24px;height:24px;padding:4px;border:1px solid currentColor;border-radius:7px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.ds-nav-group b{margin-left:auto;min-width:24px;padding:2px 7px;border-radius:12px;background:#C9F0AB;color:#0F3732;font-size:12px;font-weight:400;text-align:center}.ds-nav-parent i{width:7px;height:7px;margin-left:2px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg) translateY(-2px)}.ds-nav-children{display:grid;gap:2px}.ds-nav-child{padding-left:48px!important}.ds-nav-child>span{width:5px;height:5px;border-radius:50%;background:currentColor}.ds-nav-child.ds-nav-current{background:#C9F0AB;color:#0F3732;font-weight:600}.ds-nav-current b{background:#0F3732;color:#fff}@media(max-width:520px){.ds-nav-group{width:100%;display:flex;overflow:auto}.ds-nav-children{display:contents}.ds-nav-parent,.ds-nav-child{min-width:max-content}.ds-nav-parent b,.ds-nav-parent i{display:none}.ds-nav-child{width:auto!important;padding:8px 11px!important}.ds-nav-child>span{display:none}}"
+    },
+    {
+      "name": "Analytics Report Stage",
+      "kind": "custom",
+      "description": "Compact report index beside one dominant, evidence-rich Analytics reference screen.",
+      "html": "<section class=\"ds-analytics\"><nav class=\"ds-report-index\" aria-label=\"Analytics reports\"><button aria-current=\"page\"><strong>Executive dashboard</strong><small>Viewing now</small></button><button><strong>Invoice log</strong><small>Open report</small></button><button><strong>Payables aging</strong><small>Open report</small></button><button><strong>Spend report</strong><small>Open report</small></button><button><strong>AP cash flow</strong><small>Open report</small></button></nav><article class=\"ds-report-stage\"><header><div><h2>Executive dashboard</h2><p>Track invoice volume, processing time, successful flows, coding automation, and matched spend over time.</p></div><div class=\"ds-report-actions\"><button>Previous</button><button>Next report</button></div></header><div class=\"ds-report-preview\"><div class=\"ds-preview-kpis\"><span><strong>94%</strong>Touchless match</span><span><strong>1.8 days</strong>Approval cycle</span><span><strong>3.2%</strong>Exception rate</span></div><div class=\"ds-preview-chart\" aria-label=\"Synthetic invoice volume chart\"><i></i><i></i><i></i><i></i><i></i></div></div><p class=\"ds-reference-note\">Reference screen from Rillion Analytics · demonstration data</p></article></section>",
+      "css": ".ds-analytics{display:grid;grid-template-columns:190px minmax(420px,1fr);gap:14px;align-items:start;color:#313730;font:400 15px/1.45 Gellix,Arial,sans-serif}.ds-report-index,.ds-report-stage{overflow:hidden;background:#fff;border:1px solid #CFD6CD;border-radius:12px;box-shadow:0 5px 16px rgba(24,28,23,.09)}.ds-report-index{display:grid}.ds-report-index button{display:grid;gap:2px;padding:14px 16px;border:0;border-bottom:1px solid #E6EAE4;background:#fff;color:#313730;text-align:left;cursor:pointer}.ds-report-index button:last-child{border-bottom:0}.ds-report-index button:hover{background:#FAF6EC}.ds-report-index button:focus-visible,.ds-report-actions button:focus-visible{outline:3px solid #2F54EB;outline-offset:-3px}.ds-report-index button[aria-current=\"page\"]{background:#0F3732;color:#F6F1DC}.ds-report-index strong{font-weight:700}.ds-report-index small{color:#626961}.ds-report-index button[aria-current=\"page\"] small{color:rgba(246,241,220,.72)}.ds-report-stage>header{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;padding:18px 20px;border-bottom:1px solid #CFD6CD}.ds-report-stage h2{margin:0;font-size:23px;line-height:1.2;letter-spacing:-.025em}.ds-report-stage header p{max-width:54ch;margin:5px 0 0;color:#626961}.ds-report-actions{display:flex;gap:8px}.ds-report-actions button{min-height:36px;padding:7px 12px;border:1px solid #CFD6CD;border-radius:7px;background:#fff;color:#0F3732;font-weight:600;white-space:nowrap;cursor:pointer}.ds-report-actions button:last-child{border-color:#B5DD98;background:#C9F0AB}.ds-report-preview{padding:18px;background:#ECF0EB}.ds-preview-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.ds-preview-kpis span{padding:12px;border:1px solid #CFD6CD;border-radius:8px;background:#fff;color:#626961;font-size:12px}.ds-preview-kpis strong{display:block;color:#0F3732;font-size:20px;font-variant-numeric:tabular-nums}.ds-preview-chart{height:160px;display:flex;align-items:end;gap:16px;margin-top:12px;padding:18px 18px 0;border:1px solid #CFD6CD;background:#fff}.ds-preview-chart i{flex:1;height:42%;border-radius:6px 6px 0 0;background:#1D5249}.ds-preview-chart i:nth-child(2){height:61%}.ds-preview-chart i:nth-child(3){height:55%;background:#D5CBFB}.ds-preview-chart i:nth-child(4){height:79%}.ds-preview-chart i:nth-child(5){height:92%;background:#C9F0AB}.ds-reference-note{margin:0;padding:0 20px 15px;color:#626961;font-size:12px}@media(max-width:700px){.ds-analytics{grid-template-columns:minmax(0,1fr)}.ds-report-index{display:flex;overflow:auto}.ds-report-index button{min-width:150px;border-right:1px solid #E6EAE4;border-bottom:0}.ds-report-stage>header{display:grid}.ds-report-actions{justify-content:end}.ds-preview-kpis{grid-template-columns:1fr}}"
     }
   ],
   "narrative": {

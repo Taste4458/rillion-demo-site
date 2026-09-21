@@ -155,7 +155,11 @@ Cards use gently rounded 12px corners, controls use 8px, and status chips use co
 
 ### Navigation
 
-Desktop navigation is a vertical deep-green rail with authored line icons. Active state uses lime fill and deep-green copy. Mobile navigation becomes a horizontal, icon-only bar with accessible names and no badges.
+Desktop navigation is a vertical deep-green rail with authored line icons and the recognizable Demo51 hierarchy. Invoices and Reports are expandable groups; their child destinations use an indented dot treatment so To Verify, Invoice Log, AP performance, and Approval remain visibly subordinate. Active state uses lime fill and deep-green copy. Mobile navigation becomes a horizontal rail with accessible names and no badges.
+
+### Analytics
+
+Rillion Analytics uses a compact report index beside one dominant reference screen. Five supplied product screenshots—Executive dashboard, Invoice log, Payables aging, Spend report, and AP cash flow—are framed as demonstration data and navigated with explicit report buttons plus previous/next controls. The screenshots remain evidence; the surrounding shell supplies hierarchy, context, keyboard operation, and the public-simulation boundary.
 
 ### Approval Relay
 
