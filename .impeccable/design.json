@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-21T17:27:41Z",
+  "title": "Design System: Rillion Interactive Demo",
+  "extensions": {
+    "colorMeta": {
+      "primary-green": {"role": "primary", "displayName": "Rillion Green", "canonical": "#0F3732", "tonalRamp": ["#061714", "#0F3732", "#1D5249", "#3E756C", "#6C9A91", "#9BC0B8", "#CBE1DC", "#EEF6F3"]},
+      "lime": {"role": "secondary", "displayName": "Rillion Lime", "canonical": "#C9F0AB", "tonalRamp": ["#1E3211", "#3D6424", "#63963E", "#8BC85F", "#B1E887", "#C9F0AB", "#E1F7CF", "#F4FCEB"]},
+      "sand": {"role": "neutral", "displayName": "Rillion Sand", "canonical": "#F6F1DC", "tonalRamp": ["#28251B", "#4E4938", "#77705A", "#9F987D", "#C5BEA2", "#DDD7BD", "#F6F1DC", "#FCFAF0"]},
+      "lavender": {"role": "tertiary", "displayName": "Approval Lavender", "canonical": "#D5CBFB", "tonalRamp": ["#211B3A", "#463A75", "#6D5CB1", "#9382DC", "#B5A7EF", "#D5CBFB", "#E8E2FE", "#F7F4FF"]}
+    },
+    "typographyMeta": {
+      "headline": {"displayName": "Workspace Headline", "purpose": "Workspace identity and greeting."},
+      "body": {"displayName": "Operational Body", "purpose": "Evidence, controls, and explanatory copy."}
+    },
+    "shadows": [
+      {"name": "ambient-low", "value": "0 5px 16px rgba(24,28,23,.09)", "purpose": "Quiet separation for defined evidence surfaces."}
+    ],
+    "motion": [
+      {"name": "ease-out", "value": "cubic-bezier(.16,1,.3,1)", "purpose": "Toast and coachmark arrival."}
+    ],
+    "breakpoints": [
+      {"name": "compact", "value": "1180px"},
+      {"name": "mobile", "value": "820px"}
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single current workflow action.",
+      "html": "<button class=\"ds-btn-primary\">REVIEW AND APPROVE</button>",
+      "css": ".ds-btn-primary{background:#C9F0AB;color:#0F3732;padding:10px 15px;border:1px solid #B5DD98;border-radius:8px;font:700 15px/1.45 Gellix,Arial,sans-serif}.ds-btn-primary:hover{background:#B7E796}.ds-btn-primary:focus-visible{outline:3px solid #2F54EB;outline-offset:3px}"
+    },
+    {
+      "name": "Search Field",
+      "kind": "input",
+      "description": "Global invoice, vendor, and purchase-order search.",
+      "html": "<input class=\"ds-search\" placeholder=\"Search invoices, vendors, PO numbers…\">",
+      "css": ".ds-search{background:#fff;color:#313730;padding:10px 13px;border:1px solid #CFD6CD;border-radius:9px;font:400 15px/1.45 Gellix,Arial,sans-serif}.ds-search:focus-visible{outline:3px solid #2F54EB;outline-offset:3px}"
+    },
+    {
+      "name": "Match Chip",
+      "kind": "chip",
+      "description": "Verified positive match status.",
+      "html": "<span class=\"ds-chip\">MATCH 98%</span>",
+      "css": ".ds-chip{display:inline-flex;background:#C9F0AB;color:#0F3732;padding:3px 7px;border-radius:5px;font:600 11px/1.2 Gellix,Arial,sans-serif}"
+    },
+    {
+      "name": "Evidence Card",
+      "kind": "card",
+      "refersTo": "surface-card",
+      "description": "Defined white surface for fields, matching, and workflow evidence.",
+      "html": "<section class=\"ds-card\"><strong>Extracted fields</strong><p>Invoice number · INV-20481</p></section>",
+      "css": ".ds-card{background:#fff;color:#313730;padding:16px;border:1px solid #CFD6CD;border-radius:12px;box-shadow:0 5px 16px rgba(24,28,23,.09);font:400 15px/1.45 Gellix,Arial,sans-serif}.ds-card strong{font-weight:600}.ds-card p{color:#626961}"
+    },
+    {
+      "name": "Active Navigation",
+      "kind": "nav",
+      "description": "Current product area in the deep-green frame.",
+      "html": "<button class=\"ds-nav-active\">Invoices</button>",
+      "css": ".ds-nav-active{background:#C9F0AB;color:#0F3732;padding:10px 12px;border:0;border-radius:8px;font:600 15px/1.45 Gellix,Arial,sans-serif}.ds-nav-active:focus-visible{outline:3px solid #2F54EB;outline-offset:3px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Approval Relay",
+    "overview": "The interface treats invoice processing as accountable handoffs around a shared evidence record. It is operational and data-dense, but the hierarchy stays calm: the active invoice leads, the approval owner follows, and navigation recedes.",
+    "keyCharacteristics": ["Deep-green product frame with a sand work surface.", "White evidence surfaces with thin neutral rules and restrained elevation.", "Lime reserved for primary actions, active navigation, and successful match states.", "Persistent ownership: every workflow state names the next responsible role."],
+    "rules": [
+      {"name": "The Rarity Rule", "body": "Lime identifies the current action or a verified positive state; it does not decorate neutral content.", "section": "colors"},
+      {"name": "The Evidence Rule", "body": "Money and measurements use tabular numerals; labels remain short and literal.", "section": "typography"},
+      {"name": "The Evidence-First Rule", "body": "Elevation may separate work surfaces, but it must never outrank document content or approval state.", "section": "elevation"}
+    ],
+    "dos": ["Do keep the active invoice, evidence, and accountable next role visible together.", "Do label simulated data plainly and keep all prospect-facing content synthetic.", "Do provide visible empty, disabled, hover, and keyboard-focus states."],
+    "donts": ["Don't use customer data, production credentials, or a live Demo51 connection.", "Don't turn the workspace into a wall of equal KPI cards.", "Don't use gradients, decorative glass, glow shadows, or Unicode glyphs as an icon system."]
+  }
+}

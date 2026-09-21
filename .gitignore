@@ -1,0 +1,6 @@
+.claude/
+.impeccable/review/
+.impeccable/questions/
+.impeccable/surface-directions.json
+.impeccable/surface-brief-body.md
+.DS_Store
