@@ -35,9 +35,10 @@ The source reference is the authenticated Demo51 environment and its invoice, re
 - No production APIs, credentials, customer data, lead forms, behavioral tracking, telemetry, or remote writes.
 - It must identify itself as a product simulation rather than a live Rillion tenant.
 - The navigation mirrors Demo51's primary hierarchy while keeping secondary areas representative and read-only.
-- Invoices includes interactive To Verify and Invoice Log branches; Invoice Log exposes flow/accounting evidence, labeled green/yellow/red PO and match states, and log-only non-PO AI-matched examples; Reports contains AP performance; Rillion Analytics includes eleven board click-throughs grouped in platform order.
+- Invoices includes interactive To Verify and Invoice Log branches; Invoice Log follows the real column order through tax, information, purchase order, and contract, exposes labeled flow/accounting proposals, preserves green/yellow/red PO and match states, and includes log-only non-PO AI-matched examples; Reports contains AP performance; Rillion Analytics includes eleven board click-throughs grouped in platform order.
 - A persistent Approval role selector lists the synthetic workflow roles and is the primary navigation path to each role's grouped approval work.
 - Documents includes a status-tabbed inbox and a synthetic document-detail workspace with preview, metadata, flow, lines, comments, and simulated approval actions.
+- Contracts includes a clickable register and a synthetic contract-detail workspace with source image, editable metadata, validity and matching settings, Accounts Payable-to-CFO flow, lines, account posting, attachments, and simulated toolbar actions.
 - Payments includes Ready for payment, Awaiting approval, In progress, and Completed click-throughs with synthetic filters, records, and reversible simulated actions.
 - The guided tour visits Payments immediately before Rillion Analytics.
 - A prominent Guided tour control is visible above the fold on initial load and identifies itself as a six-step walkthrough.

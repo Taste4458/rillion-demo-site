@@ -176,6 +176,10 @@ The Demo51-inspired inbox uses five status tabs—Inbound, To be processed, Bein
 
 The detail workspace keeps the source document, indexed metadata, approval flow, document lines, and comments visible together. A deep-green toolbar contains navigation and simulated Save, Approve, Return to AP, and Send to email actions. On desktop the workspace is three columns; at 1180px the side stack moves below, and at 820px it becomes one column with the toolbar horizontally scrollable rather than widening the page.
 
+### Contracts Register and Detail
+
+Contracts opens with a compact register whose contract-number buttons preserve native table semantics and lead into a Demo51-inspired detail workspace. The detail keeps a synthetic source image, editable metadata and validity terms, Accounts Payable-to-CFO flow, and tabbed contract lines, account posting, and attachments together. The deep-green toolbar provides Previous, Next, Create copy, Save, and Options actions with truthful simulation feedback. Desktop uses three columns; the flow and tabbed evidence move below at 1180px, and the page becomes a single contained column at 820px.
+
 ### Payments Workspace
 
 Payments follows the Demo51 operational sequence with four native tab controls: Ready for payment, Awaiting approval, In progress, and Completed. Dynamic tab counts and totals reflect the current synthetic browser state. A shared filter row narrows records by invoice, vendor, payment method, and date; a payment-specific CSV export respects the active view. Ready for payment gates Pay outside Rillion and Send for payment behind invoice selection, then simulates the selected transition locally. Completed exposes payment dates, reference IDs, settled status, and a reference-review action. Manage and Payment portal remain truthful simulated actions confirmed by toasts. Wide payment tables scroll inside their surface and never widen the 390px page.
@@ -186,7 +190,7 @@ The six-step tour follows the operational story from queue to invoice verificati
 
 ### Invoice Log
 
-Invoice Log follows To Verify in both navigation and the guided tour. Its horizontally contained operational grid mirrors Demo51's evidence density with company, vendor invoice, flow proposal, account posting, accounting date, due date, total, currency, purchase order, match, and workflow status. PO and match use the same labeled three-state language: green means matched, yellow means review or variance, and red means exception or missing PO. Non-PO automation examples pair `Non-PO verified` with `AI matched` and remain log-only so they do not inflate To Verify or approval work. Text and a dot accompany every color so state never depends on color alone.
+Invoice Log follows To Verify in both navigation and the guided tour. Its horizontally contained operational grid mirrors Demo51's evidence density and live column order: company, vendor, vendor invoice, flow proposal, account posting, accounting date, due date, total, tax, tax %, currency, information, purchase order, and contract, followed by the simulation's match and workflow status evidence. Automated flow/account proposals use compact labeled green, yellow, or red chips, overdue dates use the real pale-critical treatment, and monetary columns use aligned tabular numerals. PO and match use the same labeled three-state language: green means matched, yellow means review or variance, and red means exception or missing PO. Non-PO automation examples pair `Non-PO verified` with `AI matched` and remain log-only so they do not inflate To Verify or approval work. Text and a dot accompany every color so state never depends on color alone.
 
 ### Analytics
 
