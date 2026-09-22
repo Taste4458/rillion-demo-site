@@ -104,6 +104,7 @@ const paymentTabs = [
 ];
 
 const payments = [
+  { id: 'INV-77821', tab: 'ready', company: '30', vendor: 'Precision Tools Co.', invoiceDate: 'Apr 2, 2026', dueDate: 'May 4, 2026', amount: 3265, method: 'ACH', approver: 'Jordan Lee', approvalDate: 'Pending journey completion', journey: true },
   { id: '0976000052', tab: 'ready', company: '30', vendor: 'ADS Security', invoiceDate: 'Sep 7, 2026', dueDate: 'Oct 7, 2026', amount: 1510, method: 'ACH', approver: 'Frank Jonsson', approvalDate: 'Aug 30, 2026' },
   { id: '0976000048', tab: 'ready', company: '30', vendor: 'Advanced Building Systems', invoiceDate: 'Sep 7, 2026', dueDate: 'Oct 7, 2026', amount: 1470, method: 'Check', approver: 'Adri Meijer', approvalDate: 'Aug 30, 2026' },
   { id: '0976000005', tab: 'ready', company: '30', vendor: 'CDW', invoiceDate: 'Sep 21, 2026', dueDate: 'Oct 21, 2026', amount: 1040, method: 'ACH', approver: 'Maria Hansson', approvalDate: 'Aug 30, 2026' },
@@ -126,7 +127,7 @@ const payments = [
 
 const captureInvoices = [
   { id: 'CAP-9175499553', company: '30', vendor: 'Atlas Industrial Supply', invoiceDate: '09/11/2026', dueDate: '10/11/2026', amount: 145.60, invoiceNumber: '9175499553', fileName: 'Atlas 9175499553.pdf', received: '9/20/26, 6:10 PM', po: '4500821', account: '6410', bank: '•••• 2841', lines: [['2', '4500821', 'DN-31082', 'GBX-200', 'Industrial gearbox mounting kit', '4', 'PC', '35.60', '0', 'TAX-US', '6410', '142.40', 'MFG', 'LINE-7', 'Plant 2']] },
-  { id: 'CAP-71741278', company: '30', vendor: 'Precision Tools Co.', invoiceDate: '09/11/2026', dueDate: '10/11/2026', amount: 85.39, invoiceNumber: '71741278', fileName: 'Precision 71741278.pdf', received: '9/20/26, 4:37 PM', po: '4500838', account: '6420', bank: '•••• 1048', lines: [['10', '4500838', 'DN-77211', 'CNC-14', 'Replacement cutting insert set', '1', 'SET', '79.06', '0', 'TAX-US', '6420', '79.06', 'OPS', 'TOOL-4', 'Plant 1']] },
+  { id: 'CAP-71741278', invoiceId: 'INV-77821', company: '30', vendor: 'Precision Tools Co.', invoiceDate: '04/02/2026', dueDate: '05/04/2026', amount: 3265, invoiceNumber: 'INV-77821', fileName: 'Precision INV-77821.pdf', received: '4/2/26, 9:14 AM', po: '4500838', account: '6420', bank: '•••• 1048', lines: [['10', '4500838', 'DN-77211', 'CNC-14', 'CNC tooling set', '1', 'SET', '3,265.00', '0', 'TAX-US', '6420', '3,265.00', 'OPS', 'TOOL-4', 'Plant 1']] },
   { id: 'CAP-71730252', company: '30', vendor: 'Summit Packaging', invoiceDate: '09/11/2026', dueDate: '10/11/2026', amount: 786.40, invoiceNumber: '71730252', fileName: 'Summit 71730252.pdf', received: '9/20/26, 4:35 PM', po: '', account: '6330', bank: '•••• 6620', lines: [['1', '', '', 'PKG-22', 'Protective packaging materials', '40', 'CS', '18.20', '0', 'TAX-US', '6330', '728.00', 'WHSE', 'PACK-2', 'Dock A']] },
   { id: 'CAP-D38186164', company: '30', vendor: 'Riverside Logistics', invoiceDate: '09/08/2026', dueDate: '09/18/2026', amount: 1921.17, invoiceNumber: 'D38186164', fileName: 'Riverside D38186164.pdf', received: '9/20/26, 4:30 PM', po: '4500841', account: '6210', bank: '•••• 8840', lines: [['1', '4500841', 'BOL-61642', 'FRT', 'Regional freight service', '1', 'EA', '1,921.17', '0', 'FREIGHT', '6210', '1,921.17', 'LOG', 'ROUTE-8', 'Plant 3']] },
   { id: 'CAP-789104', company: '30', vendor: 'Core Facility Services', invoiceDate: '09/07/2026', dueDate: '11/06/2026', amount: 852.00, invoiceNumber: '789104', fileName: 'Core Facility 789104.pdf', received: '9/20/26, 4:25 PM', po: '4500770', account: '6810', bank: '•••• 3391', lines: [['1', '4500770', 'WO-26091', 'MAINT', 'Preventive maintenance visit', '1', 'EA', '852.00', '0', 'TAX-US', '6810', '852.00', 'FAC', 'PM-26', 'Plant 1']] },
@@ -142,10 +143,25 @@ const captureFieldGroups = {
   'Line fields': [['Item', 29], ['Delivery reference', 0], ['Description', 27], ['Attribute', 0], ['Quantity', 11], ['Unit', 44], ['Unit price', 16], ['Amount', 3], ['Account', 114], ['Cost Center', 47], ['Project', 5], ['Location', 2], ['Group1', 1], ['Group2', 0], ['Group3', 0]]
 };
 
+const journeyInvoiceId = 'INV-77821';
+const journeyCaptureId = 'CAP-71741278';
+const journeySteps = [
+  ['Captured', 'to-verify'], ['In Invoice Log', 'invoice-log'], ['Manager approval', 'approval-report'], ['Ready for payment', 'payments'], ['Paid', 'payments']
+];
+const scenarioConfig = {
+  ap: { label: 'Accounts payable', view: 'to-verify', stage: 0 },
+  approver: { label: 'Invoice approver', view: 'approval-report', stage: 2, role: 'department-manager' },
+  finance: { label: 'Finance leader', view: 'payments', stage: 3 }
+};
+const urlParams = new URLSearchParams(location.search);
+const initialScenario = scenarioConfig[urlParams.get('scenario')] ? urlParams.get('scenario') : '';
+const requestedView = urlParams.get('view') || location.hash.slice(1) || scenarioConfig[initialScenario]?.view || 'dashboard';
+
 const state = {
-  view: location.hash.slice(1) || 'dashboard', selected: invoices[0], approved: new Set(),
-  expanded: new Set(['invoices', 'reports']), tour: -1, query: '', fieldsExpanded: false,
-  logFilter: 'all', approvalFilter: 'all', roleFilter: 'all', analytics: 0,
+  view: requestedView, selected: initialScenario === 'approver' ? invoices.find(inv => inv.id === journeyInvoiceId) : invoices[0], approved: new Set(),
+  expanded: new Set(['invoices', 'reports']), tour: -1, tourPersona: initialScenario || 'platform', tourComplete: false, query: '', fieldsExpanded: false,
+  scenario: initialScenario, journeyStage: scenarioConfig[initialScenario]?.stage || 0,
+  logFilter: 'all', approvalFilter: 'all', roleFilter: scenarioConfig[initialScenario]?.role || 'all', analytics: 0, analyticsReference: false, analyticsFilter: 'all',
   documentTab: 'being-checked', documentCompany: 'all', documentType: 'all', selectedDocument: documents[0], documentOutcomes: new Map(),
   selectedContract: contracts[0], contractTab: 'contract-lines',
   paymentTab: 'ready', paymentQuery: '', paymentVendor: 'all', paymentMethod: 'all', paymentDate: '', paymentSelection: new Set(), paymentMoves: new Map(),
@@ -157,9 +173,37 @@ const money = value => new Intl.NumberFormat('en-US', { style: 'currency', curre
 const number = value => Number(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const escapeHtml = value => String(value).replace(/[&<>"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[character]);
 const approvalRole = inv => approvalRoles.find(role => role.id === inv.role);
-const requiresAction = inv => !inv.logOnly && inv.approvalRequired !== false;
+const requiresAction = inv => !inv.logOnly && inv.approvalRequired !== false && (inv.id !== journeyInvoiceId || state.journeyStage >= 2);
 const allViews = [...navTree.flatMap(item => item.children || [item]).map(item => item.id).filter(Boolean), 'document-detail', 'contract-detail', 'approval-report'];
 const labels = { ...Object.fromEntries(navTree.flatMap(item => item.children ? item.children.map(child => [child.id, child.label]) : [[item.id, item.label]])), 'document-detail': 'Document detail', 'contract-detail': 'Contract detail', 'approval-report': 'Approval' };
+
+function journeyStrip() {
+  const action = state.journeyStage === 0
+    ? `<button class="primary-button" data-capture-invoice="${journeyCaptureId}">Open Precision invoice</button>`
+    : state.journeyStage === 1
+      ? '<button class="primary-button" data-action="journey-approval">Send to manager approval</button>'
+      : state.journeyStage === 2
+        ? `<button class="primary-button" data-invoice="${journeyInvoiceId}">Review invoice</button>`
+        : state.journeyStage === 3
+          ? '<button class="primary-button" data-action="journey-payment">Open ready for payment</button>'
+          : '<span class="journey-complete">Workflow complete</span>';
+  return `<section class="journey-strip" aria-label="Precision Tools invoice journey"><div><strong>Follow one invoice end to end</strong><span>Precision Tools Co. · ${journeyInvoiceId}</span></div><ol>${journeySteps.map(([label], index) => `<li class="${index < state.journeyStage ? 'done' : index === state.journeyStage ? 'active' : ''}" ${index === state.journeyStage ? 'aria-current="step"' : ''}><span>${index + 1}</span>${label}</li>`).join('')}</ol>${action}</section>`;
+}
+
+function scenarioBanner() {
+  if (!state.scenario) return '';
+  const config = scenarioConfig[state.scenario];
+  return `<section class="scenario-banner"><div><strong>${config.label} scenario</strong><span>This shareable view is ready to explore without the welcome dialog.</span></div><button data-tour-persona="${state.scenario}">Start this walkthrough</button><button data-share-scenario="${state.scenario}">Copy scenario link</button></section>`;
+}
+
+function journeyStatus(inv) {
+  if (inv.id !== journeyInvoiceId) return status(inv);
+  const states = [
+    ['exception', 'Waiting in Capture'], ['match', 'AP review'], ['approval', 'Manager approval'], ['paid', 'Approved'], ['paid', 'Paid']
+  ];
+  const [tone, label] = states[state.journeyStage];
+  return `<span class="status ${tone}">${label}</span>`;
+}
 
 function renderNav() {
   document.querySelector('#nav').innerHTML = navTree.map(item => {
@@ -185,6 +229,7 @@ function navButton(item, child = false) {
 }
 
 function status(inv) {
+  if (inv.id === journeyInvoiceId) return journeyStatus(inv);
   const done = state.approved.has(inv.id);
   return `<span class="status ${done ? 'paid' : inv.type}">${done ? 'Approved' : inv.status}</span>`;
 }
@@ -196,9 +241,11 @@ function filtered() {
 
 function queue() {
   const matches = filtered().filter(requiresAction);
+  const approvals = matches.filter(inv => inv.type === 'approval').length;
+  const exceptions = matches.filter(inv => inv.type === 'exception').length;
   return `<section class="panel queue-panel"><div class="panel-head"><h2>My task queue</h2><button class="link-button" data-view="tasks">All tasks</button></div>
-    <div class="task-summary">${[['3', 'Total'], ['2', 'Approvals'], ['1', 'Exception'], ['0', 'Other']].map(([value, label]) => `<div class="summary-item"><strong>${value}</strong><span>${label}</span></div>`).join('')}</div>
-    ${matches.length ? `<ul class="queue">${matches.map(inv => `<li><button class="queue-item ${state.selected.id === inv.id ? 'selected' : ''}" data-invoice="${inv.id}"><strong>${inv.vendor}</strong><span class="amount">${money(inv.amount)}</span><small>${inv.id}</small>${status(inv)}</button></li>`).join('')}</ul>` : emptyState('No matching invoices', 'Try a vendor, invoice number, purchase order, or owner.')}
+    <div class="task-summary">${[[matches.length, 'Total'], [approvals, 'Approvals'], [exceptions, 'Exception'], [Math.max(0, matches.length - approvals - exceptions), 'Other']].map(([value, label]) => `<div class="summary-item"><strong>${value}</strong><span>${label}</span></div>`).join('')}</div>
+    ${matches.length ? `<ul class="queue">${matches.map(inv => `<li><button class="queue-item ${state.selected.id === inv.id ? 'selected' : ''}" data-invoice="${inv.id}"><strong>${inv.vendor}</strong><span class="amount">${money(inv.amount)}</span><small>${inv.id}</small>${journeyStatus(inv)}</button></li>`).join('')}</ul>` : emptyState('No matching invoices', 'Try a vendor, invoice number, purchase order, or owner.')}
   </section>`;
 }
 
@@ -231,7 +278,7 @@ function relay(inv) {
   </div>`;
 }
 
-function dashboard() { workspace.innerHTML = `<div class="workspace-grid">${queue()}${invoicePanel(state.selected)}${relay(state.selected)}</div>`; }
+function dashboard() { workspace.innerHTML = `${journeyStrip()}<div class="workspace-grid">${queue()}${invoicePanel(state.selected)}${relay(state.selected)}</div>`; }
 
 function toVerify() {
   if (state.captureScreen === 'detail') { captureDetail(); return; }
@@ -244,7 +291,7 @@ function captureQueue() {
   const matches = captureInvoices.filter(inv => (!query || `${inv.vendor} ${inv.invoiceNumber} ${inv.fileName}`.toLowerCase().includes(query)) && (state.captureVendor === 'all' || inv.vendor === state.captureVendor) && (!state.captureInvoice || inv.invoiceNumber.toLowerCase().includes(state.captureInvoice.toLowerCase())) && (!state.captureAmountMin || inv.amount >= Number(state.captureAmountMin)) && (!state.captureAmountMax || inv.amount <= Number(state.captureAmountMax)));
   const vendors = [...new Set(captureInvoices.map(inv => inv.vendor))].sort();
   const rows = matches.map(inv => `<tr><td>${inv.company}</td><td><button class="table-link" data-capture-invoice="${inv.id}" aria-label="Open ${inv.invoiceNumber} from ${inv.vendor}">${inv.vendor}</button></td><td>${inv.invoiceDate}</td><td>${inv.dueDate}</td><td class="numeric">${number(inv.amount)} ${inv.amount < 0 ? 'USD credit' : 'USD'}</td><td>${inv.invoiceNumber}</td><td>${inv.fileName}</td><td>${inv.received}</td></tr>`).join('');
-  workspace.innerHTML = `<div class="capture-titlebar"><h2>Invoices to verify</h2><div class="capture-actions"><button data-action="capture-attachments">Attachments <span>99+</span></button><button data-action="capture-upload">Upload</button><button class="primary-button" data-action="capture-settings">Settings</button></div></div><section class="panel capture-queue"><div class="capture-filters"><label>Company<select disabled><option>All companies</option></select></label><label>Vendor<select id="capture-vendor"><option value="all">Vendor name or number</option>${vendors.map(vendor => `<option ${state.captureVendor === vendor ? 'selected' : ''}>${vendor}</option>`).join('')}</select></label><label>Total amount<span class="range-inputs"><input id="capture-min" type="number" value="${state.captureAmountMin}" placeholder="From"><input id="capture-max" type="number" value="${state.captureAmountMax}" placeholder="To"></span></label><label>Invoice number<input id="capture-invoice" value="${escapeHtml(state.captureInvoice)}" placeholder="Search invoice number"></label></div><div class="table-wrap capture-queue-table">${rows ? dataTable(['Company', 'Vendor', 'Invoice date', 'Due date', 'Total amount', 'Invoice number', 'File name', 'Received'], rows) : emptyState('No invoices match these filters', 'Clear a vendor, amount, invoice number, or global search filter.')}</div><div class="capture-pagination"><span>Total: 228 synthetic items</span><div aria-label="Pagination"><button disabled>‹</button><button aria-current="page">1</button><button>2</button><button>3</button><button>4</button><button>5</button><span>…</span><button>8</button><button>›</button></div></div><p class="capture-ai-note">Data on this page has been extracted using AI</p></section>`;
+  workspace.innerHTML = `${journeyStrip()}<div class="capture-titlebar"><h2>Invoices to verify</h2><div class="capture-actions"><button data-action="capture-attachments">Attachments <span>99+</span></button><button data-action="capture-upload">Upload</button><button class="primary-button" data-action="capture-settings">Settings</button></div></div><section class="panel capture-queue"><div class="capture-filters"><label>Company<select disabled><option>All companies</option></select></label><label>Vendor<select id="capture-vendor"><option value="all">Vendor name or number</option>${vendors.map(vendor => `<option ${state.captureVendor === vendor ? 'selected' : ''}>${vendor}</option>`).join('')}</select></label><label>Total amount<span class="range-inputs"><input id="capture-min" type="number" value="${state.captureAmountMin}" placeholder="From"><input id="capture-max" type="number" value="${state.captureAmountMax}" placeholder="To"></span></label><label>Invoice number<input id="capture-invoice" value="${escapeHtml(state.captureInvoice)}" placeholder="Search invoice number"></label></div><div class="table-wrap capture-queue-table">${rows ? dataTable(['Company', 'Vendor', 'Invoice date', 'Due date', 'Total amount', 'Invoice number', 'File name', 'Received'], rows) : emptyState('No invoices match these filters', 'Clear a vendor, amount, invoice number, or global search filter.')}</div><div class="capture-pagination"><span>Total: 228 synthetic items</span><div aria-label="Pagination"><button disabled>‹</button><button aria-current="page">1</button><button>2</button><button>3</button><button>4</button><button>5</button><span>…</span><button>8</button><button>›</button></div></div><p class="capture-ai-note">Data on this page has been extracted using AI</p></section>`;
 }
 
 function captureDetail() {
@@ -254,7 +301,9 @@ function captureDetail() {
   const lineHeads = ['Line no.', 'Order number', 'Delivery slip number', 'Item', 'Description', 'Quantity', 'Unit', 'Unit price', 'Discount %', 'TAX code', 'Account', 'Amount', 'Cost Center', 'Project', 'Location', 'Group1', 'Group2'];
   const lineRows = inv.lines.map(line => `<tr>${[...line, '', ''].map((value, cell) => `<td><input value="${escapeHtml(value)}" aria-label="${lineHeads[cell]}"></td>`).join('')}</tr>`).join('');
   workspace.innerHTML = `<div class="capture-detail-head">${backButton('To Verify', 'data-action="capture-back"')}<div><button data-action="capture-history" aria-label="View history">History</button><button data-action="capture-delete" aria-label="Delete invoice">Delete</button><button data-action="capture-prev" ${index === 0 ? 'disabled' : ''}>‹</button><span>${index + 1} of 228</span><button data-action="capture-next" ${index === captureInvoices.length - 1 ? 'disabled' : ''}>›</button><button data-action="capture-save">Save</button><label class="capture-toggle"><input type="checkbox"> Test invoice</label></div></div><section class="panel capture-detail"><aside class="capture-fields"><h3>Company and vendor</h3>${field('Company *', `Northstar Manufacturing, ${inv.company}`)}${field('Vendor', inv.vendor, 'review')}${field('Supplier bank account', inv.bank)}<h3>Invoice</h3>${field('Credit/Debit', inv.amount < 0 ? 'Credit' : 'Debit')}${field('Invoice number *', inv.invoiceNumber)}${field('Invoice date *', inv.invoiceDate)}${field('Due date', inv.dueDate)}${field('Reference 1', '')}${field('Reference 2', '')}${field('Contract no.', '')}${field('PO number', inv.po)}${field('Account', inv.account)}${field('Payment reference', '')}<h3>Amounts</h3>${field('Currency', 'USD')}${field('Total amount', Math.abs(inv.amount).toFixed(2))}<p class="capture-ai-note">Data on this page has been extracted using AI</p></aside><div class="capture-document"><div class="capture-document-tabs"><button aria-pressed="true">Invoice</button><button>Email</button></div><div class="capture-preview"><article class="capture-paper"><header><div><strong>${inv.vendor}</strong><span>SUPPLIER INVOICE</span></div><dl><dt>Invoice date</dt><dd>${inv.invoiceDate}</dd><dt>Invoice number</dt><dd>${inv.invoiceNumber}</dd><dt>Amount</dt><dd>${number(inv.amount)} USD</dd></dl></header><h2>${inv.amount < 0 ? 'CREDIT MEMO' : 'INVOICE'}</h2><div class="capture-paper-meta"><p><strong>Bill to</strong><br>Northstar Manufacturing<br>1000 Production Way<br>Riverton, IL 60611</p><p><strong>Payment terms</strong><br>Net 30<br><strong>Due date</strong><br>${inv.dueDate}</p></div><table><thead><tr><th>Description</th><th>Quantity</th><th>Price</th><th>Total</th></tr></thead><tbody>${inv.lines.map(line => `<tr><td>${line[4]}</td><td>${line[5]} ${line[6]}</td><td>${line[7]}</td><td>${line[11]}</td></tr>`).join('')}</tbody></table><footer><strong>Total due</strong><strong>${number(inv.amount)} USD</strong></footer></article></div><div class="capture-line-wrap"><div class="capture-line-actions"><button aria-label="Add invoice line">Add line</button><button data-action="capture-show-po">${inv.po ? `Show ${inv.po}` : 'No purchase order'}</button></div><div class="table-wrap capture-line-grid">${dataTable(lineHeads, lineRows)}</div></div></div></section>`;
+  workspace.insertAdjacentHTML('afterbegin', journeyStrip());
   workspace.querySelector('.capture-detail-head > .back-button').insertAdjacentHTML('afterend', '<strong class="capture-current-title">Invoice details</strong>');
+  if (inv.id === journeyCaptureId && state.journeyStage === 0) workspace.querySelector('.capture-detail-head > div').insertAdjacentHTML('beforeend', '<button class="primary-button" data-action="capture-verify">Verify and send to Invoice Log</button>');
 }
 
 function captureSettings() {
@@ -265,7 +314,7 @@ function captureSettings() {
 }
 
 function invoiceLog() {
-  const matches = filtered().filter(inv => state.logFilter === 'all' || (state.logFilter === 'ai-match' ? inv.aiMatched : state.logFilter === 'approved' ? state.approved.has(inv.id) : inv.type === state.logFilter));
+  const matches = filtered().filter(inv => inv.id !== journeyInvoiceId || state.journeyStage >= 1).filter(inv => state.logFilter === 'all' || (state.logFilter === 'ai-match' ? inv.aiMatched : state.logFilter === 'approved' ? state.approved.has(inv.id) : inv.type === state.logFilter));
   const filters = [['all', 'All invoices'], ['ai-match', 'AI matched'], ['approval', 'In approval'], ['exception', 'Exceptions'], ['approved', 'Approved']];
   const health = (tone, label) => `<span class="log-health ${tone}"><span aria-hidden="true"></span>${label}</span>`;
   const account = (tone, label) => `<span class="account-chip ${tone}"><span aria-hidden="true"></span>${label}</span>`;
@@ -279,6 +328,7 @@ function invoiceLog() {
     return `<tr data-invoice="${inv.id}" tabindex="0" role="link" aria-label="Open ${inv.id} from ${inv.vendor}"><td>${inv.company || 30}</td><td><strong>${inv.vendor}</strong><small>${inv.id}</small></td><td>${inv.vendorInvoice}</td><td>${proposal}</td><td>${posting}</td><td>${logDate(inv.accountingDate)}</td><td><span class="date-chip">${logDate(inv.due)}</span></td><td class="numeric">${number(inv.amount)}</td><td class="numeric">${number(inv.tax || 0)}</td><td class="numeric">${number(inv.taxRate || 0)}</td><td>${inv.currency}</td><td>${inv.information || (inv.type === 'exception' ? 'Review required' : 'Matching complete')}</td><td>${purchaseOrder}</td><td>${contract}</td><td>${health(inv.matchTone, inv.aiMatched ? `AI matched ${inv.match}%` : inv.matchTone === 'good' ? `Matched ${inv.match}%` : inv.matchTone === 'warn' ? `Review ${inv.match}%` : `Exception ${inv.match}%`)}</td><td>${status(inv)}</td></tr>`;
   }).join('');
   workspace.innerHTML = pageIntro('Invoice Log', 'Follow every captured invoice from AP review through approval and transfer.', '<button class="primary-button" data-view="to-verify">Open To Verify</button>') + `<div class="invoice-log-toolbar"><div class="filter-tabs" aria-label="Filter invoice log">${filters.map(([id, label]) => `<button data-log-filter="${id}" aria-pressed="${state.logFilter === id}">${label}</button>`).join('')}</div><div class="log-legend" aria-label="Invoice log status key">${health('good', 'Matched')}${health('warn', 'Review')}${health('bad', 'Exception')}</div></div><section class="panel table-wrap invoice-log-table">${rows ? dataTable(['Company', 'Vendor', "Vendor's inv. no.", 'Flow proposal', 'Account posting', 'Accounting date', 'Due date', 'Total', 'Tax', 'Tax %', 'Currency', 'Information', 'Purchase order', 'Contract', 'Match', 'Status'], rows) : emptyState('No matching invoices', 'Clear the search or choose another status.')}</section>`;
+  workspace.insertAdjacentHTML('afterbegin', journeyStrip());
 }
 
 function documentStatus(doc) { const outcome = state.documentOutcomes.get(doc.id); return outcome === 'approved' ? 'processed' : outcome || doc.status; }
@@ -348,23 +398,46 @@ function approvalReport() {
     return `<section class="panel role-group"><div class="role-group-head"><div><h3>${role.label}</h3><p>${role.description}</p></div><span>${decisions.length} ${decisions.length === 1 ? 'approval' : 'approvals'}</span></div>${rows ? `<div class="table-wrap">${dataTable(['Approver', 'Invoice', 'Amount', 'Decision date', 'Status'], rows)}</div>` : emptyState(`No ${state.approvalFilter === 'approved' ? 'approved' : 'waiting'} decisions`, 'Choose another status or approval role.')}</section>`;
   }).join('');
   workspace.innerHTML = pageIntro('Approval', 'Choose a role to see its approval work, decision owner, due date, and status.', '<button class="primary-button" data-action="export">Download synthetic CSV</button>') + `<div class="approval-overview"><section class="panel approval-metric"><strong>1.8 days</strong><span>average approval cycle</span></section><section class="panel approval-metric"><strong>92%</strong><span>approved on time</span></section><section class="panel approval-metric"><strong>${waiting}</strong><span>waiting in selected roles</span></section></div><div class="filter-tabs" aria-label="Filter approval report">${filters.map(([id, label]) => `<button data-approval-filter="${id}" aria-pressed="${state.approvalFilter === id}">${label}</button>`).join('')}</div><div class="role-groups">${groups}</div>`;
+  workspace.insertAdjacentHTML('afterbegin', journeyStrip());
+}
+
+const interactiveAnalyticsTitles = new Set(['Active invoices', 'Vendor payment analyzer', 'Executive dashboard']);
+
+function analyticsFilters() {
+  return `<div class="analytics-filters" aria-label="Filter synthetic Analytics data">${[['all', 'All companies'], ['company30', 'Company 30'], ['quarter', 'Last quarter']].map(([id, label]) => `<button data-analytics-filter="${id}" aria-pressed="${state.analyticsFilter === id}">${label}</button>`).join('')}</div>`;
+}
+
+function interactiveAnalytics(report) {
+  const scale = state.analyticsFilter === 'company30' ? .64 : state.analyticsFilter === 'quarter' ? .28 : 1;
+  const whole = value => Math.round(value * scale).toLocaleString('en-US');
+  const bars = (values, labels) => `<div class="analytics-bars" aria-label="${report.title} trend">${values.map((value, index) => `<div><span style="height:${value}%"></span><small>${labels[index]}</small></div>`).join('')}</div>`;
+  const donut = (percent, label) => `<div class="analytics-donut"><svg viewBox="0 0 42 42" role="img" aria-label="${label}: ${percent}%"><circle cx="21" cy="21" r="15.9"></circle><circle class="value" cx="21" cy="21" r="15.9" stroke-dasharray="${percent} ${100 - percent}" stroke-dashoffset="25"></circle></svg><strong>${percent}%</strong><span>${label}</span></div>`;
+  if (report.title === 'Active invoices') return `${analyticsFilters()}<div class="analytics-interactive"><section class="analytics-kpi"><strong>${whole(628)}</strong><span>active invoices</span></section><section class="analytics-viz wide"><h3>Invoices by due date</h3>${bars([36, 58, 84, 42, 28], ['Past due', 'This week', 'This month', 'Next month', 'Later'])}</section><section class="analytics-viz">${donut(95, 'in approval')}</section><section class="analytics-viz">${donut(58, 'non-PO')}</section><section class="analytics-viz wide"><h3>PO match status</h3>${bars([88, 34, 20], ['Perfect match', 'Exceptions', 'Price variance'])}</section></div>`;
+  if (report.title === 'Vendor payment analyzer') return `${analyticsFilters()}<div class="analytics-interactive"><section class="analytics-kpi"><strong>${whole(51264)}</strong><span>vendor invoices</span></section><section class="analytics-kpi"><strong>${whole(28603)}</strong><span>paid on time</span></section><section class="analytics-kpi"><strong>${whole(18203)}</strong><span>paid late</span></section><section class="analytics-viz wide"><h3>Invoices and net days</h3>${bars([62, 68, 71, 59, 78, 83, 74, 88, 66, 52, 46, 38], ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr'])}</section><section class="analytics-viz">${donut(81, 'Company 100')}</section></div>`;
+  return `${analyticsFilters()}<div class="analytics-interactive"><section class="analytics-kpi"><strong>${whole(52462)}</strong><span>invoices</span></section><section class="analytics-kpi"><strong>12.05</strong><span>average processing days</span></section><section class="analytics-kpi"><strong>40%</strong><span>successful account coding</span></section><section class="analytics-viz">${donut(93, 'paid')}</section><section class="analytics-viz">${donut(57, 'non-PO')}</section><section class="analytics-viz wide"><h3>Successful invoice automation</h3>${bars([72, 66, 64, 57, 74, 68, 61, 79, 76, 84, 71, 88], ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr'])}</section></div>`;
 }
 
 function analytics() {
   const report = analyticsReports[state.analytics];
-  workspace.innerHTML = pageIntro('Rillion Analytics', 'Explore representative Analytics views in the same board order as the Rillion platform.', `<span class="analytics-count">${state.analytics + 1} of ${analyticsReports.length}</span>`) + `<div class="analytics-layout"><nav class="panel analytics-menu" aria-label="Analytics boards">${analyticsReports.map((item, index) => `${index === 0 || item.group !== analyticsReports[index - 1].group ? `<p class="analytics-group">${item.group}</p>` : ''}<button data-analytics="${index}" aria-current="${index === state.analytics ? 'page' : 'false'}"><span>${item.title}</span><small>${index === state.analytics ? 'Viewing now' : 'Open board'}</small></button>`).join('')}</nav><section class="panel analytics-stage"><div class="analytics-head"><div><span class="analytics-board-group">${report.group}</span><h2>${report.title}</h2><p>${report.copy}</p></div><div class="analytics-actions"><button class="quiet-control" data-action="analytics-prev" ${state.analytics === 0 ? 'disabled' : ''}>Previous</button><button class="primary-button" data-action="analytics-next">${state.analytics === analyticsReports.length - 1 ? 'Back to first' : 'Next board'}</button></div></div><button class="analytics-canvas" data-action="analytics-next" aria-label="Continue from ${report.title} to the next Analytics board"><span class="analytics-image-frame"><img src="${report.image}" alt="${report.title} Analytics dashboard with demonstration data"></span><span class="analytics-continue">Click the board to continue</span></button><p class="reference-note">Reference screen from Rillion Analytics · demonstration data</p></section></div>`;
+  const interactive = interactiveAnalyticsTitles.has(report.title);
+  const board = interactive && !state.analyticsReference
+    ? interactiveAnalytics(report)
+    : `<div class="analytics-canvas"><span class="analytics-image-frame"><img src="${report.image}" alt="${report.title} Analytics dashboard with demonstration data" loading="lazy" decoding="async" width="3200" height="1562"></span></div>`;
+  const referenceToggle = interactive ? `<button class="quiet-control" data-action="analytics-reference">${state.analyticsReference ? 'Interactive view' : 'Reference view'}</button>` : '';
+  workspace.innerHTML = pageIntro('Rillion Analytics', 'Explore representative Analytics views in the same board order as the Rillion platform.', `<span class="analytics-count">${state.analytics + 1} of ${analyticsReports.length}</span>`) + `<div class="analytics-layout"><nav class="panel analytics-menu" aria-label="Analytics boards">${analyticsReports.map((item, index) => `${index === 0 || item.group !== analyticsReports[index - 1].group ? `<p class="analytics-group">${item.group}</p>` : ''}<button data-analytics="${index}" aria-current="${index === state.analytics ? 'page' : 'false'}"><span>${item.title}</span><small>${index === state.analytics ? 'Viewing now' : 'Open board'}</small></button>`).join('')}</nav><section class="panel analytics-stage"><div class="analytics-head"><div><span class="analytics-board-group">${report.group}</span><h2>${report.title}</h2><p>${report.copy}</p></div><div class="analytics-actions">${referenceToggle}<button class="quiet-control" data-action="analytics-prev" ${state.analytics === 0 ? 'disabled' : ''}>Previous</button><button class="primary-button" data-action="analytics-next">${state.analytics === analyticsReports.length - 1 ? 'Back to first' : 'Next board'}</button></div></div>${board}<p class="reference-note">${interactive && !state.analyticsReference ? 'Interactive synthetic board · use the filters to update this view' : 'Reference screen from Rillion Analytics · demonstration data'}</p></section></div>`;
 }
 
 function reports() {
   workspace.innerHTML = pageIntro('AP performance', 'A synthetic view of invoice throughput, exceptions, and approval speed.', '<button class="primary-button" data-action="export">Download synthetic CSV</button>') + `<div class="report-grid"><section class="panel"><div class="panel-head"><h3>Invoices processed</h3><span>Last 6 months</span></div><div class="chart">${[54, 66, 58, 81, 74, 92].map((value, index) => `<div class="bar" style="height:${value}%"><span>${['Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr'][index]}</span></div>`).join('')}</div></section><section class="panel"><div class="panel-head"><h3>Operational health</h3></div><div class="metric-list">${[['94%', 'touchless match'], ['1.8 days', 'approval cycle'], ['3.2%', 'exception rate'], ['100%', 'audit trail coverage']].map(([value, label]) => `<div class="metric"><strong>${value}</strong><span>${label}</span></div>`).join('')}</div></section></div>`;
 }
 
-const paymentTabFor = payment => state.paymentMoves.get(payment.id) || payment.tab;
+const paymentTabFor = payment => payment.journey && state.journeyStage < 3 ? null : state.paymentMoves.get(payment.id) || payment.tab;
 
 function paymentTabCount(tab) {
   const base = paymentTabs.find(item => item[0] === tab)[2];
   return payments.reduce((count, payment) => {
     const current = paymentTabFor(payment);
+    if (payment.journey) return count + (current === tab ? 1 : 0);
     if (current === payment.tab) return count;
     if (payment.tab === tab) return count - 1;
     if (current === tab) return count + 1;
@@ -405,6 +478,7 @@ function paymentsPage() {
   const batchActions = state.paymentTab === 'ready' ? `<div class="payment-batch"><button class="icon-control" data-action="payment-export" aria-label="Download synthetic payment list">↓</button><button data-action="payment-outside" ${selectedCount ? '' : 'disabled'}>Pay outside Rillion</button><button data-action="payment-send" ${selectedCount ? '' : 'disabled'}>Send for payment</button><span>${selectedCount ? `${selectedCount} selected` : 'Select invoices to continue'}</span></div>` : '<div class="payment-batch"><button class="icon-control" data-action="payment-export" aria-label="Download synthetic payment list">↓</button></div>';
   workspace.innerHTML = `<div class="payments-head"><div><h2>Payments</h2><div class="payment-tabs" role="tablist" aria-label="Payment status">${paymentTabs.map(([id, label]) => `<button role="tab" data-payment-tab="${id}" aria-selected="${state.paymentTab === id}">${label} <span>(${paymentTabCount(id)})</span></button>`).join('')}</div></div><div class="payment-head-actions"><button data-action="payment-manage">Manage</button><button data-action="payment-portal">Payment portal ↗</button></div></div>
     <section class="panel payments-panel"><div class="payment-filters"><label><span>Invoice number</span><input id="payment-query" value="${escapeHtml(state.paymentQuery)}" placeholder="Invoice number"></label><label><span>Vendor</span><select id="payment-vendor"><option value="all">Name or number</option>${vendors.map(vendor => `<option ${state.paymentVendor === vendor ? 'selected' : ''}>${vendor}</option>`).join('')}</select></label><label><span>Payment method</span><select id="payment-method"><option value="all">All methods</option>${methods.map(method => `<option ${state.paymentMethod === method ? 'selected' : ''}>${method}</option>`).join('')}</select></label><label class="payment-date"><span>${dateLabel}</span><input id="payment-date" type="date" value="${state.paymentDate}" aria-label="${dateLabel} from"></label></div>${batchActions}<div class="table-wrap payment-table">${records.length ? dataTable(heads, records.map(paymentRow).join('')) : emptyState('No matching payments', 'Clear a filter or choose another payment status.')}</div><div class="payment-total"><span>Showing ${records.length} representative ${records.length === 1 ? 'invoice' : 'invoices'} · ${paymentTabCount(state.paymentTab)} total</span><strong>${money(total)} USD</strong></div></section>`;
+  workspace.insertAdjacentHTML('afterbegin', journeyStrip());
 }
 
 function tablePage(kind) {
@@ -450,68 +524,133 @@ function render() {
   else if (state.view === 'payments') paymentsPage();
   else if (['tasks', 'requisitions'].includes(state.view)) tablePage(state.view);
   else overviewPage(state.view);
+  if (state.scenario) workspace.insertAdjacentHTML('afterbegin', scenarioBanner());
 }
 
 function navigate(view) {
   if (view === 'to-verify') state.captureScreen = 'queue';
   state.view = view;
-  history.replaceState(null, '', `#${view}`);
+  const url = new URL(location.href);
+  url.hash = view;
+  if (state.scenario) url.searchParams.set('view', view);
+  history.replaceState(null, '', url);
   render();
   workspace.focus({ preventScroll: true });
 }
 
-const tours = [
-  ['Start with the work queue', 'Rillion brings approvals, matching exceptions, and AP review into one prioritized queue.', 'dashboard'],
-  ['Verify captured invoices', 'To Verify keeps extracted fields and source evidence together before an invoice enters the log.', 'to-verify'],
-  ['Follow the Invoice Log', 'The log keeps status, ownership, and purchasing evidence visible from receipt through transfer.', 'invoice-log'],
-  ['Measure approvals', 'The Approval report shows who owns each decision and how quickly work moves.', 'approval-report'],
-  ['Track payments', 'Payments keeps approved invoices visible as they move from posting readiness to scheduled payment and ERP export.', 'payments'],
-  ['Explore Analytics', 'Move through eleven boards in the same groups and order as the Rillion Analytics platform.', 'analytics']
-];
+const tourSets = {
+  platform: [
+    { title: 'Start with the work queue', copy: 'Rillion brings approvals, matching exceptions, and AP review into one prioritized queue.', view: 'dashboard' },
+    { title: 'Verify captured invoices', copy: 'To Verify keeps extracted fields and source evidence together before an invoice enters the log.', view: 'to-verify' },
+    { title: 'Follow the Invoice Log', copy: 'The log keeps status, ownership, and purchasing evidence visible from receipt through transfer.', view: 'invoice-log' },
+    { title: 'Measure approvals', copy: 'Choose a role to see who owns each decision and how quickly work moves.', view: 'approval-report', role: 'department-manager' },
+    { title: 'Track payments', copy: 'Payments keeps approved invoices visible from posting readiness through settlement.', view: 'payments', paymentTab: 'ready' },
+    { title: 'Explore Analytics', copy: 'Use live synthetic filters or compare with eleven reference boards in platform order.', view: 'analytics', analytics: 1 }
+  ],
+  ap: [
+    { title: 'See today’s AP work', copy: 'Start with one prioritized queue for approvals, exceptions, and review.', view: 'dashboard' },
+    { title: 'Verify the source invoice', copy: 'Compare extracted fields, source evidence, and coding before release.', view: 'to-verify' },
+    { title: 'Control the Invoice Log', copy: 'Track flow, coding, purchasing evidence, matching, and ownership in one grid.', view: 'invoice-log' },
+    { title: 'Prepare payment', copy: 'Move approved invoices into the right payment path with a visible audit state.', view: 'payments', paymentTab: 'ready' },
+    { title: 'Improve the process', copy: 'Use Active invoices to find volume, bottlenecks, exceptions, and match health.', view: 'analytics', analytics: 1 }
+  ],
+  approver: [
+    { title: 'Open your approval role', copy: 'Your role view shows only decisions assigned to you.', view: 'approval-report', role: 'department-manager' },
+    { title: 'Review invoice evidence', copy: 'The invoice, extracted fields, PO match, and prior handoffs stay together.', view: 'dashboard', selected: journeyInvoiceId },
+    { title: 'See what happens next', copy: 'After approval, the invoice becomes ready for payment without losing its audit trail.', view: 'payments', paymentTab: 'ready' }
+  ],
+  finance: [
+    { title: 'See payment readiness', copy: 'Track ready, awaiting, in-progress, and completed payments in one workspace.', view: 'payments', paymentTab: 'ready' },
+    { title: 'Monitor AP performance', copy: 'Review throughput, exception rate, approval speed, and audit coverage.', view: 'reports' },
+    { title: 'Explore executive Analytics', copy: 'Filter an interactive synthetic executive view, then compare it with the Rillion reference.', view: 'analytics', analytics: 8 },
+    { title: 'Inspect contract controls', copy: 'See validity, matching rules, approval flow, coding, and supporting evidence together.', view: 'contracts' }
+  ]
+};
+let tourReturnFocus = null;
+
+function setWelcomeModal(active) {
+  const shell = document.querySelector('#app-shell');
+  shell.inert = active;
+  active ? shell.setAttribute('aria-hidden', 'true') : shell.removeAttribute('aria-hidden');
+}
 
 function showTour() {
-  const tour = tours[state.tour];
+  const steps = tourSets[state.tourPersona] || tourSets.platform;
+  const step = steps[state.tour];
   const panel = document.querySelector('#tour');
+  state.tourComplete = false;
+  setWelcomeModal(false);
   panel.hidden = false;
-  panel.classList.remove('is-welcome');
+  panel.classList.remove('is-welcome', 'is-complete');
   panel.setAttribute('aria-modal', 'false');
   document.querySelector('#tour-scrim').hidden = true;
+  document.querySelector('#tour-personas').hidden = true;
   document.querySelector('#tour-shortcuts').hidden = true;
   document.querySelector('#tour-start').hidden = true;
+  document.querySelector('#tour-demo').hidden = true;
   document.querySelector('#tour-back').hidden = state.tour === 0;
   document.querySelector('#tour-next').hidden = false;
-  document.querySelector('#tour-next').textContent = state.tour === tours.length - 1 ? 'Finish tour' : 'Next';
-  document.querySelector('#tour-close').textContent = 'Exit tour';
-  document.querySelector('#tour-count').textContent = `${state.tour + 1} of ${tours.length}`;
-  document.querySelector('#tour-title').textContent = tour[0];
-  document.querySelector('#tour-copy').textContent = tour[1];
-  state.view = tour[2];
+  document.querySelector('#tour-next').textContent = state.tour === steps.length - 1 ? 'Complete walkthrough' : 'Next';
+  document.querySelector('#tour-close').textContent = 'Exit walkthrough';
+  document.querySelector('#tour-count').textContent = `${state.tour + 1} of ${steps.length}`;
+  document.querySelector('#tour-title').textContent = step.title;
+  document.querySelector('#tour-copy').textContent = step.copy;
+  if (step.role) state.roleFilter = step.role;
+  if (step.paymentTab) state.paymentTab = step.paymentTab;
+  if (step.analytics !== undefined) { state.analytics = step.analytics; state.analyticsReference = false; }
+  if (step.selected) state.selected = invoices.find(inv => inv.id === step.selected) || state.selected;
+  state.view = step.view;
   render();
+  document.querySelector('#tour-status').textContent = `${step.title}. Step ${state.tour + 1} of ${steps.length}.`;
+}
+
+function showTourComplete() {
+  const panel = document.querySelector('#tour');
+  state.tourComplete = true;
+  panel.classList.add('is-complete');
+  document.querySelector('#tour-back').hidden = false;
+  document.querySelector('#tour-next').hidden = false;
+  document.querySelector('#tour-next').textContent = 'Continue exploring';
+  document.querySelector('#tour-demo').hidden = false;
+  document.querySelector('#tour-count').textContent = 'Walkthrough complete';
+  document.querySelector('#tour-title').textContent = 'Ready to see Rillion with your process?';
+  document.querySelector('#tour-copy').textContent = 'Request a tailored live demo, or continue exploring this synthetic workspace on your own.';
+  document.querySelector('#tour-status').textContent = 'Walkthrough complete. Request a live demo or continue exploring.';
+  document.querySelector('#tour-demo').focus({ preventScroll: true });
 }
 
 function closeTour(restoreFocus = true) {
   document.querySelector('#tour').hidden = true;
   document.querySelector('#tour-scrim').hidden = true;
+  setWelcomeModal(false);
   state.tour = -1;
-  if (restoreFocus) document.querySelector('.tour-launch')?.focus({ preventScroll: true });
+  state.tourComplete = false;
+  if (restoreFocus) (tourReturnFocus?.isConnected ? tourReturnFocus : document.querySelector('.tour-launch'))?.focus({ preventScroll: true });
 }
 
 function showTourWelcome() {
   const panel = document.querySelector('#tour');
+  tourReturnFocus = document.activeElement?.closest?.('button, a, input, select') || document.querySelector('.tour-launch');
   state.tour = -1;
+  state.tourComplete = false;
   panel.hidden = false;
   panel.classList.add('is-welcome');
+  panel.classList.remove('is-complete');
   panel.setAttribute('aria-modal', 'true');
+  setWelcomeModal(true);
   document.querySelector('#tour-scrim').hidden = false;
+  document.querySelector('#tour-personas').hidden = false;
   document.querySelector('#tour-shortcuts').hidden = false;
   document.querySelector('#tour-start').hidden = false;
+  document.querySelector('#tour-demo').hidden = true;
   document.querySelector('#tour-back').hidden = true;
   document.querySelector('#tour-next').hidden = true;
   document.querySelector('#tour-close').textContent = 'Explore on my own';
   document.querySelector('#tour-count').textContent = 'Explore Rillion';
-  document.querySelector('#tour-title').textContent = 'Choose how you want to explore';
-  document.querySelector('#tour-copy').textContent = 'Take the six-step guided tour, jump directly to a platform area, or close this panel and explore freely.';
-  requestAnimationFrame(() => document.querySelector('#tour-start').focus({ preventScroll: true }));
+  document.querySelector('#tour-title').textContent = 'Choose the walkthrough that fits your role';
+  document.querySelector('#tour-copy').textContent = 'Start with your day-to-day work, take the full platform tour, jump to a module, or explore freely.';
+  document.querySelector('#tour-status').textContent = 'Welcome to the Rillion interactive demo. Choose a walkthrough or platform area.';
+  requestAnimationFrame(() => document.querySelector('[data-tour-persona="ap"]').focus({ preventScroll: true }));
 }
 
 function toast(message) {
@@ -548,6 +687,30 @@ function openInvoice(id) {
   navigate('dashboard');
 }
 
+function scenarioUrl(persona) {
+  const url = new URL(location.href);
+  url.search = '';
+  url.searchParams.set('scenario', persona);
+  url.searchParams.set('view', scenarioConfig[persona].view);
+  url.searchParams.set('welcome', '0');
+  url.hash = scenarioConfig[persona].view;
+  return url.href;
+}
+
+async function copyScenario(persona) {
+  const value = scenarioUrl(persona);
+  try {
+    await navigator.clipboard.writeText(value);
+  } catch {
+    const input = Object.assign(document.createElement('input'), { value });
+    document.body.append(input);
+    input.select();
+    document.execCommand('copy');
+    input.remove();
+  }
+  toast(`${scenarioConfig[persona].label} scenario link copied`);
+}
+
 document.addEventListener('click', event => {
   const group = event.target.closest('[data-nav-group]')?.dataset.navGroup;
   const view = event.target.closest('[data-view]')?.dataset.view;
@@ -566,6 +729,9 @@ document.addEventListener('click', event => {
   const paymentInvoice = event.target.closest('[data-payment-invoice]')?.dataset.paymentInvoice;
   const paymentReference = event.target.closest('[data-payment-reference]')?.dataset.paymentReference;
   const tourView = event.target.closest('[data-tour-view]')?.dataset.tourView;
+  const tourPersona = event.target.closest('[data-tour-persona]')?.dataset.tourPersona;
+  const shareScenario = event.target.closest('[data-share-scenario]')?.dataset.shareScenario;
+  const analyticsFilter = event.target.closest('[data-analytics-filter]')?.dataset.analyticsFilter;
   const action = event.target.closest('[data-action]')?.dataset.action;
   if (group) { state.expanded.has(group) ? state.expanded.delete(group) : state.expanded.add(group); renderNav(); return; }
   if (view) { navigate(view); return; }
@@ -579,23 +745,29 @@ document.addEventListener('click', event => {
   if (contractTab) { state.contractTab = contractTab; contractDetail(); return; }
   if (logFilter) { state.logFilter = logFilter; invoiceLog(); return; }
   if (approvalFilter) { state.approvalFilter = approvalFilter; approvalReport(); return; }
-  if (analyticsIndex !== undefined) { state.analytics = Number(analyticsIndex); analytics(); return; }
+  if (analyticsIndex !== undefined) { state.analytics = Number(analyticsIndex); state.analyticsReference = false; analytics(); return; }
+  if (analyticsFilter) { state.analyticsFilter = analyticsFilter; analytics(); return; }
   if (paymentTab) { state.paymentTab = paymentTab; state.paymentDate = ''; state.paymentSelection.clear(); paymentsPage(); return; }
   if (paymentInvoice) { toast(`Invoice ${paymentInvoice} opened in the synthetic payment list`); return; }
   if (paymentReference) { toast(`Payment reference ${paymentReference} opened for review`); return; }
   if (tourView) { closeTour(false); navigate(tourView); return; }
-  if (action === 'approve') { state.approved.add(state.selected.id); render(); toast(`${state.selected.id} approved and ready for payment`); }
+  if (tourPersona) { state.tourPersona = tourPersona; state.tour = 0; showTour(); return; }
+  if (shareScenario) { copyScenario(shareScenario); return; }
+  if (action === 'approve') { state.approved.add(state.selected.id); if (state.selected.id === journeyInvoiceId) { state.journeyStage = Math.max(state.journeyStage, 3); state.paymentTab = 'ready'; navigate('payments'); } else render(); toast(`${state.selected.id} approved and ready for payment`); }
   if (action === 'fields') { state.fieldsExpanded = !state.fieldsExpanded; render(); }
-  if (action === 'reset') { state.approved.clear(); state.documentOutcomes.clear(); state.paymentSelection.clear(); state.paymentMoves.clear(); state.selected = invoices[0]; state.selectedDocument = documents[0]; state.selectedContract = contracts[0]; state.captureSelected = captureInvoices[0]; state.fieldsExpanded = false; state.logFilter = 'all'; state.approvalFilter = 'all'; state.roleFilter = 'all'; state.documentTab = 'being-checked'; state.documentCompany = 'all'; state.documentType = 'all'; state.contractTab = 'contract-lines'; state.paymentTab = 'ready'; state.paymentQuery = ''; state.paymentVendor = 'all'; state.paymentMethod = 'all'; state.paymentDate = ''; state.captureScreen = 'queue'; state.captureVendor = 'all'; state.captureInvoice = ''; state.captureAmountMin = ''; state.captureAmountMax = ''; state.captureSettingsField = 'Supplier bank account'; state.captureSettingsTab = 'global'; state.analytics = 0; state.view = 'dashboard'; state.query = ''; document.querySelector('#search').value = ''; history.replaceState(null, '', '#dashboard'); render(); showTourWelcome(); toast('Demo reset'); }
+  if (action === 'reset') { state.approved.clear(); state.documentOutcomes.clear(); state.paymentSelection.clear(); state.paymentMoves.clear(); state.selected = invoices[0]; state.selectedDocument = documents[0]; state.selectedContract = contracts[0]; state.captureSelected = captureInvoices[0]; state.fieldsExpanded = false; state.scenario = ''; state.journeyStage = 0; state.tourPersona = 'platform'; state.logFilter = 'all'; state.approvalFilter = 'all'; state.roleFilter = 'all'; state.documentTab = 'being-checked'; state.documentCompany = 'all'; state.documentType = 'all'; state.contractTab = 'contract-lines'; state.paymentTab = 'ready'; state.paymentQuery = ''; state.paymentVendor = 'all'; state.paymentMethod = 'all'; state.paymentDate = ''; state.captureScreen = 'queue'; state.captureVendor = 'all'; state.captureInvoice = ''; state.captureAmountMin = ''; state.captureAmountMax = ''; state.captureSettingsField = 'Supplier bank account'; state.captureSettingsTab = 'global'; state.analytics = 0; state.analyticsReference = false; state.analyticsFilter = 'all'; state.view = 'dashboard'; state.query = ''; document.querySelector('#search').value = ''; history.replaceState(null, '', `${location.pathname}#dashboard`); render(); showTourWelcome(); toast('Demo reset'); }
   if (action === 'tour') showTourWelcome();
-  if (action === 'tour-start') { state.tour = 0; showTour(); }
-  if (action === 'tour-back' && state.tour > 0) { state.tour--; showTour(); }
-  if (action === 'tour-next') { state.tour++; if (state.tour >= tours.length) { closeTour(); toast('Tour complete — explore anything'); } else showTour(); }
+  if (action === 'tour-start') { state.tourPersona = 'platform'; state.tour = 0; showTour(); }
+  if (action === 'tour-back' && state.tourComplete) { state.tourComplete = false; showTour(); }
+  else if (action === 'tour-back' && state.tour > 0) { state.tour--; showTour(); }
+  if (action === 'tour-next' && state.tourComplete) { closeTour(); toast('Walkthrough complete — keep exploring'); }
+  else if (action === 'tour-next') { const steps = tourSets[state.tourPersona] || tourSets.platform; if (state.tour === steps.length - 1) showTourComplete(); else { state.tour++; showTour(); } }
   if (action === 'tour-close') closeTour();
   if (action === 'export') downloadReport();
   if (action === 'payment-export') downloadPayments();
-  if (action === 'analytics-prev' && state.analytics > 0) { state.analytics--; analytics(); }
-  if (action === 'analytics-next') { state.analytics = (state.analytics + 1) % analyticsReports.length; analytics(); }
+  if (action === 'analytics-prev' && state.analytics > 0) { state.analytics--; state.analyticsReference = false; analytics(); }
+  if (action === 'analytics-next') { state.analytics = (state.analytics + 1) % analyticsReports.length; state.analyticsReference = false; analytics(); }
+  if (action === 'analytics-reference') { state.analyticsReference = !state.analyticsReference; analytics(); }
   if (action === 'document-prev') { const index = documents.findIndex(doc => doc.id === state.selectedDocument.id); if (index > 0) { state.selectedDocument = documents[index - 1]; documentDetail(); } }
   if (action === 'document-next') { const index = documents.findIndex(doc => doc.id === state.selectedDocument.id); if (index < documents.length - 1) { state.selectedDocument = documents[index + 1]; documentDetail(); } }
   if (action === 'document-save') toast(`${state.selectedDocument.name} saved in this simulation`);
@@ -608,6 +780,9 @@ document.addEventListener('click', event => {
   if (action === 'contract-save') toast(`${state.selectedContract.name} saved in this simulation`);
   if (action === 'contract-options') toast('Contract options opened in this simulation');
   if (action === 'contract-attachment') toast(`${state.selectedContract.attachment} opened in this simulation`);
+  if (action === 'capture-verify') { state.journeyStage = Math.max(state.journeyStage, 1); state.logFilter = 'all'; navigate('invoice-log'); toast(`${journeyInvoiceId} verified and added to Invoice Log`); }
+  if (action === 'journey-approval') { state.journeyStage = Math.max(state.journeyStage, 2); state.selected = invoices.find(inv => inv.id === journeyInvoiceId); state.roleFilter = 'department-manager'; navigate('approval-report'); toast(`${journeyInvoiceId} sent to Department manager`); }
+  if (action === 'journey-payment') { state.paymentTab = 'ready'; navigate('payments'); }
   if (action === 'capture-back') { state.captureScreen = 'queue'; toVerify(); }
   if (action === 'capture-settings-back') { state.captureScreen = 'detail'; captureDetail(); }
   if (action === 'capture-settings') { state.captureScreen = 'settings'; captureSettings(); }
@@ -625,6 +800,7 @@ document.addEventListener('click', event => {
     const destination = action === 'payment-send' ? 'in-progress' : 'completed';
     const count = state.paymentSelection.size;
     state.paymentSelection.forEach(id => state.paymentMoves.set(id, destination));
+    if (state.paymentSelection.has(journeyInvoiceId)) state.journeyStage = 4;
     state.paymentSelection.clear();
     state.paymentTab = destination;
     paymentsPage();
@@ -633,7 +809,15 @@ document.addEventListener('click', event => {
 });
 
 document.addEventListener('keydown', event => {
-  if (event.key === 'Escape' && !document.querySelector('#tour').hidden) { closeTour(); return; }
+  const tourPanel = document.querySelector('#tour');
+  if (event.key === 'Escape' && !tourPanel.hidden) { closeTour(); return; }
+  if (event.key === 'Tab' && tourPanel.classList.contains('is-welcome')) {
+    const focusable = [...tourPanel.querySelectorAll('button:not([hidden]):not(:disabled), a[href]:not([hidden])')];
+    const first = focusable[0];
+    const last = focusable.at(-1);
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+  }
   const row = event.target.closest('tr[data-invoice]');
   if (row && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); openInvoice(row.dataset.invoice); }
 });
@@ -675,4 +859,4 @@ window.addEventListener('hashchange', () => {
 });
 
 render();
-showTourWelcome();
+if (urlParams.get('welcome') !== '0') showTourWelcome();

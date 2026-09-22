@@ -14,8 +14,8 @@ assert.match(app, /data-document-tab/, 'Missing document inbox tabs');
 assert.match(app, /document-detail/, 'Missing document detail route');
 assert.match(app, /class="table-link" data-document=/, 'Document rows need native interactive controls');
 assert.doesNotMatch(app, /<tr data-document=/, 'Document table rows must preserve native table semantics');
-assert.ok(app.indexOf("['Track payments'") < app.indexOf("['Explore Analytics'"), 'Payments must precede Analytics in the guided tour');
-assert.ok(app.indexOf("['Verify captured invoices'") < app.indexOf("['Follow the Invoice Log'"), 'Invoice Log must follow To Verify in the guided tour');
+assert.ok(app.indexOf("title: 'Track payments'") < app.indexOf("title: 'Explore Analytics'"), 'Payments must precede Analytics in the guided tour');
+assert.ok(app.indexOf("title: 'Verify captured invoices'") < app.indexOf("title: 'Follow the Invoice Log'"), 'Invoice Log must follow To Verify in the guided tour');
 for (const label of ['Invoices to verify', 'Invoice details', 'Invoice data settings', 'Supplier bank account', 'Company overrides', 'Vendor overrides', 'Change history']) {
   assert.match(app, new RegExp(label), `Capture flow is missing ${label}`);
 }
@@ -70,7 +70,7 @@ for (const group of ['AP Reports', 'Performance Tracking Reports', 'Business Rep
   assert.match(app, new RegExp(`group: '${group}'`), `Missing Analytics group: ${group}`);
 }
 assert.match(html, /class="tour-launch"/, 'Guided tour launch must be visible immediately');
-assert.match(html, /6-step walkthrough/, 'Guided tour launch needs a recognizable description');
+assert.match(html, /Choose a walkthrough/, 'Guided tour launch needs a recognizable description');
 assert.match(html, /role="dialog"/, 'Guided tour welcome must be an accessible dialog');
 assert.match(html, /id="tour-scrim"/, 'Guided tour welcome needs a clear modal boundary');
 for (const view of ['to-verify', 'documents', 'contracts', 'payments', 'analytics']) {
@@ -78,8 +78,28 @@ for (const view of ['to-verify', 'documents', 'contracts', 'payments', 'analytic
 }
 assert.match(app, /function showTourWelcome\(\)/, 'Missing first-load tour welcome behavior');
 assert.match(app, /action === 'tour-back'/, 'Guided tour needs a Back action');
-assert.match(app, /render\(\);\nshowTourWelcome\(\);\s*$/, 'Guided tour welcome must open on every fresh page load');
+assert.match(app, /if \(urlParams\.get\('welcome'\) !== '0'\) showTourWelcome\(\);\s*$/, 'Guided tour welcome must open unless a shared scenario suppresses it');
 assert.doesNotMatch(app, /localStorage|sessionStorage/, 'Tour dismissal must reset on a fresh link load');
+for (const persona of ['ap', 'approver', 'finance']) {
+  assert.match(html, new RegExp(`data-tour-persona="${persona}"`), `Missing ${persona} persona walkthrough`);
+  assert.match(app, new RegExp(`${persona}: \\[`), `Missing ${persona} tour steps`);
+}
+assert.match(app, /journeyStage/, 'Connected invoice journey needs shared workflow state');
+for (const action of ['capture-verify', 'journey-approval', 'journey-payment']) assert.match(app, new RegExp(action), `Missing connected journey action: ${action}`);
+assert.match(app, /payment\.journey && state\.journeyStage < 3 \? null/, 'Journey payment must stay hidden until approval');
+assert.match(app, /state\.journeyStage = 4/, 'Payment action must complete the connected journey');
+assert.match(app, /new URLSearchParams\(location\.search\)/, 'Shareable scenarios need native URL parsing');
+assert.match(app, /welcome.*'0'/, 'Shareable scenarios need a welcome bypass');
+assert.match(app, /function scenarioUrl\(persona\)/, 'Missing shareable scenario link builder');
+for (const report of ['Active invoices', 'Vendor payment analyzer', 'Executive dashboard']) assert.match(app, new RegExp(report), `Missing interactive Analytics board: ${report}`);
+assert.match(app, /loading="lazy" decoding="async"/, 'Analytics reference images must load lazily');
+assert.match(app, /data-analytics-filter/, 'Interactive Analytics needs working filters');
+assert.match(html, /id="app-shell"/, 'Modal needs a background shell target');
+assert.match(html, /id="tour-status"[\s\S]*aria-live="polite"/, 'Tour needs live screen-reader announcements');
+assert.match(app, /shell\.inert = active/, 'Welcome modal must make the background inert');
+assert.match(app, /event\.key === 'Tab'.*is-welcome/, 'Welcome modal must trap keyboard focus');
+assert.match(html, /https:\/\/www\.rillion\.com\/book-demo\//, 'Tour must end with the official live-demo handoff');
+assert.match(html, /target="_blank" rel="noopener noreferrer"/, 'External live-demo handoff must isolate the new tab');
 for (const destination of ['Invoice Log', 'To Verify', 'Invoice details', 'Documents', 'Contracts']) {
   assert.match(app, new RegExp(`backButton\\('${destination}'`), `Missing intuitive back control for ${destination}`);
 }

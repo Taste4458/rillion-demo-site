@@ -30,7 +30,9 @@ The source reference is the authenticated Demo51 environment and its invoice, re
 
 - Public link with no login.
 - Synthetic company, vendor, invoice, purchase-order, contract, and employee data only.
-- Guided tour and free exploration with deterministic reset. Every fresh public-link load opens a dismissible welcome dialog with a full-tour action and direct shortcuts to To Verify, Documents, Contracts, Payments, and Analytics.
+- Guided tour and free exploration with deterministic reset. Every fresh public-link load opens a dismissible welcome dialog with Accounts payable, Invoice approver, Finance leader, full-platform, and direct-module paths.
+- One canonical Precision Tools invoice advances locally through Capture, Invoice Log, manager approval, payment readiness, and payment completion so the major modules share visible state.
+- Shareable AP, approver, and finance scenario URLs open the relevant module and role without the welcome dialog; all scenarios remain synthetic and browser-local.
 - Representative interactions are simulated locally in the browser.
 - No production APIs, credentials, customer data, lead forms, behavioral tracking, telemetry, or remote writes.
 - It must identify itself as a product simulation rather than a live Rillion tenant.
@@ -40,8 +42,10 @@ The source reference is the authenticated Demo51 environment and its invoice, re
 - Documents includes a status-tabbed inbox and a synthetic document-detail workspace with preview, metadata, flow, lines, comments, and simulated approval actions.
 - Contracts includes a clickable register and a synthetic contract-detail workspace with source image, editable metadata, validity and matching settings, Accounts Payable-to-CFO flow, lines, account posting, attachments, and simulated toolbar actions.
 - Payments includes Ready for payment, Awaiting approval, In progress, and Completed click-throughs with synthetic filters, records, and reversible simulated actions.
-- The guided tour visits Payments immediately before Rillion Analytics.
-- A prominent Guided tour control is visible above the fold on initial load and identifies itself as a six-step walkthrough.
+- The full-platform guided tour visits Payments immediately before Rillion Analytics; role tours are shorter and task-specific.
+- A prominent Guided tour control is visible above the fold on initial load and opens the walkthrough chooser.
+- Active invoices, Vendor payment analyzer, and Executive dashboard provide interactive synthetic filters; every reference image is lazy-loaded, and the other boards remain source-faithful references.
+- The final walkthrough state offers an external Request a live demo action to Rillion's official booking page.
 - Detail screens use a consistent destination-labeled Back control with a left-arrow icon, a 44px minimum target, and visible hover/focus treatment.
 
 ## Brand Commitments
@@ -67,4 +71,4 @@ Use the current Rillion identity and product terminology. Preserve the friendly-
 
 ## Accessibility & Inclusion
 
-Target keyboard-operable controls, visible focus, reduced-motion support, semantic landmarks, accessible names, and WCAG AA contrast. Formal conformance testing remains an open decision.
+Target keyboard-operable controls, visible focus, reduced-motion support, semantic landmarks, accessible names, and WCAG AA contrast. The welcome dialog traps focus, makes the background inert, supports Escape, restores focus on close, and announces tour progress through a polite live region. Automated DOM/accessibility checks cover unique IDs, control names, image alternatives, focus containment, and responsive overflow; formal third-party certification is outside this simulation's scope.

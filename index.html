@@ -9,7 +9,7 @@
 </head>
 <body>
   <a class="skip-link" href="#workspace">Skip to workspace</a>
-  <div class="app-shell">
+  <div id="app-shell" class="app-shell">
     <aside class="sidebar" aria-label="Primary navigation">
       <a class="wordmark" href="#dashboard" aria-label="Rillion demo home"><img src="assets/rillion-logo-lime.svg" alt="Rillion" width="962" height="340"></a>
       <nav id="nav"></nav>
@@ -41,9 +41,9 @@
               <option value="finance-controller">Finance controller · 1</option>
             </select>
           </label>
-          <button class="tour-launch" data-action="tour" aria-label="Start the 6-step guided tour">
+          <button class="tour-launch" data-action="tour" aria-label="Choose a guided walkthrough">
             <span class="tour-launch-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9 9 9 0 0 0-9-9Z"></path><path d="m14.8 8.2-1.7 4.9-4.9 1.7 1.7-4.9 4.9-1.7Z"></path></svg></span>
-            <span><strong>Guided tour</strong><small>6-step walkthrough</small></span>
+            <span><strong>Guided tour</strong><small>Choose a walkthrough</small></span>
           </button>
         </div>
       </header>
@@ -58,6 +58,11 @@
       <span id="tour-count"></span>
       <h2 id="tour-title"></h2>
       <p id="tour-copy"></p>
+      <div id="tour-personas" class="tour-personas" aria-label="Choose a guided walkthrough">
+        <button data-tour-persona="ap"><strong>Accounts payable</strong><small>Capture, match, approve, and pay</small></button>
+        <button data-tour-persona="approver"><strong>Invoice approver</strong><small>Review evidence and make a decision</small></button>
+        <button data-tour-persona="finance"><strong>Finance leader</strong><small>Payments, performance, and Analytics</small></button>
+      </div>
       <div id="tour-shortcuts" class="tour-shortcuts" aria-label="Explore a platform area">
         <button data-tour-view="to-verify">Verify invoices</button>
         <button data-tour-view="documents">Review documents</button>
@@ -69,10 +74,12 @@
     <div class="tour-actions">
       <button id="tour-close" class="text-button" data-action="tour-close">Explore on my own</button>
       <button id="tour-back" class="text-button" data-action="tour-back" hidden>Back</button>
-      <button id="tour-start" class="primary-button" data-action="tour-start">Start guided tour</button>
+      <button id="tour-start" class="primary-button" data-action="tour-start">Full platform tour</button>
+      <a id="tour-demo" class="primary-button tour-demo" href="https://www.rillion.com/book-demo/" target="_blank" rel="noopener noreferrer" hidden>Request a live demo ↗</a>
       <button id="tour-next" class="primary-button" data-action="tour-next" hidden>Next</button>
     </div>
   </section>
+  <div id="tour-status" class="sr-only" role="status" aria-live="polite"></div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <script src="app.js"></script>
