@@ -14,6 +14,10 @@ colors:
   outline: "#CFD6CD"
   surface: "#FFFFFF"
   success: "#1F8A5B"
+  price-variant-text: "#87411F"
+  price-variant-border: "#B85F2F"
+  price-variant-bg: "#FFE4CE"
+  price-variant-wash: "#FFF0E5"
 typography:
   headline:
     fontFamily: "Gellix, Arial, sans-serif"
@@ -166,9 +170,9 @@ The upper-right Approval role selector is a native select control that lists all
 
 ### Approver Queue and Detail
 
-The approval queue uses five workflow tabs—Inbound, To be processed, Being checked, Processed, and Return to AP—with per-tab counts. Company, vendor, and due-date-range filters precede selection-gated Approve and Match to PO batch actions. Its dense evidence table includes status, company, vendor invoice, purchasing references, amount, dates, serial number, and latest matching comment; the table scrolls inside its surface, and only the semantic vendor button opens detail. Empty tab/filter intersections provide a named recovery message.
+The approval queue uses five workflow tabs—Inbound, To be processed, Being checked, Processed, and Return to AP—with per-tab counts. Invoice Log Transfer writes into the role's Inbound state before approval work begins. Company, vendor, and due-date-range filters precede selection-gated Approve and Match to PO batch actions. Its dense evidence table includes status, company, vendor invoice, purchasing references, amount, dates, serial number, and latest matching comment; the table scrolls inside its surface, and only the semantic vendor button opens detail. Empty tab/filter intersections provide a named recovery message.
 
-Approval detail pairs the invoice image with invoice fields, AI matching evidence, account posting, and a scroll-contained line table, while flow and comments remain visible in the side rail. A deep-green toolbar provides Back to approval queue, record position, Previous/Next, Save, Approve, Return to AP, Options, and contextual Purchase order actions. At 1180px the flow/comments rail moves beneath the invoice and evidence panes; at 820px all panes stack in one column and the toolbar scrolls within the viewport.
+Approval detail pairs the invoice image with invoice fields, contextually labeled AI or purchase-order matching evidence, account posting code, and a scroll-contained line table, while flow and comments remain visible in the side rail. AI evidence may show confidence; purchase-order outcomes never do. A deep-green toolbar provides Back to approval queue, record position, Previous/Next, Save, Approve, Return to AP, Options, and contextual Purchase order actions. At 1180px the flow/comments rail moves beneath the invoice and evidence panes; at 820px all panes stack in one column and the toolbar scrolls within the viewport.
 
 ### Capture / To Verify
 
@@ -202,7 +206,7 @@ Detail workspaces use one shared Back control: an authored left-arrow icon, visi
 
 ### Invoice Log
 
-Invoice Log follows To Verify in both navigation and the guided tour. Its horizontally contained operational grid mirrors Demo51's evidence density and live column order: company, vendor, vendor invoice, flow proposal, account posting, accounting date, due date, total, tax, tax %, currency, information, purchase order, and contract, followed by the simulation's match and workflow status evidence. Automated flow/account proposals use compact labeled green, yellow, or red chips, overdue dates use the real pale-critical treatment, and monetary columns use aligned tabular numerals. PO and match use the same labeled state language: green means matched, yellow identifies review with an explicit Delivery variance or Price variance, and red means exception or missing PO. Vendor names are native invoice links; detail views reuse the same shared record to show confidence, variance amount, and a matching explanation beside the invoice image. `Directly to recording` is reserved for 100% matched purchase orders and contracts; those records are excluded from approval work. Legitimate non-PO examples show `AI generated` in both the flow and account-posting proposal columns and pair `Non-PO verified` with `AI matched`; stable reference examples remain log-only, while selected actionable examples appear in AP review, department manager, and finance controller approval queues. Text and a dot accompany every color so state never depends on color alone.
+Invoice Log follows To Verify in both navigation and the guided tour. Its horizontally contained operational grid mirrors Demo51's evidence density and live column order, adding a compact Code column sourced from the same invoice record used by detail. Automated flow/account proposals use labeled green, yellow, or red chips, overdue dates use the real pale-critical treatment, and monetary columns use aligned tabular numerals. PO and match use the same labeled state language: green means fully matched, yellow identifies a Delivery variant, light orange identifies a Price variant, and red means exception or missing PO. Confidence percentages are exclusive to AI matching; purchase-order fully matched, delivery variant, price variant, and exception outcomes show no confidence. Vendor names are native invoice links that open a two-pane invoice workspace with persistent fields and code, the source invoice image, and full-width Invoice lines, Account posting, and Comments/attachments tabs. A selection-gated Transfer action moves only eligible records into the matching role's Approval Inbound queue; already transferred, direct-recording, and log-only records cannot be selected. `Directly to recording` remains reserved for fully matched purchase orders and contracts. Legitimate non-PO examples show `AI generated` in both proposal columns and pair `Non-PO verified` with `AI matched`. Text and a dot accompany every color so state never depends on color alone.
 
 ### Analytics
 

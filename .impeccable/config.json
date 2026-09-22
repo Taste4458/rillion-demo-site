@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "styles.css"
+        ],
+        "createdAt": "2026-09-22T21:40:42.321Z",
+        "reason": "Existing match-summary status rail is confirmed in HEAD and intentionally encodes success, warning, price-variant, and error states."
+      }
+    ]
+  }
+}
