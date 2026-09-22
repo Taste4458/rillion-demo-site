@@ -102,6 +102,7 @@ assert.match(app, /welcome.*'0'/, 'Shareable scenarios need a welcome bypass');
 assert.match(app, /function scenarioUrl\(persona\)/, 'Missing shareable scenario link builder');
 assert.match(app, /loading="lazy" decoding="async"/, 'Analytics reference images must load lazily');
 assert.match(app, /class="analytics-canvas" data-action="analytics-next"/, 'Analytics board images must advance the platform-ordered sequence');
+assert.match(css, /\.analytics-image-frame::before\{[^}]*width:7\.5%;[^}]*background:var\(--wash\)/, 'Analytics boards must share the Spend Report gray left rail');
 assert.doesNotMatch(app, /interactiveAnalytics|data-analytics-filter|analytics-reference/, 'Analytics must remain source-faithful rather than using simplified synthetic boards');
 assert.match(html, /id="app-shell"/, 'Modal needs a background shell target');
 assert.match(html, /id="tour-status"[\s\S]*aria-live="polite"/, 'Tour needs live screen-reader announcements');
