@@ -42,6 +42,10 @@ const invoiceBlock = app.slice(app.indexOf('const invoices = ['), app.indexOf('c
 const invoiceRecords = [...invoiceBlock.matchAll(/\n\t\{\n\t\tid: 'INV-[\s\S]*?\n\t\},?/g)].map((match) => match[0]);
 const directRecords = invoiceRecords.filter((line) => line.includes("flowProposal: 'Directly to recording'"));
 const aiRecords = invoiceRecords.filter((line) => line.includes('aiMatched: true'));
+const aiRecordValues = aiRecords.map((line) => ({
+	confidence: Number(line.match(/confidence: (\d+)/)?.[1]),
+	tone: line.match(/matchTone: '([^']+)'/)?.[1],
+}));
 const actionableAiRecords = aiRecords.filter((line) => !line.includes('logOnly: true'));
 const varianceRecords = invoiceRecords.filter((line) => line.includes("matchStatus: 'delivery-variance'") || line.includes("matchStatus: 'price-variance'"));
 const independentManagerRecords = invoiceRecords.filter((line) => line.includes("role: 'department-manager'") && !line.includes("id: 'INV-77821'"));
@@ -51,6 +55,10 @@ assert.ok(
 	'Direct recording must be limited to fully matched purchase orders and contracts',
 );
 assert.ok(aiRecords.length >= 4 && aiRecords.every((line) => line.includes("matchBasis: 'non-po'") && line.includes("flowProposal: 'AI generated'") && line.includes("accountPosting: 'AI generated")), 'Every AI-matched non-PO must carry AI flow and account-posting proposals');
+assert.ok(
+	aiRecordValues.every(({ confidence, tone }) => (confidence > 80 ? tone === 'good' : confidence >= 50 ? tone === 'warn' : tone === 'bad')),
+	'Every AI example must use the tone implied by its confidence range',
+);
 assert.ok(
 	aiRecords.every((line) => !line.includes("contract: '") && !line.includes("flowProposal: 'Directly to recording'")),
 	'Non-PO AI matches must not masquerade as contract matches or direct recording',
@@ -68,6 +76,12 @@ assert.ok(
 	'Every purchase-order variance needs an explanation',
 );
 const matchLabelSource = app.match(/const matchLabel = [^\n]+/)[0];
+const aiMatchToneSource = app.match(/const aiMatchTone = [^\n]+/)[0];
+const aiMatchTone = new Function(`${aiMatchToneSource}; return aiMatchTone;`)();
+assert.equal(aiMatchTone(81), 'good', 'AI confidence above 80 must be green');
+assert.equal(aiMatchTone(80), 'warn', 'AI confidence of 80 must be yellow');
+assert.equal(aiMatchTone(50), 'warn', 'AI confidence of 50 must be yellow');
+assert.equal(aiMatchTone(49), 'bad', 'AI confidence below 50 must be red');
 assert.equal((matchLabelSource.match(/inv\.confidence/g) || []).length, 1, 'Only the AI match-label branch may display confidence');
 assert.doesNotMatch(matchLabelSource, /(Delivery variant|Price variant|Fully matched|Match exception)[^']*confidence/, 'Purchase-order outcomes must not display confidence');
 assert.match(app, /inv\.matchStatus === 'price-variance' \? 'price'/, 'Price variants need a distinct visual tone');

@@ -290,7 +290,7 @@ const invoices = [
 		due: 'May 13, 2026',
 		owner: 'Jordan Lee',
 		role: 'department-manager',
-		confidence: 94,
+		confidence: 74,
 		explanation: 'AI identified campaign services and proposed the prior marketing-services account 6540. Department manager confirmation is required because the campaign name is new.',
 		lines: [['Spring campaign services', 1, 4875]],
 	},
@@ -352,7 +352,7 @@ const invoices = [
 		due: 'May 19, 2026',
 		owner: 'Morgan Patel',
 		role: 'finance-controller',
-		confidence: 92,
+		confidence: 68,
 		explanation: 'AI matched the policy period and vendor to approved insurance invoices and proposed account 6720. Finance controller confirmation is required for the annual premium increase.',
 		lines: [['Annual property insurance premium', 1, 15600]],
 	},
@@ -469,7 +469,7 @@ const invoices = [
 		due: 'May 18, 2026',
 		owner: 'AP automation',
 		role: 'ap-review',
-		confidence: 98,
+		confidence: 79,
 		explanation: 'AI matched the cloud subscription to prior Lumen invoices and proposed account 6710. The tax amount differs from the most recent pattern, so AP review remains required.',
 		lines: [['Cloud platform subscription', 1, 12900]],
 	},
@@ -1511,7 +1511,8 @@ function status(inv) {
 	return `<span class="status ${done ? 'paid' : inv.type}">${done ? 'Approved' : inv.status}</span>`;
 }
 
-const matchTone = (inv) => (inv.matchStatus === 'price-variance' ? 'price' : inv.matchTone);
+const aiMatchTone = (confidence) => (confidence > 80 ? 'good' : confidence >= 50 ? 'warn' : 'bad');
+const matchTone = (inv) => (inv.aiMatched ? aiMatchTone(inv.confidence) : inv.matchStatus === 'price-variance' ? 'price' : inv.matchTone);
 const matchClass = (inv) => (matchTone(inv) === 'good' ? 'match' : matchTone(inv) === 'warn' ? 'approval' : matchTone(inv) === 'price' ? 'price-variant' : 'exception');
 const matchLabel = (inv) => (inv.aiMatched ? `AI matched · ${inv.confidence}% confidence` : inv.matchStatus === 'delivery-variance' ? 'Delivery variant' : inv.matchStatus === 'price-variance' ? 'Price variant' : inv.matchStatus === 'fully-matched' ? 'Fully matched' : 'Match exception');
 
@@ -1696,8 +1697,8 @@ function invoiceLog() {
 	const selectedCount = state.logSelection.size;
 	const rows = matches
 		.map((inv) => {
-			const proposal = inv.aiMatched ? account(inv.matchTone, 'AI generated') : inv.type === 'exception' ? account('bad', inv.flowProposal) : inv.flowProposal;
-			const posting = inv.accountPosting.startsWith('AI generated') ? account(inv.matchTone, 'AI generated') : inv.accountPosting === 'Review required' ? account('bad', inv.accountPosting) : inv.accountPosting;
+			const proposal = inv.aiMatched ? account(matchTone(inv), 'AI generated') : inv.type === 'exception' ? account('bad', inv.flowProposal) : inv.flowProposal;
+			const posting = inv.accountPosting.startsWith('AI generated') ? account(matchTone(inv), 'AI generated') : inv.accountPosting === 'Review required' ? account('bad', inv.accountPosting) : inv.accountPosting;
 			const poState = inv.po === 'Non-PO' ? 'Non-PO verified' : inv.matchStatus === 'delivery-variance' ? 'Delivery variant' : inv.matchStatus === 'price-variance' ? 'Price variant' : inv.poTone === 'good' ? 'PO matched' : 'PO missing';
 			const purchaseOrder = inv.matchBasis === 'contract' ? '—' : `<strong>${inv.po}</strong>${health(matchTone(inv), poState)}`;
 			const contract = inv.contract ? `<strong>${inv.contract}</strong>${inv.matchBasis === 'contract' ? health('good', 'Contract matched') : ''}` : '—';
