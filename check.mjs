@@ -29,7 +29,7 @@ assert.ok((app.match(/id: 'CAP-/g) || []).length >= 10, 'Capture queue needs ten
 for (const field of ["Vendor's inv. no.", 'Flow proposal', 'Account posting', 'Accounting date', 'Due date', 'Total', 'Tax', 'Tax %', 'Currency', 'Information', 'Purchase order', 'Contract', 'Match']) {
   assert.match(app, new RegExp(field.replace('.', '\\.')), `Invoice Log is missing ${field}`);
 }
-for (const label of ['PO matched', 'PO variance', 'PO missing', 'Matched', 'Review', 'Exception']) {
+for (const label of ['PO matched', 'Delivery variance', 'Price variance', 'PO missing', 'Matched', 'Review', 'Exception']) {
   assert.match(app, new RegExp(label), `Invoice Log is missing status: ${label}`);
 }
 for (const label of ['AI matched', 'Non-PO verified']) {
@@ -41,10 +41,19 @@ assert.ok((app.match(/filter\(requiresAction\)/g) || []).length >= 3, 'Direct-re
 const invoiceRecords = app.split('\n').filter(line => /^  \{ id: 'INV-/.test(line));
 const directRecords = invoiceRecords.filter(line => line.includes("flowProposal: 'Directly to recording'"));
 const aiRecords = invoiceRecords.filter(line => line.includes('aiMatched: true'));
+const varianceRecords = invoiceRecords.filter(line => line.includes("matchStatus: 'delivery-variance'") || line.includes("matchStatus: 'price-variance'"));
+const independentManagerRecords = invoiceRecords.filter(line => line.includes("role: 'department-manager'") && !line.includes("id: 'INV-77821'"));
 assert.ok(directRecords.length >= 3, 'Invoice Log needs representative direct-recording PO and contract matches');
 assert.ok(directRecords.every(line => line.includes('match: 100') && (line.includes("matchBasis: 'po'") || line.includes("matchBasis: 'contract'"))), 'Direct recording must be limited to fully matched purchase orders and contracts');
 assert.ok(aiRecords.length >= 4 && aiRecords.every(line => line.includes("matchBasis: 'non-po'") && line.includes("flowProposal: 'AI generated'") && line.includes("accountPosting: 'AI generated")), 'Every AI-matched non-PO must carry AI flow and account-posting proposals');
 assert.ok(aiRecords.every(line => !line.includes("contract: '") && !line.includes("flowProposal: 'Directly to recording'")), 'Non-PO AI matches must not masquerade as contract matches or direct recording');
+assert.ok(varianceRecords.some(line => line.includes("matchStatus: 'delivery-variance'")) && varianceRecords.some(line => line.includes("matchStatus: 'price-variance'")), 'Purchase-order examples need both delivery and price variance');
+assert.ok(varianceRecords.every(line => line.includes('confidence:') && line.includes('explanation:')), 'Every purchase-order variance needs confidence and an explanation');
+assert.ok(independentManagerRecords.length >= 3, 'Department manager needs at least three approvals independent of the connected journey');
+assert.match(app, /function syncRoleCounts\(\)/, 'Approval role counts must derive from actionable invoices');
+assert.match(app, /class="table-link invoice-log-link" data-invoice=/, 'Invoice Log needs native invoice-detail links');
+assert.match(app, /function matchSummary\(inv\)/, 'Invoice detail needs shared matching confidence and explanation evidence');
+assert.match(app, /if \(!requiresAction\(inv\)\) return/, 'Direct-recording and log-only invoice details must not show approval actions');
 for (const tone of ['good', 'warn', 'bad']) {
   assert.match(css, new RegExp(`\\.log-health\\.${tone}`), `Invoice Log is missing ${tone} status styling`);
   assert.match(css, new RegExp(`\\.account-chip\\.${tone}`), `Invoice Log is missing ${tone} account-column styling`);
@@ -91,9 +100,9 @@ assert.match(app, /state\.journeyStage = 4/, 'Payment action must complete the c
 assert.match(app, /new URLSearchParams\(location\.search\)/, 'Shareable scenarios need native URL parsing');
 assert.match(app, /welcome.*'0'/, 'Shareable scenarios need a welcome bypass');
 assert.match(app, /function scenarioUrl\(persona\)/, 'Missing shareable scenario link builder');
-for (const report of ['Active invoices', 'Vendor payment analyzer', 'Executive dashboard']) assert.match(app, new RegExp(report), `Missing interactive Analytics board: ${report}`);
 assert.match(app, /loading="lazy" decoding="async"/, 'Analytics reference images must load lazily');
-assert.match(app, /data-analytics-filter/, 'Interactive Analytics needs working filters');
+assert.match(app, /class="analytics-canvas" data-action="analytics-next"/, 'Analytics board images must advance the platform-ordered sequence');
+assert.doesNotMatch(app, /interactiveAnalytics|data-analytics-filter|analytics-reference/, 'Analytics must remain source-faithful rather than using simplified synthetic boards');
 assert.match(html, /id="app-shell"/, 'Modal needs a background shell target');
 assert.match(html, /id="tour-status"[\s\S]*aria-live="polite"/, 'Tour needs live screen-reader announcements');
 assert.match(app, /shell\.inert = active/, 'Welcome modal must make the background inert');
@@ -121,4 +130,4 @@ assert.doesNotMatch(app, /copied for review/, 'Payment references must not claim
 assert.match(html, /id="role-select"/, 'Missing Approval role selector');
 assert.ok(existsSync(new URL('./assets/rillion-logo-lime.svg', import.meta.url)), 'Missing official Rillion logo asset');
 assert.doesNotMatch(app, /fetch\s*\(|XMLHttpRequest|WebSocket/, 'The public simulation must not call a backend');
-console.log('Demo contract check passed: navigation, three-screen Capture flow, guided tour, corrected PO/contract/non-PO matching semantics, real Invoice Log columns, clickable Contracts, role-only Approval, Documents, Payments, eleven ordered Analytics boards, brand, and offline boundary are present.');
+console.log('Demo contract check passed: navigation, three-screen Capture flow, guided tour, PO delivery and price variances with confidence evidence, clickable invoices and Contracts, populated role-only Approval, Documents, Payments, eleven source-faithful Analytics boards, brand, and offline boundary are present.');
