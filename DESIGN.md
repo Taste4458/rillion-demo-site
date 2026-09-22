@@ -190,7 +190,9 @@ Payments follows the Demo51 operational sequence with four native tab controls: 
 
 ### Guided Tour
 
-The six-step tour follows the operational story from queue to invoice verification, invoice log, approvals, Payments, and Analytics. Payments is always step 5, immediately before Analytics at step 6, so the story closes with reporting only after the payment state is understood. Its launch control is visible in the top bar on first paint, uses a compass-style product icon, and explicitly says “Guided tour” and “6-step walkthrough.” A short two-cycle arrival cue helps first-time visitors discover it without stealing focus or looping indefinitely.
+Every fresh link load opens a branded, dismissible welcome dialog. The primary action starts the six-step tour, while five secondary buttons jump directly to To Verify, Documents, Contracts, Payments, or Analytics; “Explore on my own,” the backdrop, and Escape all dismiss the welcome. The tour follows the operational story from queue to invoice verification, invoice log, approvals, Payments, and Analytics, with Back available after the first step and Finish replacing Next on the final step. Payments is always step 5, immediately before Analytics at step 6. The persistent launch control remains visible in the top bar, uses a compass-style product icon, and explicitly says “Guided tour” and “6-step walkthrough.”
+
+Detail workspaces use one shared Back control: an authored left-arrow icon, visible “Back to [destination]” label, 44px minimum target, and matching hover/focus states. Capture settings returns to Invoice details rather than skipping directly to the queue; invoice, document, and contract details return to their owning list.
 
 ### Invoice Log
 

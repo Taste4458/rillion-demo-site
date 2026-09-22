@@ -30,7 +30,7 @@ The source reference is the authenticated Demo51 environment and its invoice, re
 
 - Public link with no login.
 - Synthetic company, vendor, invoice, purchase-order, contract, and employee data only.
-- Guided tour and free exploration with deterministic reset.
+- Guided tour and free exploration with deterministic reset. Every fresh public-link load opens a dismissible welcome dialog with a full-tour action and direct shortcuts to To Verify, Documents, Contracts, Payments, and Analytics.
 - Representative interactions are simulated locally in the browser.
 - No production APIs, credentials, customer data, lead forms, behavioral tracking, telemetry, or remote writes.
 - It must identify itself as a product simulation rather than a live Rillion tenant.
@@ -42,6 +42,7 @@ The source reference is the authenticated Demo51 environment and its invoice, re
 - Payments includes Ready for payment, Awaiting approval, In progress, and Completed click-throughs with synthetic filters, records, and reversible simulated actions.
 - The guided tour visits Payments immediately before Rillion Analytics.
 - A prominent Guided tour control is visible above the fold on initial load and identifies itself as a six-step walkthrough.
+- Detail screens use a consistent destination-labeled Back control with a left-arrow icon, a 44px minimum target, and visible hover/focus treatment.
 
 ## Brand Commitments
 

@@ -71,6 +71,18 @@ for (const group of ['AP Reports', 'Performance Tracking Reports', 'Business Rep
 }
 assert.match(html, /class="tour-launch"/, 'Guided tour launch must be visible immediately');
 assert.match(html, /6-step walkthrough/, 'Guided tour launch needs a recognizable description');
+assert.match(html, /role="dialog"/, 'Guided tour welcome must be an accessible dialog');
+assert.match(html, /id="tour-scrim"/, 'Guided tour welcome needs a clear modal boundary');
+for (const view of ['to-verify', 'documents', 'contracts', 'payments', 'analytics']) {
+  assert.match(html, new RegExp(`data-tour-view="${view}"`), `Guided tour welcome is missing the ${view} shortcut`);
+}
+assert.match(app, /function showTourWelcome\(\)/, 'Missing first-load tour welcome behavior');
+assert.match(app, /action === 'tour-back'/, 'Guided tour needs a Back action');
+assert.match(app, /render\(\);\nshowTourWelcome\(\);\s*$/, 'Guided tour welcome must open on every fresh page load');
+assert.doesNotMatch(app, /localStorage|sessionStorage/, 'Tour dismissal must reset on a fresh link load');
+for (const destination of ['Invoice Log', 'To Verify', 'Invoice details', 'Documents', 'Contracts']) {
+  assert.match(app, new RegExp(`backButton\\('${destination}'`), `Missing intuitive back control for ${destination}`);
+}
 for (const role of ['AP review', 'Department manager', 'Finance controller']) {
   assert.match(app, new RegExp(role), `Missing approval role: ${role}`);
 }

@@ -135,9 +135,9 @@
     {
       "name": "Guided Tour Sequence",
       "kind": "custom",
-      "description": "Prominent first-load launch control for a six-step operational tour; Invoice Log follows To Verify, and Payments immediately precedes Analytics.",
-      "html": "<button class=\"ds-tour-launch\">Guided tour <small>6-step walkthrough</small></button><ol class=\"ds-tour-order\"><li>Work queue</li><li>To Verify</li><li>Invoice Log</li><li>Approval</li><li>Payments</li><li>Analytics</li></ol>",
-      "css": ".ds-tour-launch{display:grid;gap:1px;padding:7px 11px;border:1px solid #B5DD98;border-radius:8px;background:#C9F0AB;color:#0F3732;font:700 13px/1.3 Gellix,Arial,sans-serif;text-align:left}.ds-tour-launch small{font-size:11px}.ds-tour-order{display:grid;gap:6px;margin:12px 0 0;padding-left:24px;color:#313730;font:400 15px/1.45 Gellix,Arial,sans-serif}.ds-tour-order li:nth-child(5){color:#0F3732;font-weight:700}.ds-tour-order li::marker{font-variant-numeric:tabular-nums}"
+      "description": "Automatic first-load welcome for a six-step operational tour, with five direct platform shortcuts, an explicit free-exploration exit, step Back control, and destination-labeled Back buttons for detail workspaces.",
+      "html": "<section class=\"ds-tour-welcome\"><h2>Choose how you want to explore</h2><button>Start guided tour</button><nav><button>Verify invoices</button><button>Review documents</button><button>Explore contracts</button><button>Track payments</button><button>Open analytics</button></nav><button>Explore on my own</button></section><button class=\"ds-back\">Back to <strong>Invoice Log</strong></button>",
+      "css": ".ds-tour-welcome{width:min(620px,100%);padding:24px;border-radius:12px;background:#0F3732;color:#F6F1DC;box-shadow:0 16px 40px rgba(0,0,0,.24)}.ds-tour-welcome nav{display:grid;grid-template-columns:1fr 1fr;gap:8px}.ds-tour-welcome button{min-height:42px;border:1px solid #B5DD98;border-radius:7px;background:transparent;color:inherit;font-weight:600}.ds-tour-welcome>button:first-of-type{background:#C9F0AB;color:#0F3732}.ds-back{min-height:44px;display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid #CFD6CD;border-radius:8px;background:#fff;color:#0F3732;font-weight:600}@media(max-width:520px){.ds-tour-welcome nav{grid-template-columns:1fr}.ds-back{width:100%}}"
     },
     {
       "name": "Analytics Report Stage",

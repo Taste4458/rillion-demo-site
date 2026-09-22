@@ -1,4 +1,5 @@
 const svg = path => `<svg aria-hidden="true" viewBox="0 0 24 24"><path d="${path}"></path></svg>`;
+const backButton = (label, attributes) => `<button class="back-button" ${attributes} aria-label="Back to ${label}">${svg('m15 18-6-6 6-6M9 12h10')}<span>Back to <strong>${label}</strong></span></button>`;
 
 const icons = {
   dashboard: svg('M4 11.5 12 4l8 7.5V20h-5v-5H9v5H4Z'),
@@ -213,7 +214,7 @@ function invoicePaper(inv) {
 }
 
 function invoicePanel(inv) {
-  return `<section class="panel invoice-panel"><div class="invoice-head"><div><button class="link-button" data-view="invoice-log">← Invoice Log</button><h2>${inv.vendor}</h2><p>${inv.id}</p><div class="chip-row"><span class="status match">Match ${inv.match}%</span>${status(inv)}</div></div><div class="invoice-total"><strong>${money(inv.amount)}</strong><small>Due ${inv.due}</small></div></div>${invoicePaper(inv)}</section>`;
+  return `<section class="panel invoice-panel"><div class="invoice-head"><div>${backButton('Invoice Log', 'data-view="invoice-log"')}<h2>${inv.vendor}</h2><p>${inv.id}</p><div class="chip-row"><span class="status match">Match ${inv.match}%</span>${status(inv)}</div></div><div class="invoice-total"><strong>${money(inv.amount)}</strong><small>Due ${inv.due}</small></div></div>${invoicePaper(inv)}</section>`;
 }
 
 function relay(inv) {
@@ -252,13 +253,15 @@ function captureDetail() {
   const field = (label, value, stateClass = 'valid') => `<label class="capture-field ${stateClass}"><span>${label}</span><input value="${escapeHtml(value)}" aria-label="${label}"></label>`;
   const lineHeads = ['Line no.', 'Order number', 'Delivery slip number', 'Item', 'Description', 'Quantity', 'Unit', 'Unit price', 'Discount %', 'TAX code', 'Account', 'Amount', 'Cost Center', 'Project', 'Location', 'Group1', 'Group2'];
   const lineRows = inv.lines.map(line => `<tr>${[...line, '', ''].map((value, cell) => `<td><input value="${escapeHtml(value)}" aria-label="${lineHeads[cell]}"></td>`).join('')}</tr>`).join('');
-  workspace.innerHTML = `<div class="capture-detail-head"><button class="link-button" data-action="capture-back">← <strong>Invoice details</strong></button><div><button data-action="capture-history" aria-label="View history">History</button><button data-action="capture-delete" aria-label="Delete invoice">Delete</button><button data-action="capture-prev" ${index === 0 ? 'disabled' : ''}>‹</button><span>${index + 1} of 228</span><button data-action="capture-next" ${index === captureInvoices.length - 1 ? 'disabled' : ''}>›</button><button data-action="capture-save">Save</button><label class="capture-toggle"><input type="checkbox"> Test invoice</label></div></div><section class="panel capture-detail"><aside class="capture-fields"><h3>Company and vendor</h3>${field('Company *', `Northstar Manufacturing, ${inv.company}`)}${field('Vendor', inv.vendor, 'review')}${field('Supplier bank account', inv.bank)}<h3>Invoice</h3>${field('Credit/Debit', inv.amount < 0 ? 'Credit' : 'Debit')}${field('Invoice number *', inv.invoiceNumber)}${field('Invoice date *', inv.invoiceDate)}${field('Due date', inv.dueDate)}${field('Reference 1', '')}${field('Reference 2', '')}${field('Contract no.', '')}${field('PO number', inv.po)}${field('Account', inv.account)}${field('Payment reference', '')}<h3>Amounts</h3>${field('Currency', 'USD')}${field('Total amount', Math.abs(inv.amount).toFixed(2))}<p class="capture-ai-note">Data on this page has been extracted using AI</p></aside><div class="capture-document"><div class="capture-document-tabs"><button aria-pressed="true">Invoice</button><button>Email</button></div><div class="capture-preview"><article class="capture-paper"><header><div><strong>${inv.vendor}</strong><span>SUPPLIER INVOICE</span></div><dl><dt>Invoice date</dt><dd>${inv.invoiceDate}</dd><dt>Invoice number</dt><dd>${inv.invoiceNumber}</dd><dt>Amount</dt><dd>${number(inv.amount)} USD</dd></dl></header><h2>${inv.amount < 0 ? 'CREDIT MEMO' : 'INVOICE'}</h2><div class="capture-paper-meta"><p><strong>Bill to</strong><br>Northstar Manufacturing<br>1000 Production Way<br>Riverton, IL 60611</p><p><strong>Payment terms</strong><br>Net 30<br><strong>Due date</strong><br>${inv.dueDate}</p></div><table><thead><tr><th>Description</th><th>Quantity</th><th>Price</th><th>Total</th></tr></thead><tbody>${inv.lines.map(line => `<tr><td>${line[4]}</td><td>${line[5]} ${line[6]}</td><td>${line[7]}</td><td>${line[11]}</td></tr>`).join('')}</tbody></table><footer><strong>Total due</strong><strong>${number(inv.amount)} USD</strong></footer></article></div><div class="capture-line-wrap"><div class="capture-line-actions"><button aria-label="Add invoice line">Add line</button><button data-action="capture-show-po">${inv.po ? `Show ${inv.po}` : 'No purchase order'}</button></div><div class="table-wrap capture-line-grid">${dataTable(lineHeads, lineRows)}</div></div></div></section>`;
+  workspace.innerHTML = `<div class="capture-detail-head">${backButton('To Verify', 'data-action="capture-back"')}<div><button data-action="capture-history" aria-label="View history">History</button><button data-action="capture-delete" aria-label="Delete invoice">Delete</button><button data-action="capture-prev" ${index === 0 ? 'disabled' : ''}>‹</button><span>${index + 1} of 228</span><button data-action="capture-next" ${index === captureInvoices.length - 1 ? 'disabled' : ''}>›</button><button data-action="capture-save">Save</button><label class="capture-toggle"><input type="checkbox"> Test invoice</label></div></div><section class="panel capture-detail"><aside class="capture-fields"><h3>Company and vendor</h3>${field('Company *', `Northstar Manufacturing, ${inv.company}`)}${field('Vendor', inv.vendor, 'review')}${field('Supplier bank account', inv.bank)}<h3>Invoice</h3>${field('Credit/Debit', inv.amount < 0 ? 'Credit' : 'Debit')}${field('Invoice number *', inv.invoiceNumber)}${field('Invoice date *', inv.invoiceDate)}${field('Due date', inv.dueDate)}${field('Reference 1', '')}${field('Reference 2', '')}${field('Contract no.', '')}${field('PO number', inv.po)}${field('Account', inv.account)}${field('Payment reference', '')}<h3>Amounts</h3>${field('Currency', 'USD')}${field('Total amount', Math.abs(inv.amount).toFixed(2))}<p class="capture-ai-note">Data on this page has been extracted using AI</p></aside><div class="capture-document"><div class="capture-document-tabs"><button aria-pressed="true">Invoice</button><button>Email</button></div><div class="capture-preview"><article class="capture-paper"><header><div><strong>${inv.vendor}</strong><span>SUPPLIER INVOICE</span></div><dl><dt>Invoice date</dt><dd>${inv.invoiceDate}</dd><dt>Invoice number</dt><dd>${inv.invoiceNumber}</dd><dt>Amount</dt><dd>${number(inv.amount)} USD</dd></dl></header><h2>${inv.amount < 0 ? 'CREDIT MEMO' : 'INVOICE'}</h2><div class="capture-paper-meta"><p><strong>Bill to</strong><br>Northstar Manufacturing<br>1000 Production Way<br>Riverton, IL 60611</p><p><strong>Payment terms</strong><br>Net 30<br><strong>Due date</strong><br>${inv.dueDate}</p></div><table><thead><tr><th>Description</th><th>Quantity</th><th>Price</th><th>Total</th></tr></thead><tbody>${inv.lines.map(line => `<tr><td>${line[4]}</td><td>${line[5]} ${line[6]}</td><td>${line[7]}</td><td>${line[11]}</td></tr>`).join('')}</tbody></table><footer><strong>Total due</strong><strong>${number(inv.amount)} USD</strong></footer></article></div><div class="capture-line-wrap"><div class="capture-line-actions"><button aria-label="Add invoice line">Add line</button><button data-action="capture-show-po">${inv.po ? `Show ${inv.po}` : 'No purchase order'}</button></div><div class="table-wrap capture-line-grid">${dataTable(lineHeads, lineRows)}</div></div></div></section>`;
+  workspace.querySelector('.capture-detail-head > .back-button').insertAdjacentHTML('afterend', '<strong class="capture-current-title">Invoice details</strong>');
 }
 
 function captureSettings() {
   const tabs = [['global', 'Global default'], ['company', 'Company overrides'], ['vendor', 'Vendor overrides'], ['history', 'Change history']];
   const selected = Object.values(captureFieldGroups).flat().find(([label]) => label === state.captureSettingsField) || [state.captureSettingsField, 0];
-  workspace.innerHTML = `<div class="capture-detail-head"><button class="link-button" data-action="capture-back">← <strong>Invoice data settings</strong></button><div><button>Custom fields</button><button disabled>Discard</button><button disabled>Save</button></div></div><section class="panel capture-settings"><aside class="capture-setting-list">${Object.entries(captureFieldGroups).map(([group, fields]) => `<h3>${group}</h3>${fields.map(([label, overrides]) => `<button data-capture-field="${label}" aria-pressed="${state.captureSettingsField === label}"><span>${label}</span>${overrides ? `<small>${overrides} ${overrides === 1 ? 'override' : 'overrides'}</small>` : ''}</button>`).join('')}`).join('')}</aside><div class="capture-setting-main"><h2>${state.captureSettingsField}</h2><div class="capture-setting-tabs" role="tablist">${tabs.map(([id, label]) => `<button role="tab" data-capture-settings-tab="${id}" aria-selected="${state.captureSettingsTab === id}">${label}</button>`).join('')}</div>${state.captureSettingsTab === 'global' ? `<div class="capture-setting-info">Applies to all companies (4)</div><label class="capture-setting-control">Invoice data to use<select><option>${state.captureSettingsField === 'Supplier bank account' ? 'Vendor bank account (auto-selected)' : `${state.captureSettingsField} from captured invoice`}</option></select><small>${state.captureSettingsField === 'Supplier bank account' ? 'First non-empty of: bankgiro, IBAN, plusgiro, BIC/SWIFT, bank account number' : `Use the extracted ${state.captureSettingsField.toLowerCase()} when the field is present.`}</small></label><button class="capture-revert">Revert to default and save</button>` : state.captureSettingsTab === 'company' ? `<div class="capture-setting-info">${selected[1]} company overrides configured</div>${emptyState('Company-specific rules', 'Choose a company to inspect how this field overrides the global default.')}` : state.captureSettingsTab === 'vendor' ? `<div class="capture-setting-info">Vendor-specific extraction rules</div>${emptyState('No vendor selected', 'Select a vendor to inspect or add a field override.')}` : `<div class="capture-setting-info">Change history for ${state.captureSettingsField}</div><div class="capture-history"><strong>Global default confirmed</strong><span>Sep 12, 2026 · Alex Nguyen</span><p>No material setting changes in the current synthetic history.</p></div>`}</div></section>`;
+  workspace.innerHTML = `<div class="capture-detail-head">${backButton('Invoice details', 'data-action="capture-settings-back"')}<div><button>Custom fields</button><button disabled>Discard</button><button disabled>Save</button></div></div><section class="panel capture-settings"><aside class="capture-setting-list">${Object.entries(captureFieldGroups).map(([group, fields]) => `<h3>${group}</h3>${fields.map(([label, overrides]) => `<button data-capture-field="${label}" aria-pressed="${state.captureSettingsField === label}"><span>${label}</span>${overrides ? `<small>${overrides} ${overrides === 1 ? 'override' : 'overrides'}</small>` : ''}</button>`).join('')}`).join('')}</aside><div class="capture-setting-main"><h2>${state.captureSettingsField}</h2><div class="capture-setting-tabs" role="tablist">${tabs.map(([id, label]) => `<button role="tab" data-capture-settings-tab="${id}" aria-selected="${state.captureSettingsTab === id}">${label}</button>`).join('')}</div>${state.captureSettingsTab === 'global' ? `<div class="capture-setting-info">Applies to all companies (4)</div><label class="capture-setting-control">Invoice data to use<select><option>${state.captureSettingsField === 'Supplier bank account' ? 'Vendor bank account (auto-selected)' : `${state.captureSettingsField} from captured invoice`}</option></select><small>${state.captureSettingsField === 'Supplier bank account' ? 'First non-empty of: bankgiro, IBAN, plusgiro, BIC/SWIFT, bank account number' : `Use the extracted ${state.captureSettingsField.toLowerCase()} when the field is present.`}</small></label><button class="capture-revert">Revert to default and save</button>` : state.captureSettingsTab === 'company' ? `<div class="capture-setting-info">${selected[1]} company overrides configured</div>${emptyState('Company-specific rules', 'Choose a company to inspect how this field overrides the global default.')}` : state.captureSettingsTab === 'vendor' ? `<div class="capture-setting-info">Vendor-specific extraction rules</div>${emptyState('No vendor selected', 'Select a vendor to inspect or add a field override.')}` : `<div class="capture-setting-info">Change history for ${state.captureSettingsField}</div><div class="capture-history"><strong>Global default confirmed</strong><span>Sep 12, 2026 · Alex Nguyen</span><p>No material setting changes in the current synthetic history.</p></div>`}</div></section>`;
+  workspace.querySelector('.capture-detail-head > .back-button').insertAdjacentHTML('afterend', '<strong class="capture-current-title">Invoice data settings</strong>');
 }
 
 function invoiceLog() {
@@ -300,7 +303,7 @@ function documentDetail() {
   const complete = currentStatus === 'processed';
   const index = documents.findIndex(item => item.id === doc.id);
   const statusCopy = outcome === 'approved' ? '<span class="status paid">Approved</span>' : `<span class="status ${currentStatus === 'return-to-ap' ? 'exception' : complete ? 'match' : 'approval'}">${documentStatusLabel(currentStatus)}</span>`;
-  workspace.innerHTML = `<div class="document-toolbar"><button data-view="documents">← Documents</button><span>${index + 1} of ${documents.length}</span><button data-action="document-prev" ${index === 0 ? 'disabled' : ''}>Previous</button><button data-action="document-next" ${index === documents.length - 1 ? 'disabled' : ''}>Next</button><button data-action="document-save">Save in simulation</button><button class="document-approve" data-action="document-approve" ${complete ? 'disabled' : ''}>${outcome === 'approved' ? 'Approved' : complete ? 'Processed' : 'Approve'}</button><button data-action="document-return">Return to AP</button><button data-action="document-email">Send to email</button></div>
+  workspace.innerHTML = `<div class="document-toolbar">${backButton('Documents', 'data-view="documents"')}<span>${index + 1} of ${documents.length}</span><button data-action="document-prev" ${index === 0 ? 'disabled' : ''}>Previous</button><button data-action="document-next" ${index === documents.length - 1 ? 'disabled' : ''}>Next</button><button data-action="document-save">Save in simulation</button><button class="document-approve" data-action="document-approve" ${complete ? 'disabled' : ''}>${outcome === 'approved' ? 'Approved' : complete ? 'Processed' : 'Approve'}</button><button data-action="document-return">Return to AP</button><button data-action="document-email">Send to email</button></div>
     <div class="document-detail-grid">
       <section class="panel document-preview"><div class="document-pane-title">Document image</div><div class="document-paper"><div class="request-brand"><strong>Northstar Manufacturing</strong><span>${doc.documentNo}</span></div><h2>${doc.type}</h2><p class="request-subtitle">Non-PO payment authorization · synthetic demonstration record</p><div class="request-grid"><div><span>Document number</span><strong>${doc.documentNo}</strong></div><div><span>Submission date</span><strong>${doc.created}</strong></div><div><span>Requested pay date</span><strong>June 5, 2026</strong></div><div><span>Request category</span><strong>${doc.requestCategory}</strong></div></div><h3>Requester and entity</h3><div class="request-grid"><div><span>Requester name</span><strong>${doc.createdBy}</strong></div><div><span>Department</span><strong>Procurement</strong></div><div><span>Company</span><strong>${doc.company}</strong></div><div><span>Responsible role</span><strong>${doc.responsibleRole}</strong></div></div><h3>Payee</h3><div class="request-grid"><div><span>Payee name</span><strong>${doc.payee}</strong></div><div><span>Payment method</span><strong>Electronic check</strong></div></div><div class="request-total"><span>Net amount payable</span><strong>${money(doc.amount)}</strong></div></div></section>
       <section class="panel document-fields"><div class="document-pane-title">Document</div><dl><dt>Document ID</dt><dd>${doc.id.replace('DOC-', '')}</dd><dt>Document type</dt><dd>${doc.type}</dd><dt>Company</dt><dd>${doc.company}</dd><dt>Name</dt><dd>${doc.name}</dd><dt>Description</dt><dd>${doc.description}</dd><dt>Created by user</dt><dd>${doc.createdBy}</dd><dt>Responsible role</dt><dd>${doc.responsibleRole}</dd><dt>Status</dt><dd>${statusCopy}</dd></dl><h3>Index</h3><div class="document-index">Requester and entity<br>Payee<br>Payment detail</div></section>
@@ -330,7 +333,7 @@ function contractDetail() {
     ['Contract ID', contract.id.replace('CT-', '')], ['Created by', contract.createdBy], ['Authorized by', contract.authorizedBy], ['Company', contract.company], ['Contract no.', contract.number], ['Name', contract.name], ['Description', contract.description], ['Contract status', contract.status], ['Contract total', money(contract.total)], ['Valid from', contract.validFrom], ['Valid to', contract.validTo], ['Term of notice', `${contract.notice} months`], ['Automatic extension', `${contract.extension} months`], ['Currency', contract.currency], ['Net amount', money(contract.total)], ['Tax amount', money(contract.tax)], ['Invoice match flow', contract.flow], ['Partial match flow', contract.partialFlow], ['Role on direct recording', contract.role], ['Account posting proposal', contract.posting]
   ];
   const tabs = [['contract-lines', 'Contract lines'], ['account-posting', 'Account posting'], ['attachments', 'Comments/attachments']];
-  workspace.innerHTML = `<div class="contract-toolbar"><button data-view="contracts">← Contracts</button><span>${index + 1} of ${contracts.length}</span><button data-action="contract-prev" ${index === 0 ? 'disabled' : ''}>Previous</button><button data-action="contract-next" ${index === contracts.length - 1 ? 'disabled' : ''}>Next</button><button data-action="contract-copy">Create new as a copy</button><button class="contract-save" data-action="contract-save">Save in simulation</button><button data-action="contract-options">Options</button></div><div class="contract-detail-grid"><section class="panel contract-preview"><div class="document-pane-title">Contract image</div>${contractImage(contract)}</section><section class="panel contract-fields"><div class="document-pane-title">Contracts</div><div class="contract-field-list">${fields.map(([label, value], fieldIndex) => `<label><span>${label}</span>${fieldIndex === 6 ? `<textarea rows="3">${escapeHtml(value)}</textarea>` : `<input value="${escapeHtml(value)}" ${fieldIndex < 3 ? 'readonly' : ''}>`}</label>`).join('')}</div></section><div class="contract-side"><section class="panel contract-flow"><div class="document-pane-title">Flow</div><div class="flow-role done">Accounts Payable</div><span aria-hidden="true">↓</span><div class="flow-role done">CFO</div></section><section class="panel contract-tabs"><div class="contract-tab-list" role="tablist" aria-label="Contract information">${tabs.map(([id, label]) => `<button role="tab" data-contract-tab="${id}" aria-selected="${state.contractTab === id}">${label}</button>`).join('')}</div>${contractTabPanel(contract)}</section></div></div>`;
+  workspace.innerHTML = `<div class="contract-toolbar">${backButton('Contracts', 'data-view="contracts"')}<span>${index + 1} of ${contracts.length}</span><button data-action="contract-prev" ${index === 0 ? 'disabled' : ''}>Previous</button><button data-action="contract-next" ${index === contracts.length - 1 ? 'disabled' : ''}>Next</button><button data-action="contract-copy">Create new as a copy</button><button class="contract-save" data-action="contract-save">Save in simulation</button><button data-action="contract-options">Options</button></div><div class="contract-detail-grid"><section class="panel contract-preview"><div class="document-pane-title">Contract image</div>${contractImage(contract)}</section><section class="panel contract-fields"><div class="document-pane-title">Contracts</div><div class="contract-field-list">${fields.map(([label, value], fieldIndex) => `<label><span>${label}</span>${fieldIndex === 6 ? `<textarea rows="3">${escapeHtml(value)}</textarea>` : `<input value="${escapeHtml(value)}" ${fieldIndex < 3 ? 'readonly' : ''}>`}</label>`).join('')}</div></section><div class="contract-side"><section class="panel contract-flow"><div class="document-pane-title">Flow</div><div class="flow-role done">Accounts Payable</div><span aria-hidden="true">↓</span><div class="flow-role done">CFO</div></section><section class="panel contract-tabs"><div class="contract-tab-list" role="tablist" aria-label="Contract information">${tabs.map(([id, label]) => `<button role="tab" data-contract-tab="${id}" aria-selected="${state.contractTab === id}">${label}</button>`).join('')}</div>${contractTabPanel(contract)}</section></div></div>`;
 }
 
 function approvalReport() {
@@ -468,12 +471,47 @@ const tours = [
 
 function showTour() {
   const tour = tours[state.tour];
-  document.querySelector('#tour').hidden = false;
+  const panel = document.querySelector('#tour');
+  panel.hidden = false;
+  panel.classList.remove('is-welcome');
+  panel.setAttribute('aria-modal', 'false');
+  document.querySelector('#tour-scrim').hidden = true;
+  document.querySelector('#tour-shortcuts').hidden = true;
+  document.querySelector('#tour-start').hidden = true;
+  document.querySelector('#tour-back').hidden = state.tour === 0;
+  document.querySelector('#tour-next').hidden = false;
+  document.querySelector('#tour-next').textContent = state.tour === tours.length - 1 ? 'Finish tour' : 'Next';
+  document.querySelector('#tour-close').textContent = 'Exit tour';
   document.querySelector('#tour-count').textContent = `${state.tour + 1} of ${tours.length}`;
   document.querySelector('#tour-title').textContent = tour[0];
   document.querySelector('#tour-copy').textContent = tour[1];
   state.view = tour[2];
   render();
+}
+
+function closeTour(restoreFocus = true) {
+  document.querySelector('#tour').hidden = true;
+  document.querySelector('#tour-scrim').hidden = true;
+  state.tour = -1;
+  if (restoreFocus) document.querySelector('.tour-launch')?.focus({ preventScroll: true });
+}
+
+function showTourWelcome() {
+  const panel = document.querySelector('#tour');
+  state.tour = -1;
+  panel.hidden = false;
+  panel.classList.add('is-welcome');
+  panel.setAttribute('aria-modal', 'true');
+  document.querySelector('#tour-scrim').hidden = false;
+  document.querySelector('#tour-shortcuts').hidden = false;
+  document.querySelector('#tour-start').hidden = false;
+  document.querySelector('#tour-back').hidden = true;
+  document.querySelector('#tour-next').hidden = true;
+  document.querySelector('#tour-close').textContent = 'Explore on my own';
+  document.querySelector('#tour-count').textContent = 'Explore Rillion';
+  document.querySelector('#tour-title').textContent = 'Choose how you want to explore';
+  document.querySelector('#tour-copy').textContent = 'Take the six-step guided tour, jump directly to a platform area, or close this panel and explore freely.';
+  requestAnimationFrame(() => document.querySelector('#tour-start').focus({ preventScroll: true }));
 }
 
 function toast(message) {
@@ -527,6 +565,7 @@ document.addEventListener('click', event => {
   const paymentTab = event.target.closest('[data-payment-tab]')?.dataset.paymentTab;
   const paymentInvoice = event.target.closest('[data-payment-invoice]')?.dataset.paymentInvoice;
   const paymentReference = event.target.closest('[data-payment-reference]')?.dataset.paymentReference;
+  const tourView = event.target.closest('[data-tour-view]')?.dataset.tourView;
   const action = event.target.closest('[data-action]')?.dataset.action;
   if (group) { state.expanded.has(group) ? state.expanded.delete(group) : state.expanded.add(group); renderNav(); return; }
   if (view) { navigate(view); return; }
@@ -544,12 +583,15 @@ document.addEventListener('click', event => {
   if (paymentTab) { state.paymentTab = paymentTab; state.paymentDate = ''; state.paymentSelection.clear(); paymentsPage(); return; }
   if (paymentInvoice) { toast(`Invoice ${paymentInvoice} opened in the synthetic payment list`); return; }
   if (paymentReference) { toast(`Payment reference ${paymentReference} opened for review`); return; }
+  if (tourView) { closeTour(false); navigate(tourView); return; }
   if (action === 'approve') { state.approved.add(state.selected.id); render(); toast(`${state.selected.id} approved and ready for payment`); }
   if (action === 'fields') { state.fieldsExpanded = !state.fieldsExpanded; render(); }
-  if (action === 'reset') { state.approved.clear(); state.documentOutcomes.clear(); state.paymentSelection.clear(); state.paymentMoves.clear(); state.selected = invoices[0]; state.selectedDocument = documents[0]; state.selectedContract = contracts[0]; state.captureSelected = captureInvoices[0]; state.fieldsExpanded = false; state.logFilter = 'all'; state.approvalFilter = 'all'; state.roleFilter = 'all'; state.documentTab = 'being-checked'; state.documentCompany = 'all'; state.documentType = 'all'; state.contractTab = 'contract-lines'; state.paymentTab = 'ready'; state.paymentQuery = ''; state.paymentVendor = 'all'; state.paymentMethod = 'all'; state.paymentDate = ''; state.captureScreen = 'queue'; state.captureVendor = 'all'; state.captureInvoice = ''; state.captureAmountMin = ''; state.captureAmountMax = ''; state.captureSettingsField = 'Supplier bank account'; state.captureSettingsTab = 'global'; state.analytics = 0; state.view = 'dashboard'; state.query = ''; document.querySelector('#search').value = ''; history.replaceState(null, '', '#dashboard'); render(); toast('Demo reset'); }
-  if (action === 'tour') { state.tour = 0; showTour(); }
-  if (action === 'tour-next') { state.tour++; if (state.tour >= tours.length) { document.querySelector('#tour').hidden = true; state.tour = -1; toast('Tour complete — explore anything'); } else showTour(); }
-  if (action === 'tour-close') { document.querySelector('#tour').hidden = true; state.tour = -1; }
+  if (action === 'reset') { state.approved.clear(); state.documentOutcomes.clear(); state.paymentSelection.clear(); state.paymentMoves.clear(); state.selected = invoices[0]; state.selectedDocument = documents[0]; state.selectedContract = contracts[0]; state.captureSelected = captureInvoices[0]; state.fieldsExpanded = false; state.logFilter = 'all'; state.approvalFilter = 'all'; state.roleFilter = 'all'; state.documentTab = 'being-checked'; state.documentCompany = 'all'; state.documentType = 'all'; state.contractTab = 'contract-lines'; state.paymentTab = 'ready'; state.paymentQuery = ''; state.paymentVendor = 'all'; state.paymentMethod = 'all'; state.paymentDate = ''; state.captureScreen = 'queue'; state.captureVendor = 'all'; state.captureInvoice = ''; state.captureAmountMin = ''; state.captureAmountMax = ''; state.captureSettingsField = 'Supplier bank account'; state.captureSettingsTab = 'global'; state.analytics = 0; state.view = 'dashboard'; state.query = ''; document.querySelector('#search').value = ''; history.replaceState(null, '', '#dashboard'); render(); showTourWelcome(); toast('Demo reset'); }
+  if (action === 'tour') showTourWelcome();
+  if (action === 'tour-start') { state.tour = 0; showTour(); }
+  if (action === 'tour-back' && state.tour > 0) { state.tour--; showTour(); }
+  if (action === 'tour-next') { state.tour++; if (state.tour >= tours.length) { closeTour(); toast('Tour complete — explore anything'); } else showTour(); }
+  if (action === 'tour-close') closeTour();
   if (action === 'export') downloadReport();
   if (action === 'payment-export') downloadPayments();
   if (action === 'analytics-prev' && state.analytics > 0) { state.analytics--; analytics(); }
@@ -567,6 +609,7 @@ document.addEventListener('click', event => {
   if (action === 'contract-options') toast('Contract options opened in this simulation');
   if (action === 'contract-attachment') toast(`${state.selectedContract.attachment} opened in this simulation`);
   if (action === 'capture-back') { state.captureScreen = 'queue'; toVerify(); }
+  if (action === 'capture-settings-back') { state.captureScreen = 'detail'; captureDetail(); }
   if (action === 'capture-settings') { state.captureScreen = 'settings'; captureSettings(); }
   if (action === 'capture-prev') { const index = captureInvoices.findIndex(item => item.id === state.captureSelected.id); if (index > 0) { state.captureSelected = captureInvoices[index - 1]; captureDetail(); } }
   if (action === 'capture-next') { const index = captureInvoices.findIndex(item => item.id === state.captureSelected.id); if (index < captureInvoices.length - 1) { state.captureSelected = captureInvoices[index + 1]; captureDetail(); } }
@@ -590,6 +633,7 @@ document.addEventListener('click', event => {
 });
 
 document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && !document.querySelector('#tour').hidden) { closeTour(); return; }
   const row = event.target.closest('tr[data-invoice]');
   if (row && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); openInvoice(row.dataset.invoice); }
 });
@@ -631,3 +675,4 @@ window.addEventListener('hashchange', () => {
 });
 
 render();
+showTourWelcome();
