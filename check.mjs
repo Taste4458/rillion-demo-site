@@ -36,17 +36,22 @@ for (const label of ['AI matched', 'Non-PO verified']) {
   assert.match(app, new RegExp(label), `Invoice Log is missing non-PO automation status: ${label}`);
 }
 assert.ok((app.match(/aiMatched: true/g) || []).length >= 4, 'Invoice Log needs at least four AI-matched examples');
-assert.ok((app.match(/logOnly: true/g) || []).length >= 4, 'AI-matched examples must remain Invoice-Log-only');
+assert.ok((app.match(/logOnly: true/g) || []).length >= 4, 'Invoice Log needs at least four log-only reference examples');
 assert.ok((app.match(/filter\(requiresAction\)/g) || []).length >= 3, 'Direct-recording and log-only invoices must be excluded from task and approval queues');
 const invoiceRecords = app.split('\n').filter(line => /^ {2}\{ id: 'INV-/.test(line));
 const directRecords = invoiceRecords.filter(line => line.includes("flowProposal: 'Directly to recording'"));
 const aiRecords = invoiceRecords.filter(line => line.includes('aiMatched: true'));
+const actionableAiRecords = aiRecords.filter(line => !line.includes('logOnly: true'));
 const varianceRecords = invoiceRecords.filter(line => line.includes("matchStatus: 'delivery-variance'") || line.includes("matchStatus: 'price-variance'"));
 const independentManagerRecords = invoiceRecords.filter(line => line.includes("role: 'department-manager'") && !line.includes("id: 'INV-77821'"));
 assert.ok(directRecords.length >= 3, 'Invoice Log needs representative direct-recording PO and contract matches');
 assert.ok(directRecords.every(line => line.includes('match: 100') && (line.includes("matchBasis: 'po'") || line.includes("matchBasis: 'contract'"))), 'Direct recording must be limited to fully matched purchase orders and contracts');
 assert.ok(aiRecords.length >= 4 && aiRecords.every(line => line.includes("matchBasis: 'non-po'") && line.includes("flowProposal: 'AI generated'") && line.includes("accountPosting: 'AI generated")), 'Every AI-matched non-PO must carry AI flow and account-posting proposals');
 assert.ok(aiRecords.every(line => !line.includes("contract: '") && !line.includes("flowProposal: 'Directly to recording'")), 'Non-PO AI matches must not masquerade as contract matches or direct recording');
+assert.ok(actionableAiRecords.length >= 4, 'Approval queues need at least four actionable AI-matched invoices');
+for (const role of ['ap-review', 'department-manager', 'finance-controller']) {
+  assert.ok(actionableAiRecords.some(line => line.includes(`role: '${role}'`)), `Actionable AI invoices must include ${role}`);
+}
 assert.ok(varianceRecords.some(line => line.includes("matchStatus: 'delivery-variance'")) && varianceRecords.some(line => line.includes("matchStatus: 'price-variance'")), 'Purchase-order examples need both delivery and price variance');
 assert.ok(varianceRecords.every(line => line.includes('confidence:') && line.includes('explanation:')), 'Every purchase-order variance needs confidence and an explanation');
 assert.ok(independentManagerRecords.length >= 3, 'Department manager needs at least three approvals independent of the connected journey');
@@ -57,6 +62,7 @@ for (const label of ['Inbound', 'To be processed', 'Being checked', 'Processed',
 }
 assert.match(app, /approvalQueueState: new Map\(\)/, 'Approver queue transitions need local workflow state');
 assert.match(app, /function approvalDetail\(\)/, 'Approver queue needs a linked invoice-detail workspace');
+assert.doesNotMatch(app, /<div class="flow-role">Payment scheduled<\/div>/, 'Payment scheduling must not appear in an approval flow proposal');
 assert.match(app, /data-approval-invoice=/, 'Approver queue needs semantic invoice controls');
 assert.doesNotMatch(app, /<tr[^>]*data-approval-invoice=/, 'Approver rows must preserve native table semantics');
 for (const action of ['approval-back', 'approval-approve', 'approval-return', 'approval-match-po']) {
