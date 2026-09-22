@@ -16,6 +16,16 @@ assert.match(app, /class="table-link" data-document=/, 'Document rows need nativ
 assert.doesNotMatch(app, /<tr data-document=/, 'Document table rows must preserve native table semantics');
 assert.ok(app.indexOf("['Track payments'") < app.indexOf("['Explore Analytics'"), 'Payments must precede Analytics in the guided tour');
 assert.ok(app.indexOf("['Verify captured invoices'") < app.indexOf("['Follow the Invoice Log'"), 'Invoice Log must follow To Verify in the guided tour');
+for (const label of ['Invoices to verify', 'Invoice details', 'Invoice data settings', 'Supplier bank account', 'Company overrides', 'Vendor overrides', 'Change history']) {
+  assert.match(app, new RegExp(label), `Capture flow is missing ${label}`);
+}
+for (const field of ['Company', 'Vendor', 'Invoice date', 'Due date', 'Total amount', 'Invoice number', 'File name', 'Received']) {
+  assert.match(app, new RegExp(field), `Capture queue is missing ${field}`);
+}
+assert.match(app, /data-capture-invoice=/, 'Capture queue needs semantic invoice links');
+assert.match(app, /capture-line-grid/, 'Capture detail needs a scroll-contained coding grid');
+assert.match(app, /data-capture-field=/, 'Capture settings fields must be interactive');
+assert.ok((app.match(/id: 'CAP-/g) || []).length >= 10, 'Capture queue needs ten representative synthetic invoices');
 for (const field of ["Vendor's inv. no.", 'Flow proposal', 'Account posting', 'Accounting date', 'Due date', 'Total', 'Tax', 'Tax %', 'Currency', 'Information', 'Purchase order', 'Contract', 'Match']) {
   assert.match(app, new RegExp(field.replace('.', '\\.')), `Invoice Log is missing ${field}`);
 }
@@ -79,4 +89,4 @@ assert.doesNotMatch(app, /copied for review/, 'Payment references must not claim
 assert.match(html, /id="role-select"/, 'Missing Approval role selector');
 assert.ok(existsSync(new URL('./assets/rillion-logo-lime.svg', import.meta.url)), 'Missing official Rillion logo asset');
 assert.doesNotMatch(app, /fetch\s*\(|XMLHttpRequest|WebSocket/, 'The public simulation must not call a backend');
-console.log('Demo contract check passed: navigation, guided tour, corrected PO/contract/non-PO matching semantics, real Invoice Log columns, clickable Contracts, role-only Approval, Documents, Payments, eleven ordered Analytics boards, brand, and offline boundary are present.');
+console.log('Demo contract check passed: navigation, three-screen Capture flow, guided tour, corrected PO/contract/non-PO matching semantics, real Invoice Log columns, clickable Contracts, role-only Approval, Documents, Payments, eleven ordered Analytics boards, brand, and offline boundary are present.');

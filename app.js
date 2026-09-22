@@ -123,17 +123,37 @@ const payments = [
   { id: '0976000017', tab: 'completed', company: '30', vendor: 'Star Telecom', invoiceDate: 'Oct 31, 2026', amount: 1160, method: 'Virtual card', sentBy: 'Logan Meek', sentOn: 'Sep 21, 2026', paymentDate: 'Sep 22, 2026', reference: 'TRE5370/7304', status: 'Settled' }
 ];
 
+const captureInvoices = [
+  { id: 'CAP-9175499553', company: '30', vendor: 'Atlas Industrial Supply', invoiceDate: '09/11/2026', dueDate: '10/11/2026', amount: 145.60, invoiceNumber: '9175499553', fileName: 'Atlas 9175499553.pdf', received: '9/20/26, 6:10 PM', po: '4500821', account: '6410', bank: '•••• 2841', lines: [['2', '4500821', 'DN-31082', 'GBX-200', 'Industrial gearbox mounting kit', '4', 'PC', '35.60', '0', 'TAX-US', '6410', '142.40', 'MFG', 'LINE-7', 'Plant 2']] },
+  { id: 'CAP-71741278', company: '30', vendor: 'Precision Tools Co.', invoiceDate: '09/11/2026', dueDate: '10/11/2026', amount: 85.39, invoiceNumber: '71741278', fileName: 'Precision 71741278.pdf', received: '9/20/26, 4:37 PM', po: '4500838', account: '6420', bank: '•••• 1048', lines: [['10', '4500838', 'DN-77211', 'CNC-14', 'Replacement cutting insert set', '1', 'SET', '79.06', '0', 'TAX-US', '6420', '79.06', 'OPS', 'TOOL-4', 'Plant 1']] },
+  { id: 'CAP-71730252', company: '30', vendor: 'Summit Packaging', invoiceDate: '09/11/2026', dueDate: '10/11/2026', amount: 786.40, invoiceNumber: '71730252', fileName: 'Summit 71730252.pdf', received: '9/20/26, 4:35 PM', po: '', account: '6330', bank: '•••• 6620', lines: [['1', '', '', 'PKG-22', 'Protective packaging materials', '40', 'CS', '18.20', '0', 'TAX-US', '6330', '728.00', 'WHSE', 'PACK-2', 'Dock A']] },
+  { id: 'CAP-D38186164', company: '30', vendor: 'Riverside Logistics', invoiceDate: '09/08/2026', dueDate: '09/18/2026', amount: 1921.17, invoiceNumber: 'D38186164', fileName: 'Riverside D38186164.pdf', received: '9/20/26, 4:30 PM', po: '4500841', account: '6210', bank: '•••• 8840', lines: [['1', '4500841', 'BOL-61642', 'FRT', 'Regional freight service', '1', 'EA', '1,921.17', '0', 'FREIGHT', '6210', '1,921.17', 'LOG', 'ROUTE-8', 'Plant 3']] },
+  { id: 'CAP-789104', company: '30', vendor: 'Core Facility Services', invoiceDate: '09/07/2026', dueDate: '11/06/2026', amount: 852.00, invoiceNumber: '789104', fileName: 'Core Facility 789104.pdf', received: '9/20/26, 4:25 PM', po: '4500770', account: '6810', bank: '•••• 3391', lines: [['1', '4500770', 'WO-26091', 'MAINT', 'Preventive maintenance visit', '1', 'EA', '852.00', '0', 'TAX-US', '6810', '852.00', 'FAC', 'PM-26', 'Plant 1']] },
+  { id: 'CAP-783814', company: '30', vendor: 'Brightwell Consulting', invoiceDate: '08/28/2026', dueDate: '10/27/2026', amount: 3992.00, invoiceNumber: '783814', fileName: 'Brightwell 783814.pdf', received: '9/20/26, 4:23 PM', po: '', account: '6530', bank: '•••• 7210', lines: [['1', '', '', 'ADV', 'Operational advisory services', '32', 'HR', '124.75', '0', 'EXEMPT', '6530', '3,992.00', 'FIN', 'TRANS-1', 'HQ']] },
+  { id: 'CAP-783807', company: '30', vendor: 'Lumen Cloud Services', invoiceDate: '08/28/2026', dueDate: '10/27/2026', amount: 3122.76, invoiceNumber: '783807', fileName: 'Lumen 783807.pdf', received: '9/20/26, 4:20 PM', po: '', account: '6710', bank: '•••• 5722', lines: [['1', '', '', 'CLOUD', 'Monthly cloud platform subscription', '1', 'MO', '2,891.44', '0', 'TAX-US', '6710', '2,891.44', 'IT', 'CLOUD-9', 'HQ'], ['2', '', '', 'TAX', 'Sales tax', '1', 'EA', '231.32', '0', 'TAX-US', '6710', '231.32', 'IT', 'CLOUD-9', 'HQ']] },
+  { id: 'CAP-VA07-00383748', company: '30', vendor: 'Harbor Office Services', invoiceDate: '09/11/2026', dueDate: '10/05/2026', amount: 2195.20, invoiceNumber: 'VA07-00383748', fileName: 'Harbor VA0700383748.pdf', received: '9/20/26, 4:17 PM', po: '', account: '6110', bank: '•••• 9462', lines: [['1', '', '', 'OFFICE', 'Office services and supplies', '1', 'EA', '2,032.59', '0', 'TAX-US', '6110', '2,032.59', 'ADMIN', 'OFF-4', 'HQ']] },
+  { id: 'CAP-VA07-00383487', company: '30', vendor: 'Northstar Utilities', invoiceDate: '08/24/2026', dueDate: '09/01/2026', amount: 1107.55, invoiceNumber: 'VA07-00383487', fileName: 'Northstar Utilities VA0700383487.pdf', received: '9/20/26, 4:11 PM', po: '', account: '6760', bank: '•••• 1009', lines: [['1', '', '', 'UTIL', 'Electricity and facility usage', '1', 'EA', '1,107.55', '0', 'UTILITY', '6760', '1,107.55', 'FAC', 'UTIL-2', 'Plant 2']] },
+  { id: 'CAP-CN-0008', company: '30', vendor: 'Video Systems Group', invoiceDate: '08/10/2026', dueDate: '08/10/2026', amount: -1255.05, invoiceNumber: 'CN-0008', fileName: 'Video Systems CN-0008.pdf', received: '9/20/26, 1:17 PM', po: '4500884', account: '6640', bank: '•••• 4885', lines: [['1', '4500884', 'RTN-092', 'CAM-4K', 'Returned inspection camera', '-1', 'EA', '1,255.05', '0', 'TAX-US', '6640', '-1,255.05', 'QA', 'VIS-6', 'Plant 3']] }
+];
+
+const captureFieldGroups = {
+  'Header fields': [['Supplier bank account', 0], ['Invoice number', 9], ['Invoice date', 2], ['Due date', 0], ['Reference 1', 6], ['Reference 2', 1], ['Contract no.', 2], ['PO number', 2], ['Vendor delivery note', 0], ['Payment reference', 0], ['Currency', 1], ['Total amount', 1], ['TAX amount', 2], ['Comments', 0]],
+  'Line fields': [['Item', 29], ['Delivery reference', 0], ['Description', 27], ['Attribute', 0], ['Quantity', 11], ['Unit', 44], ['Unit price', 16], ['Amount', 3], ['Account', 114], ['Cost Center', 47], ['Project', 5], ['Location', 2], ['Group1', 1], ['Group2', 0], ['Group3', 0]]
+};
+
 const state = {
   view: location.hash.slice(1) || 'dashboard', selected: invoices[0], approved: new Set(),
   expanded: new Set(['invoices', 'reports']), tour: -1, query: '', fieldsExpanded: false,
   logFilter: 'all', approvalFilter: 'all', roleFilter: 'all', analytics: 0,
   documentTab: 'being-checked', documentCompany: 'all', documentType: 'all', selectedDocument: documents[0], documentOutcomes: new Map(),
   selectedContract: contracts[0], contractTab: 'contract-lines',
-  paymentTab: 'ready', paymentQuery: '', paymentVendor: 'all', paymentMethod: 'all', paymentDate: '', paymentSelection: new Set(), paymentMoves: new Map()
+  paymentTab: 'ready', paymentQuery: '', paymentVendor: 'all', paymentMethod: 'all', paymentDate: '', paymentSelection: new Set(), paymentMoves: new Map(),
+  captureScreen: 'queue', captureSelected: captureInvoices[0], captureVendor: 'all', captureInvoice: '', captureAmountMin: '', captureAmountMax: '', captureSettingsField: 'Supplier bank account', captureSettingsTab: 'global'
 };
 
 const workspace = document.querySelector('#workspace');
 const money = value => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
+const number = value => Number(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const escapeHtml = value => String(value).replace(/[&<>"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[character]);
 const approvalRole = inv => approvalRoles.find(role => role.id === inv.role);
 const requiresAction = inv => !inv.logOnly && inv.approvalRequired !== false;
@@ -213,8 +233,32 @@ function relay(inv) {
 function dashboard() { workspace.innerHTML = `<div class="workspace-grid">${queue()}${invoicePanel(state.selected)}${relay(state.selected)}</div>`; }
 
 function toVerify() {
-  const rows = filtered().filter(inv => !inv.logOnly).map(inv => `<tr data-invoice="${inv.id}" tabindex="0" role="link" aria-label="Verify ${inv.id} from ${inv.vendor}"><td><strong>${inv.id}</strong><small>${inv.vendor}</small></td><td>${money(inv.amount)}</td><td>${inv.confidence}%</td><td>${inv.po}</td><td>${status(inv)}</td></tr>`).join('');
-  workspace.innerHTML = pageIntro('To Verify', 'Review fields extracted through Rillion Capture before sending each invoice to the Invoice Log.', '<span class="status exception">5 need review</span>') + `<section class="panel verify-layout"><div class="verify-note"><h3>Capture verification</h3><p>Choose an invoice to inspect the source document, extracted fields, PO evidence, and next approval owner.</p><div class="mini-metrics"><div><strong>98%</strong><span>field confidence</span></div><div><strong>3m 42s</strong><span>average review</span></div></div></div><div class="table-wrap">${rows ? dataTable(['Invoice', 'Amount', 'Confidence', 'PO number', 'Next step'], rows) : emptyState('No invoices to verify', 'Try a different search term.')}</div></section>`;
+  if (state.captureScreen === 'detail') { captureDetail(); return; }
+  if (state.captureScreen === 'settings') { captureSettings(); return; }
+  captureQueue();
+}
+
+function captureQueue() {
+  const query = state.query.toLowerCase().trim();
+  const matches = captureInvoices.filter(inv => (!query || `${inv.vendor} ${inv.invoiceNumber} ${inv.fileName}`.toLowerCase().includes(query)) && (state.captureVendor === 'all' || inv.vendor === state.captureVendor) && (!state.captureInvoice || inv.invoiceNumber.toLowerCase().includes(state.captureInvoice.toLowerCase())) && (!state.captureAmountMin || inv.amount >= Number(state.captureAmountMin)) && (!state.captureAmountMax || inv.amount <= Number(state.captureAmountMax)));
+  const vendors = [...new Set(captureInvoices.map(inv => inv.vendor))].sort();
+  const rows = matches.map(inv => `<tr><td>${inv.company}</td><td><button class="table-link" data-capture-invoice="${inv.id}" aria-label="Open ${inv.invoiceNumber} from ${inv.vendor}">${inv.vendor}</button></td><td>${inv.invoiceDate}</td><td>${inv.dueDate}</td><td class="numeric">${number(inv.amount)} ${inv.amount < 0 ? 'USD credit' : 'USD'}</td><td>${inv.invoiceNumber}</td><td>${inv.fileName}</td><td>${inv.received}</td></tr>`).join('');
+  workspace.innerHTML = `<div class="capture-titlebar"><h2>Invoices to verify</h2><div class="capture-actions"><button data-action="capture-attachments">Attachments <span>99+</span></button><button data-action="capture-upload">Upload</button><button class="primary-button" data-action="capture-settings">Settings</button></div></div><section class="panel capture-queue"><div class="capture-filters"><label>Company<select disabled><option>All companies</option></select></label><label>Vendor<select id="capture-vendor"><option value="all">Vendor name or number</option>${vendors.map(vendor => `<option ${state.captureVendor === vendor ? 'selected' : ''}>${vendor}</option>`).join('')}</select></label><label>Total amount<span class="range-inputs"><input id="capture-min" type="number" value="${state.captureAmountMin}" placeholder="From"><input id="capture-max" type="number" value="${state.captureAmountMax}" placeholder="To"></span></label><label>Invoice number<input id="capture-invoice" value="${escapeHtml(state.captureInvoice)}" placeholder="Search invoice number"></label></div><div class="table-wrap capture-queue-table">${rows ? dataTable(['Company', 'Vendor', 'Invoice date', 'Due date', 'Total amount', 'Invoice number', 'File name', 'Received'], rows) : emptyState('No invoices match these filters', 'Clear a vendor, amount, invoice number, or global search filter.')}</div><div class="capture-pagination"><span>Total: 228 synthetic items</span><div aria-label="Pagination"><button disabled>‹</button><button aria-current="page">1</button><button>2</button><button>3</button><button>4</button><button>5</button><span>…</span><button>8</button><button>›</button></div></div><p class="capture-ai-note">Data on this page has been extracted using AI</p></section>`;
+}
+
+function captureDetail() {
+  const inv = state.captureSelected;
+  const index = captureInvoices.findIndex(item => item.id === inv.id);
+  const field = (label, value, stateClass = 'valid') => `<label class="capture-field ${stateClass}"><span>${label}</span><input value="${escapeHtml(value)}" aria-label="${label}"></label>`;
+  const lineHeads = ['Line no.', 'Order number', 'Delivery slip number', 'Item', 'Description', 'Quantity', 'Unit', 'Unit price', 'Discount %', 'TAX code', 'Account', 'Amount', 'Cost Center', 'Project', 'Location', 'Group1', 'Group2'];
+  const lineRows = inv.lines.map(line => `<tr>${[...line, '', ''].map((value, cell) => `<td><input value="${escapeHtml(value)}" aria-label="${lineHeads[cell]}"></td>`).join('')}</tr>`).join('');
+  workspace.innerHTML = `<div class="capture-detail-head"><button class="link-button" data-action="capture-back">← <strong>Invoice details</strong></button><div><button data-action="capture-history" aria-label="View history">History</button><button data-action="capture-delete" aria-label="Delete invoice">Delete</button><button data-action="capture-prev" ${index === 0 ? 'disabled' : ''}>‹</button><span>${index + 1} of 228</span><button data-action="capture-next" ${index === captureInvoices.length - 1 ? 'disabled' : ''}>›</button><button data-action="capture-save">Save</button><label class="capture-toggle"><input type="checkbox"> Test invoice</label></div></div><section class="panel capture-detail"><aside class="capture-fields"><h3>Company and vendor</h3>${field('Company *', `Northstar Manufacturing, ${inv.company}`)}${field('Vendor', inv.vendor, 'review')}${field('Supplier bank account', inv.bank)}<h3>Invoice</h3>${field('Credit/Debit', inv.amount < 0 ? 'Credit' : 'Debit')}${field('Invoice number *', inv.invoiceNumber)}${field('Invoice date *', inv.invoiceDate)}${field('Due date', inv.dueDate)}${field('Reference 1', '')}${field('Reference 2', '')}${field('Contract no.', '')}${field('PO number', inv.po)}${field('Account', inv.account)}${field('Payment reference', '')}<h3>Amounts</h3>${field('Currency', 'USD')}${field('Total amount', Math.abs(inv.amount).toFixed(2))}<p class="capture-ai-note">Data on this page has been extracted using AI</p></aside><div class="capture-document"><div class="capture-document-tabs"><button aria-pressed="true">Invoice</button><button>Email</button></div><div class="capture-preview"><article class="capture-paper"><header><div><strong>${inv.vendor}</strong><span>SUPPLIER INVOICE</span></div><dl><dt>Invoice date</dt><dd>${inv.invoiceDate}</dd><dt>Invoice number</dt><dd>${inv.invoiceNumber}</dd><dt>Amount</dt><dd>${number(inv.amount)} USD</dd></dl></header><h2>${inv.amount < 0 ? 'CREDIT MEMO' : 'INVOICE'}</h2><div class="capture-paper-meta"><p><strong>Bill to</strong><br>Northstar Manufacturing<br>1000 Production Way<br>Riverton, IL 60611</p><p><strong>Payment terms</strong><br>Net 30<br><strong>Due date</strong><br>${inv.dueDate}</p></div><table><thead><tr><th>Description</th><th>Quantity</th><th>Price</th><th>Total</th></tr></thead><tbody>${inv.lines.map(line => `<tr><td>${line[4]}</td><td>${line[5]} ${line[6]}</td><td>${line[7]}</td><td>${line[11]}</td></tr>`).join('')}</tbody></table><footer><strong>Total due</strong><strong>${number(inv.amount)} USD</strong></footer></article></div><div class="capture-line-wrap"><div class="capture-line-actions"><button aria-label="Add invoice line">Add line</button><button data-action="capture-show-po">${inv.po ? `Show ${inv.po}` : 'No purchase order'}</button></div><div class="table-wrap capture-line-grid">${dataTable(lineHeads, lineRows)}</div></div></div></section>`;
+}
+
+function captureSettings() {
+  const tabs = [['global', 'Global default'], ['company', 'Company overrides'], ['vendor', 'Vendor overrides'], ['history', 'Change history']];
+  const selected = Object.values(captureFieldGroups).flat().find(([label]) => label === state.captureSettingsField) || [state.captureSettingsField, 0];
+  workspace.innerHTML = `<div class="capture-detail-head"><button class="link-button" data-action="capture-back">← <strong>Invoice data settings</strong></button><div><button>Custom fields</button><button disabled>Discard</button><button disabled>Save</button></div></div><section class="panel capture-settings"><aside class="capture-setting-list">${Object.entries(captureFieldGroups).map(([group, fields]) => `<h3>${group}</h3>${fields.map(([label, overrides]) => `<button data-capture-field="${label}" aria-pressed="${state.captureSettingsField === label}"><span>${label}</span>${overrides ? `<small>${overrides} ${overrides === 1 ? 'override' : 'overrides'}</small>` : ''}</button>`).join('')}`).join('')}</aside><div class="capture-setting-main"><h2>${state.captureSettingsField}</h2><div class="capture-setting-tabs" role="tablist">${tabs.map(([id, label]) => `<button role="tab" data-capture-settings-tab="${id}" aria-selected="${state.captureSettingsTab === id}">${label}</button>`).join('')}</div>${state.captureSettingsTab === 'global' ? `<div class="capture-setting-info">Applies to all companies (4)</div><label class="capture-setting-control">Invoice data to use<select><option>${state.captureSettingsField === 'Supplier bank account' ? 'Vendor bank account (auto-selected)' : `${state.captureSettingsField} from captured invoice`}</option></select><small>${state.captureSettingsField === 'Supplier bank account' ? 'First non-empty of: bankgiro, IBAN, plusgiro, BIC/SWIFT, bank account number' : `Use the extracted ${state.captureSettingsField.toLowerCase()} when the field is present.`}</small></label><button class="capture-revert">Revert to default and save</button>` : state.captureSettingsTab === 'company' ? `<div class="capture-setting-info">${selected[1]} company overrides configured</div>${emptyState('Company-specific rules', 'Choose a company to inspect how this field overrides the global default.')}` : state.captureSettingsTab === 'vendor' ? `<div class="capture-setting-info">Vendor-specific extraction rules</div>${emptyState('No vendor selected', 'Select a vendor to inspect or add a field override.')}` : `<div class="capture-setting-info">Change history for ${state.captureSettingsField}</div><div class="capture-history"><strong>Global default confirmed</strong><span>Sep 12, 2026 · Alex Nguyen</span><p>No material setting changes in the current synthetic history.</p></div>`}</div></section>`;
 }
 
 function invoiceLog() {
@@ -406,6 +450,7 @@ function render() {
 }
 
 function navigate(view) {
+  if (view === 'to-verify') state.captureScreen = 'queue';
   state.view = view;
   history.replaceState(null, '', `#${view}`);
   render();
@@ -469,6 +514,9 @@ document.addEventListener('click', event => {
   const group = event.target.closest('[data-nav-group]')?.dataset.navGroup;
   const view = event.target.closest('[data-view]')?.dataset.view;
   const invoice = event.target.closest('[data-invoice]')?.dataset.invoice;
+  const captureInvoice = event.target.closest('[data-capture-invoice]')?.dataset.captureInvoice;
+  const captureField = event.target.closest('[data-capture-field]')?.dataset.captureField;
+  const captureSettingsTab = event.target.closest('[data-capture-settings-tab]')?.dataset.captureSettingsTab;
   const documentId = event.target.closest('[data-document]')?.dataset.document;
   const documentTab = event.target.closest('[data-document-tab]')?.dataset.documentTab;
   const contractId = event.target.closest('[data-contract]')?.dataset.contract;
@@ -482,6 +530,9 @@ document.addEventListener('click', event => {
   const action = event.target.closest('[data-action]')?.dataset.action;
   if (group) { state.expanded.has(group) ? state.expanded.delete(group) : state.expanded.add(group); renderNav(); return; }
   if (view) { navigate(view); return; }
+  if (captureInvoice) { state.captureSelected = captureInvoices.find(item => item.id === captureInvoice) || state.captureSelected; state.captureScreen = 'detail'; toVerify(); return; }
+  if (captureField) { state.captureSettingsField = captureField; captureSettings(); return; }
+  if (captureSettingsTab) { state.captureSettingsTab = captureSettingsTab; captureSettings(); return; }
   if (invoice) { openInvoice(invoice); return; }
   if (documentId) { state.selectedDocument = documents.find(doc => doc.id === documentId) || state.selectedDocument; navigate('document-detail'); return; }
   if (documentTab) { state.documentTab = documentTab; documentsInbox(); return; }
@@ -495,7 +546,7 @@ document.addEventListener('click', event => {
   if (paymentReference) { toast(`Payment reference ${paymentReference} opened for review`); return; }
   if (action === 'approve') { state.approved.add(state.selected.id); render(); toast(`${state.selected.id} approved and ready for payment`); }
   if (action === 'fields') { state.fieldsExpanded = !state.fieldsExpanded; render(); }
-  if (action === 'reset') { state.approved.clear(); state.documentOutcomes.clear(); state.paymentSelection.clear(); state.paymentMoves.clear(); state.selected = invoices[0]; state.selectedDocument = documents[0]; state.selectedContract = contracts[0]; state.fieldsExpanded = false; state.logFilter = 'all'; state.approvalFilter = 'all'; state.roleFilter = 'all'; state.documentTab = 'being-checked'; state.documentCompany = 'all'; state.documentType = 'all'; state.contractTab = 'contract-lines'; state.paymentTab = 'ready'; state.paymentQuery = ''; state.paymentVendor = 'all'; state.paymentMethod = 'all'; state.paymentDate = ''; state.analytics = 0; state.view = 'dashboard'; state.query = ''; document.querySelector('#search').value = ''; history.replaceState(null, '', '#dashboard'); render(); toast('Demo reset'); }
+  if (action === 'reset') { state.approved.clear(); state.documentOutcomes.clear(); state.paymentSelection.clear(); state.paymentMoves.clear(); state.selected = invoices[0]; state.selectedDocument = documents[0]; state.selectedContract = contracts[0]; state.captureSelected = captureInvoices[0]; state.fieldsExpanded = false; state.logFilter = 'all'; state.approvalFilter = 'all'; state.roleFilter = 'all'; state.documentTab = 'being-checked'; state.documentCompany = 'all'; state.documentType = 'all'; state.contractTab = 'contract-lines'; state.paymentTab = 'ready'; state.paymentQuery = ''; state.paymentVendor = 'all'; state.paymentMethod = 'all'; state.paymentDate = ''; state.captureScreen = 'queue'; state.captureVendor = 'all'; state.captureInvoice = ''; state.captureAmountMin = ''; state.captureAmountMax = ''; state.captureSettingsField = 'Supplier bank account'; state.captureSettingsTab = 'global'; state.analytics = 0; state.view = 'dashboard'; state.query = ''; document.querySelector('#search').value = ''; history.replaceState(null, '', '#dashboard'); render(); toast('Demo reset'); }
   if (action === 'tour') { state.tour = 0; showTour(); }
   if (action === 'tour-next') { state.tour++; if (state.tour >= tours.length) { document.querySelector('#tour').hidden = true; state.tour = -1; toast('Tour complete — explore anything'); } else showTour(); }
   if (action === 'tour-close') { document.querySelector('#tour').hidden = true; state.tour = -1; }
@@ -515,6 +566,16 @@ document.addEventListener('click', event => {
   if (action === 'contract-save') toast(`${state.selectedContract.name} saved in this simulation`);
   if (action === 'contract-options') toast('Contract options opened in this simulation');
   if (action === 'contract-attachment') toast(`${state.selectedContract.attachment} opened in this simulation`);
+  if (action === 'capture-back') { state.captureScreen = 'queue'; toVerify(); }
+  if (action === 'capture-settings') { state.captureScreen = 'settings'; captureSettings(); }
+  if (action === 'capture-prev') { const index = captureInvoices.findIndex(item => item.id === state.captureSelected.id); if (index > 0) { state.captureSelected = captureInvoices[index - 1]; captureDetail(); } }
+  if (action === 'capture-next') { const index = captureInvoices.findIndex(item => item.id === state.captureSelected.id); if (index < captureInvoices.length - 1) { state.captureSelected = captureInvoices[index + 1]; captureDetail(); } }
+  if (action === 'capture-save') toast(`${state.captureSelected.invoiceNumber} saved in this simulation`);
+  if (action === 'capture-delete') toast('Delete is disabled in this public simulation');
+  if (action === 'capture-history') toast('Synthetic invoice history opened');
+  if (action === 'capture-show-po') toast(state.captureSelected.po ? `Purchase order ${state.captureSelected.po} opened for review` : 'This invoice has no purchase order');
+  if (action === 'capture-attachments') toast('Synthetic attachment inbox opened');
+  if (action === 'capture-upload') toast('Upload is simulated; no file left your browser');
   if (action === 'payment-manage') toast('Payment settings opened in this simulation');
   if (action === 'payment-portal') toast('Synthetic payment portal preview — no external site opened');
   if (action === 'payment-send' || action === 'payment-outside') {
@@ -545,6 +606,7 @@ document.querySelector('#role-select').addEventListener('change', event => {
 });
 
 document.addEventListener('change', event => {
+  if (event.target.matches('#capture-vendor')) { state.captureVendor = event.target.value; captureQueue(); }
   if (event.target.matches('#document-company')) { state.documentCompany = event.target.value; documentsInbox(); }
   if (event.target.matches('#document-type')) { state.documentType = event.target.value; documentsInbox(); }
   if (event.target.matches('#payment-query')) { state.paymentQuery = event.target.value; paymentsPage(); }
@@ -555,6 +617,12 @@ document.addEventListener('change', event => {
     event.target.checked ? state.paymentSelection.add(event.target.dataset.paymentSelect) : state.paymentSelection.delete(event.target.dataset.paymentSelect);
     paymentsPage();
   }
+});
+
+document.addEventListener('input', event => {
+  if (event.target.matches('#capture-invoice')) { state.captureInvoice = event.target.value; captureQueue(); }
+  if (event.target.matches('#capture-min')) { state.captureAmountMin = event.target.value; captureQueue(); }
+  if (event.target.matches('#capture-max')) { state.captureAmountMax = event.target.value; captureQueue(); }
 });
 
 window.addEventListener('hashchange', () => {

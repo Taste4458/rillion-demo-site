@@ -168,6 +168,10 @@ The upper-right Approval role selector is a native select control that lists all
 
 Approval metrics and status filters precede one section per selected role. Each section uses a deep-green heading, short ownership description, and lime count chip, followed by a standard decision table. “All roles” renders every group; a selected role renders only its group. Empty role/status intersections provide a named recovery message.
 
+### Capture / To Verify
+
+To Verify recreates the current Capture sequence with three local states. The queue uses the live field order—Company, Vendor, Invoice date, Due date, Total amount, Invoice number, File name, and Received—plus vendor, amount, invoice-number, and global filters. Vendor names are semantic buttons that open Invoice details. Detail keeps extracted header fields beside a synthetic source invoice and a wide, internally scrollable line-coding grid with purchasing and account dimensions. Settings separates header and line fields, displays override counts, and exposes Global default, Company overrides, Vendor overrides, and Change history tabs. Desktop follows the dense operational composition; at 820px the workspaces become one column while wide evidence remains contained inside its own scroller.
+
 ### Documents Inbox
 
 The Demo51-inspired inbox uses five status tabs—Inbound, To be processed, Being checked, Processed, and Return to AP—plus native Company and Document type filters. The wide operational table remains horizontally scrollable. Document names are semantic buttons with authored underline, hover, and global focus treatment; rows themselves are not interactive controls.

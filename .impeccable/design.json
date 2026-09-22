@@ -91,6 +91,13 @@
       "css": ".ds-role-group{overflow:hidden;border:1px solid #CFD6CD;border-radius:12px;background:#fff;box-shadow:0 5px 16px rgba(24,28,23,.09)}.ds-role-group header{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:15px 18px;background:#0F3732;color:#F6F1DC}.ds-role-group h3{margin:0;font-size:17px}.ds-role-group p{margin:3px 0 0;color:rgba(246,241,220,.76)}.ds-role-group header>span{flex:none;padding:4px 8px;border-radius:6px;background:#C9F0AB;color:#0F3732;font-size:12px;font-weight:700}.ds-role-table{padding:16px}@media(max-width:520px){.ds-role-group header{align-items:flex-start;flex-direction:column;gap:10px}}"
     },
     {
+      "name": "Capture To Verify Workspace",
+      "kind": "custom",
+      "description": "Three-state Capture workflow with a filterable invoice queue, extracted-field and line-coding detail, and field-level settings.",
+      "html": "<section class=\"ds-capture\"><header><h2>Invoices to verify</h2><button>Settings</button></header><div class=\"ds-capture-filters\">Company · Vendor · Total amount · Invoice number</div><div class=\"ds-capture-table\">Company · Vendor · Invoice date · Due date · Total amount · Invoice number · File name · Received</div><div class=\"ds-capture-detail\"><aside>Extracted invoice fields</aside><article>Synthetic invoice image · line coding grid</article></div><div class=\"ds-capture-settings\">Header fields · Line fields · Global default · Company overrides · Vendor overrides · Change history</div></section>",
+      "css": ".ds-capture{overflow:hidden;border:1px solid #CFD6CD;border-radius:12px;background:#fff;color:#313730;font:400 15px/1.45 Gellix,Arial,sans-serif}.ds-capture>header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #CFD6CD}.ds-capture-filters,.ds-capture-table,.ds-capture-settings{padding:14px 18px;border-bottom:1px solid #CFD6CD}.ds-capture-detail{display:grid;grid-template-columns:320px minmax(0,1fr)}.ds-capture-detail>*{min-width:0;padding:18px}.ds-capture-detail aside{border-right:1px solid #CFD6CD}@media(max-width:820px){.ds-capture-detail{grid-template-columns:minmax(0,1fr)}.ds-capture-detail aside{border-right:0;border-bottom:1px solid #CFD6CD}}"
+    },
+    {
       "name": "Documents Inbox",
       "kind": "custom",
       "description": "Demo51-inspired document queue with five status tabs, native filters, and semantic document-name buttons inside a scrollable data table.",
