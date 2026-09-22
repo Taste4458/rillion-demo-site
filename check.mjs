@@ -38,7 +38,7 @@ for (const label of ['AI matched', 'Non-PO verified']) {
 assert.ok((app.match(/aiMatched: true/g) || []).length >= 4, 'Invoice Log needs at least four AI-matched examples');
 assert.ok((app.match(/logOnly: true/g) || []).length >= 4, 'AI-matched examples must remain Invoice-Log-only');
 assert.ok((app.match(/filter\(requiresAction\)/g) || []).length >= 3, 'Direct-recording and log-only invoices must be excluded from task and approval queues');
-const invoiceRecords = app.split('\n').filter(line => /^  \{ id: 'INV-/.test(line));
+const invoiceRecords = app.split('\n').filter(line => /^ {2}\{ id: 'INV-/.test(line));
 const directRecords = invoiceRecords.filter(line => line.includes("flowProposal: 'Directly to recording'"));
 const aiRecords = invoiceRecords.filter(line => line.includes('aiMatched: true'));
 const varianceRecords = invoiceRecords.filter(line => line.includes("matchStatus: 'delivery-variance'") || line.includes("matchStatus: 'price-variance'"));
@@ -51,6 +51,19 @@ assert.ok(varianceRecords.some(line => line.includes("matchStatus: 'delivery-var
 assert.ok(varianceRecords.every(line => line.includes('confidence:') && line.includes('explanation:')), 'Every purchase-order variance needs confidence and an explanation');
 assert.ok(independentManagerRecords.length >= 3, 'Department manager needs at least three approvals independent of the connected journey');
 assert.match(app, /function syncRoleCounts\(\)/, 'Approval role counts must derive from actionable invoices');
+assert.doesNotMatch(app, /Open Precision invoice/, 'The shared journey strip must not expose a vendor-specific dashboard CTA');
+for (const label of ['Inbound', 'To be processed', 'Being checked', 'Processed', 'Return to AP']) {
+  assert.match(app, new RegExp(label), `Approver queue is missing workflow tab: ${label}`);
+}
+assert.match(app, /approvalQueueState: new Map\(\)/, 'Approver queue transitions need local workflow state');
+assert.match(app, /function approvalDetail\(\)/, 'Approver queue needs a linked invoice-detail workspace');
+assert.match(app, /data-approval-invoice=/, 'Approver queue needs semantic invoice controls');
+assert.doesNotMatch(app, /<tr[^>]*data-approval-invoice=/, 'Approver rows must preserve native table semantics');
+for (const action of ['approval-back', 'approval-approve', 'approval-return', 'approval-match-po']) {
+  assert.match(app, new RegExp(action), `Approver workspace is missing ${action}`);
+}
+assert.match(css, /\.approval-detail-grid/, 'Approver detail needs a responsive workspace layout');
+assert.match(css, /\.approval-table \.data-table\{min-width:/, 'Approver queue needs a scroll-contained worklist');
 assert.match(app, /class="table-link invoice-log-link" data-invoice=/, 'Invoice Log needs native invoice-detail links');
 assert.match(app, /function matchSummary\(inv\)/, 'Invoice detail needs shared matching confidence and explanation evidence');
 assert.match(app, /if \(!requiresAction\(inv\)\) return/, 'Direct-recording and log-only invoice details must not show approval actions');
@@ -119,7 +132,7 @@ for (const destination of ['Invoice Log', 'To Verify', 'Invoice details', 'Docum
 for (const role of ['AP review', 'Department manager', 'Finance controller']) {
   assert.match(app, new RegExp(role), `Missing approval role: ${role}`);
 }
-const reportsNav = app.match(/\{ group: 'reports'[\s\S]*?\n  \] \},/);
+const reportsNav = app.match(/\{ group: 'reports'[\s\S]*?\n {2}\] \},/);
 assert.ok(reportsNav, 'Missing Reports navigation group');
 assert.doesNotMatch(reportsNav[0], /approval-report/, 'Approval must not appear under Reports');
 assert.doesNotMatch(app, /data-view="approval-report"/, 'Approval shortcuts must defer to the role selector');

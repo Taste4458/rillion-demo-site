@@ -164,7 +164,8 @@ const state = {
   view: requestedView, selected: initialScenario === 'approver' ? invoices.find(inv => inv.id === journeyInvoiceId) : invoices[0], approved: new Set(),
   expanded: new Set(['invoices', 'reports']), tour: -1, tourPersona: initialScenario || 'platform', tourComplete: false, query: '', fieldsExpanded: false,
   scenario: initialScenario, journeyStage: scenarioConfig[initialScenario]?.stage || 0,
-  logFilter: 'all', approvalFilter: 'all', roleFilter: scenarioConfig[initialScenario]?.role || 'all', analytics: 0,
+  logFilter: 'all', roleFilter: scenarioConfig[initialScenario]?.role || 'all', analytics: 0,
+  approvalScreen: 'queue', approvalTab: 'to-be-processed', approvalCompany: 'all', approvalVendor: '', approvalDueFrom: '', approvalDueTo: '', approvalSelection: new Set(), approvalQueueState: new Map(),
   documentTab: 'being-checked', documentCompany: 'all', documentType: 'all', selectedDocument: documents[0], documentOutcomes: new Map(),
   selectedContract: contracts[0], contractTab: 'contract-lines',
   paymentTab: 'ready', paymentQuery: '', paymentVendor: 'all', paymentMethod: 'all', paymentDate: '', paymentSelection: new Set(), paymentMoves: new Map(),
@@ -182,11 +183,11 @@ const labels = { ...Object.fromEntries(navTree.flatMap(item => item.children ? i
 
 function journeyStrip() {
   const action = state.journeyStage === 0
-    ? `<button class="primary-button" data-capture-invoice="${journeyCaptureId}">Open Precision invoice</button>`
+    ? ''
     : state.journeyStage === 1
       ? '<button class="primary-button" data-action="journey-approval">Send to manager approval</button>'
       : state.journeyStage === 2
-        ? `<button class="primary-button" data-invoice="${journeyInvoiceId}">Review invoice</button>`
+        ? `<button class="primary-button" data-approval-invoice="${journeyInvoiceId}">Review invoice</button>`
         : state.journeyStage === 3
           ? '<button class="primary-button" data-action="journey-payment">Open ready for payment</button>'
           : '<span class="journey-complete">Workflow complete</span>';
@@ -398,19 +399,47 @@ function contractDetail() {
   workspace.innerHTML = `<div class="contract-toolbar">${backButton('Contracts', 'data-view="contracts"')}<span>${index + 1} of ${contracts.length}</span><button data-action="contract-prev" ${index === 0 ? 'disabled' : ''}>Previous</button><button data-action="contract-next" ${index === contracts.length - 1 ? 'disabled' : ''}>Next</button><button data-action="contract-copy">Create new as a copy</button><button class="contract-save" data-action="contract-save">Save in simulation</button><button data-action="contract-options">Options</button></div><div class="contract-detail-grid"><section class="panel contract-preview"><div class="document-pane-title">Contract image</div>${contractImage(contract)}</section><section class="panel contract-fields"><div class="document-pane-title">Contracts</div><div class="contract-field-list">${fields.map(([label, value], fieldIndex) => `<label><span>${label}</span>${fieldIndex === 6 ? `<textarea rows="3">${escapeHtml(value)}</textarea>` : `<input value="${escapeHtml(value)}" ${fieldIndex < 3 ? 'readonly' : ''}>`}</label>`).join('')}</div></section><div class="contract-side"><section class="panel contract-flow"><div class="document-pane-title">Flow</div><div class="flow-role done">Accounts Payable</div><span aria-hidden="true">↓</span><div class="flow-role done">CFO</div></section><section class="panel contract-tabs"><div class="contract-tab-list" role="tablist" aria-label="Contract information">${tabs.map(([id, label]) => `<button role="tab" data-contract-tab="${id}" aria-selected="${state.contractTab === id}">${label}</button>`).join('')}</div>${contractTabPanel(contract)}</section></div></div>`;
 }
 
+const approvalTabs = [['inbound', 'Inbound'], ['to-be-processed', 'To be processed'], ['being-checked', 'Being checked'], ['processed', 'Processed'], ['return-to-ap', 'Return to AP']];
+const approvalQueueStatus = inv => state.approved.has(inv.id) ? 'processed' : state.approvalQueueState.get(inv.id) || 'to-be-processed';
+
+function approvalRoleInvoices() {
+  return invoices.filter(requiresAction).filter(inv => state.roleFilter === 'all' || inv.role === state.roleFilter);
+}
+
+function approvalQueueInvoices() {
+  const start = state.approvalDueFrom ? new Date(`${state.approvalDueFrom}T00:00:00`).getTime() : 0;
+  const end = state.approvalDueTo ? new Date(`${state.approvalDueTo}T23:59:59`).getTime() : Number.POSITIVE_INFINITY;
+  const query = state.query.toLowerCase().trim();
+  const vendor = state.approvalVendor.toLowerCase().trim();
+  return approvalRoleInvoices().filter(inv => {
+    const company = String(inv.company || 30);
+    const due = new Date(inv.due).getTime();
+    const searchable = `${company} ${inv.vendor} ${inv.vendorInvoice} ${inv.id} ${inv.po} ${inv.accountPosting}`.toLowerCase();
+    return approvalQueueStatus(inv) === state.approvalTab && (!query || searchable.includes(query)) && (state.approvalCompany === 'all' || company === state.approvalCompany) && (!vendor || inv.vendor.toLowerCase().includes(vendor)) && due >= start && due <= end;
+  });
+}
+
 function approvalReport() {
-  const filters = [['all', 'All decisions'], ['waiting', 'Waiting'], ['approved', 'Approved']];
-  const approvalInvoices = invoices.filter(requiresAction);
-  const matches = approvalInvoices.filter(inv => state.approvalFilter === 'all' || (state.approvalFilter === 'approved' ? state.approved.has(inv.id) : !state.approved.has(inv.id)));
-  const roles = approvalRoles.filter(role => state.roleFilter === 'all' || role.id === state.roleFilter);
-  const waiting = approvalInvoices.filter(inv => !state.approved.has(inv.id) && (state.roleFilter === 'all' || inv.role === state.roleFilter)).length;
-  const groups = roles.map(role => {
-    const decisions = matches.filter(inv => inv.role === role.id);
-    const rows = decisions.map(inv => `<tr data-invoice="${inv.id}" tabindex="0" role="link" aria-label="Open ${inv.id} assigned to ${inv.owner}"><td>${inv.owner}</td><td><strong>${inv.id}</strong><small>${inv.vendor}</small></td><td>${money(inv.amount)}</td><td>${state.approved.has(inv.id) ? 'Completed today' : inv.due}</td><td>${state.approved.has(inv.id) ? '<span class="status paid">Approved</span>' : '<span class="status approval">Waiting</span>'}</td></tr>`).join('');
-    return `<section class="panel role-group"><div class="role-group-head"><div><h3>${role.label}</h3><p>${role.description}</p></div><span>${decisions.length} ${decisions.length === 1 ? 'approval' : 'approvals'}</span></div>${rows ? `<div class="table-wrap">${dataTable(['Approver', 'Invoice', 'Amount', 'Decision date', 'Status'], rows)}</div>` : emptyState(`No ${state.approvalFilter === 'approved' ? 'approved' : 'waiting'} decisions`, 'Choose another status or approval role.')}</section>`;
-  }).join('');
-  workspace.innerHTML = pageIntro('Approval', 'Choose a role to see its approval work, decision owner, due date, and status.', '<button class="primary-button" data-action="export">Download synthetic CSV</button>') + `<div class="approval-overview"><section class="panel approval-metric"><strong>1.8 days</strong><span>average approval cycle</span></section><section class="panel approval-metric"><strong>92%</strong><span>approved on time</span></section><section class="panel approval-metric"><strong>${waiting}</strong><span>waiting in selected roles</span></section></div><div class="filter-tabs" aria-label="Filter approval report">${filters.map(([id, label]) => `<button data-approval-filter="${id}" aria-pressed="${state.approvalFilter === id}">${label}</button>`).join('')}</div><div class="role-groups">${groups}</div>`;
-  workspace.insertAdjacentHTML('afterbegin', journeyStrip());
+  if (state.approvalScreen === 'detail') { approvalDetail(); return; }
+  const roleInvoices = approvalRoleInvoices();
+  const matches = approvalQueueInvoices();
+  const selectedCount = state.approvalSelection.size;
+  const companies = [...new Set(roleInvoices.map(inv => String(inv.company || 30)))].sort();
+  const statusLabels = Object.fromEntries(approvalTabs);
+  const rows = matches.map(inv => `<tr><td><input type="checkbox" data-approval-select="${inv.id}" ${state.approvalSelection.has(inv.id) ? 'checked' : ''} aria-label="Select ${inv.vendorInvoice}"></td><td><span class="approval-state ${approvalQueueStatus(inv)}"><span></span>${statusLabels[approvalQueueStatus(inv)]}</span></td><td>${inv.company || 30}</td><td><button class="table-link" data-approval-invoice="${inv.id}" aria-label="Open ${inv.vendorInvoice} from ${inv.vendor}">${inv.vendor}</button></td><td>${inv.vendorInvoice}</td><td>${inv.po === 'No PO' ? '—' : inv.po}</td><td>${inv.contract || '—'}</td><td class="numeric">${number(inv.amount)}</td><td>${inv.currency}</td><td>${inv.accountingDate}</td><td><span class="date-chip">${inv.due}</span></td><td>${inv.id.replace(/\D/g, '')}</td><td>${inv.varianceLabel} · ${inv.confidence}% confidence</td></tr>`).join('');
+  const roleLabel = state.roleFilter === 'all' ? 'All approval roles' : approvalRoles.find(role => role.id === state.roleFilter)?.label;
+  workspace.innerHTML = `${journeyStrip()}${pageIntro('Invoices', `${roleLabel} work queue with invoice evidence, matching status, and due dates.`, '<button class="primary-button" data-action="export">Download synthetic CSV</button>')}<section class="panel approval-inbox"><div class="approval-tabs" role="tablist" aria-label="Approval queue status">${approvalTabs.map(([id, label]) => `<button role="tab" data-approval-tab="${id}" aria-selected="${state.approvalTab === id}"><span class="document-tab-mark" aria-hidden="true"></span>${label}<small>${roleInvoices.filter(inv => approvalQueueStatus(inv) === id).length}</small></button>`).join('')}</div><div class="approval-filters"><label>Company<select id="approval-company"><option value="all">All companies</option>${companies.map(company => `<option value="${company}" ${state.approvalCompany === company ? 'selected' : ''}>${company}</option>`).join('')}</select></label><label>Vendor<input id="approval-vendor" value="${escapeHtml(state.approvalVendor)}" placeholder="Supplier name or number"></label><label>Due date from<input id="approval-due-from" type="date" value="${state.approvalDueFrom}"></label><label>Due date to<input id="approval-due-to" type="date" value="${state.approvalDueTo}"></label></div><div class="approval-batch"><button class="primary-button" data-action="approval-batch-approve" ${selectedCount ? '' : 'disabled'}>Approve${selectedCount ? ` · ${selectedCount}` : ''}</button><button data-action="approval-match-po" ${selectedCount ? '' : 'disabled'}>Match to PO</button><span>${matches.length} ${matches.length === 1 ? 'invoice' : 'invoices'} in this queue</span></div><div class="table-wrap approval-table">${rows ? dataTable(['', 'Status', 'Company', 'Vendor', "Vendor's invoice no.", 'Purchase order', 'Contract', 'Total amount', 'Currency', 'Accounting date', 'Due date', 'Serial no.', 'Latest comment'], rows) : emptyState(`No invoices in ${statusLabels[state.approvalTab]}`, 'Choose another workflow tab or clear a filter.')}</div></section>`;
+}
+
+function approvalDetail() {
+  const inv = state.selected;
+  if (!requiresAction(inv)) { state.approvalScreen = 'queue'; approvalReport(); return; }
+  const roleInvoices = approvalRoleInvoices();
+  const index = roleInvoices.findIndex(item => item.id === inv.id);
+  const approved = state.approved.has(inv.id);
+  const lineRows = inv.lines.map((line, lineIndex) => `<tr><td>${lineIndex + 1}</td><td>${line[0]}</td><td>${inv.accountPosting}</td><td>${line[1]}</td><td class="numeric">${money(line[1] * line[2])}</td><td>${inv.varianceLabel}</td></tr>`).join('');
+  const fields = [['Company', `${inv.company || 30} · Northstar Manufacturing`], ['Vendor', inv.vendor], ["Vendor's invoice no.", inv.vendorInvoice], ['Accounting date', inv.accountingDate], ['Due date', inv.due], ['Total amount', money(inv.amount)], ['Currency', inv.currency], ['Purchase order', inv.po], ['Contract', inv.contract || '—']];
+  workspace.innerHTML = `<div class="approval-toolbar">${backButton('approval queue', 'data-action="approval-back"')}<span>${index + 1} of ${roleInvoices.length}</span><button data-action="approval-prev" ${index <= 0 ? 'disabled' : ''}>Previous</button><button data-action="approval-next" ${index === roleInvoices.length - 1 ? 'disabled' : ''}>Next</button><button data-action="approval-save">Save</button><button class="approval-approve" data-action="approval-approve" ${approved ? 'disabled' : ''}>${approved ? 'Approved' : 'Approve'}</button><button data-action="approval-return">Return to AP</button><button data-action="approval-options">Options</button><button data-action="approval-purchase-order" ${inv.po === 'No PO' ? 'disabled' : ''}>Purchase order</button></div><div class="approval-detail-grid"><section class="panel approval-preview"><div class="document-pane-title">Invoice image</div>${invoicePaper(inv)}</section><section class="panel approval-data"><div class="document-pane-title">Invoice</div><dl>${fields.map(([label, value]) => `<dt>${label}</dt><dd>${value}</dd>`).join('')}</dl><div class="document-pane-title">AI matching</div>${matchSummary(inv)}<div class="document-pane-title">Account posting</div><div class="approval-posting"><span>Flow proposal<strong>${inv.flowProposal}</strong></span><span>Account<strong>${inv.accountPosting}</strong></span><span>Confidence<strong>${inv.confidence}%</strong></span></div><div class="table-wrap approval-lines">${dataTable(['Line', 'Description', 'Account', 'Quantity', 'Amount', 'Match result'], lineRows)}</div></section><aside class="approval-side"><section class="panel approval-flow"><div class="document-pane-title">Flow</div><div class="flow-role done">Accounts Payable</div><span aria-hidden="true">↓</span><div class="flow-role ${approved ? 'done' : 'active'}">${approvalRole(inv).label}</div><span aria-hidden="true">↓</span><div class="flow-role">Payment scheduled</div></section><section class="panel approval-comments"><div class="document-pane-title">Comments</div><div><strong>Matched by AI</strong><p>${inv.explanation}</p><small>Rillion matching service · today</small></div><div><strong>${approved ? 'Approval completed' : 'Approval required'}</strong><p>${approved ? `${inv.owner} approved this invoice.` : `${inv.owner} owns the next decision.`}</p><small>${approvalRole(inv).label}</small></div></section></aside></div>`;
 }
 
 function analytics() {
@@ -688,6 +717,13 @@ function openInvoice(id) {
   navigate('dashboard');
 }
 
+function openApprovalInvoice(id) {
+  state.selected = invoices.find(inv => inv.id === id) || state.selected;
+  if (approvalQueueStatus(state.selected) === 'to-be-processed') state.approvalQueueState.set(state.selected.id, 'being-checked');
+  state.approvalScreen = 'detail';
+  navigate('approval-report');
+}
+
 function scenarioUrl(persona) {
   const url = new URL(location.href);
   url.search = '';
@@ -716,6 +752,8 @@ document.addEventListener('click', event => {
   const group = event.target.closest('[data-nav-group]')?.dataset.navGroup;
   const view = event.target.closest('[data-view]')?.dataset.view;
   const invoice = event.target.closest('[data-invoice]')?.dataset.invoice;
+  const approvalInvoice = event.target.closest('[data-approval-invoice]')?.dataset.approvalInvoice;
+  const approvalTab = event.target.closest('[data-approval-tab]')?.dataset.approvalTab;
   const captureInvoice = event.target.closest('[data-capture-invoice]')?.dataset.captureInvoice;
   const captureField = event.target.closest('[data-capture-field]')?.dataset.captureField;
   const captureSettingsTab = event.target.closest('[data-capture-settings-tab]')?.dataset.captureSettingsTab;
@@ -724,7 +762,6 @@ document.addEventListener('click', event => {
   const contractId = event.target.closest('[data-contract]')?.dataset.contract;
   const contractTab = event.target.closest('[data-contract-tab]')?.dataset.contractTab;
   const logFilter = event.target.closest('[data-log-filter]')?.dataset.logFilter;
-  const approvalFilter = event.target.closest('[data-approval-filter]')?.dataset.approvalFilter;
   const analyticsIndex = event.target.closest('[data-analytics]')?.dataset.analytics;
   const paymentTab = event.target.closest('[data-payment-tab]')?.dataset.paymentTab;
   const paymentInvoice = event.target.closest('[data-payment-invoice]')?.dataset.paymentInvoice;
@@ -738,13 +775,14 @@ document.addEventListener('click', event => {
   if (captureInvoice) { state.captureSelected = captureInvoices.find(item => item.id === captureInvoice) || state.captureSelected; state.captureScreen = 'detail'; toVerify(); return; }
   if (captureField) { state.captureSettingsField = captureField; captureSettings(); return; }
   if (captureSettingsTab) { state.captureSettingsTab = captureSettingsTab; captureSettings(); return; }
+  if (approvalInvoice) { openApprovalInvoice(approvalInvoice); return; }
+  if (approvalTab) { state.approvalTab = approvalTab; state.approvalSelection.clear(); approvalReport(); return; }
   if (invoice) { openInvoice(invoice); return; }
   if (documentId) { state.selectedDocument = documents.find(doc => doc.id === documentId) || state.selectedDocument; navigate('document-detail'); return; }
   if (documentTab) { state.documentTab = documentTab; documentsInbox(); return; }
   if (contractId) { state.selectedContract = contracts.find(contract => contract.id === contractId) || state.selectedContract; state.contractTab = 'contract-lines'; navigate('contract-detail'); return; }
   if (contractTab) { state.contractTab = contractTab; contractDetail(); return; }
   if (logFilter) { state.logFilter = logFilter; invoiceLog(); return; }
-  if (approvalFilter) { state.approvalFilter = approvalFilter; approvalReport(); return; }
   if (analyticsIndex !== undefined) { state.analytics = Number(analyticsIndex); analytics(); return; }
   if (paymentTab) { state.paymentTab = paymentTab; state.paymentDate = ''; state.paymentSelection.clear(); paymentsPage(); return; }
   if (paymentInvoice) { toast(`Invoice ${paymentInvoice} opened in the synthetic payment list`); return; }
@@ -752,9 +790,38 @@ document.addEventListener('click', event => {
   if (tourView) { closeTour(false); navigate(tourView); return; }
   if (tourPersona) { state.tourPersona = tourPersona; state.tour = 0; showTour(); return; }
   if (shareScenario) { copyScenario(shareScenario); return; }
+  if (action === 'approval-back') { state.approvalScreen = 'queue'; state.approvalTab = approvalQueueStatus(state.selected); approvalReport(); }
+  if (action === 'approval-prev' || action === 'approval-next') {
+    const records = approvalRoleInvoices();
+    const index = records.findIndex(inv => inv.id === state.selected.id) + (action === 'approval-prev' ? -1 : 1);
+    if (records[index]) { state.selected = records[index]; if (approvalQueueStatus(state.selected) === 'to-be-processed') state.approvalQueueState.set(state.selected.id, 'being-checked'); approvalDetail(); }
+  }
+  if (action === 'approval-save') toast(`${state.selected.vendorInvoice} saved in this simulation`);
+  if (action === 'approval-options') toast('Approval options opened in this simulation');
+  if (action === 'approval-purchase-order') toast(`Purchase order ${state.selected.po} opened for review`);
+  if (action === 'approval-return') { state.approved.delete(state.selected.id); state.approvalQueueState.set(state.selected.id, 'return-to-ap'); state.approvalScreen = 'queue'; state.approvalTab = 'return-to-ap'; approvalReport(); toast(`${state.selected.vendorInvoice} returned to AP`); }
+  if (action === 'approval-approve') {
+    state.approved.add(state.selected.id);
+    state.approvalQueueState.set(state.selected.id, 'processed');
+    if (state.selected.id === journeyInvoiceId) { state.journeyStage = Math.max(state.journeyStage, 3); state.paymentTab = 'ready'; navigate('payments'); }
+    else { state.approvalScreen = 'queue'; state.approvalTab = 'processed'; approvalReport(); }
+    toast(`${state.selected.vendorInvoice} approved and ready for payment`);
+  }
+  if (action === 'approval-batch-approve') {
+    state.approvalSelection.forEach(id => { state.approved.add(id); state.approvalQueueState.set(id, 'processed'); if (id === journeyInvoiceId) state.journeyStage = Math.max(state.journeyStage, 3); });
+    const count = state.approvalSelection.size;
+    state.approvalSelection.clear();
+    state.approvalTab = 'processed';
+    approvalReport();
+    toast(`${count} ${count === 1 ? 'invoice' : 'invoices'} approved in this simulation`);
+  }
+  if (action === 'approval-match-po') {
+    const count = [...state.approvalSelection].filter(id => invoices.find(inv => inv.id === id)?.po !== 'No PO').length;
+    toast(`${count} purchase ${count === 1 ? 'order' : 'orders'} opened for matching review`);
+  }
   if (action === 'approve') { state.approved.add(state.selected.id); if (state.selected.id === journeyInvoiceId) { state.journeyStage = Math.max(state.journeyStage, 3); state.paymentTab = 'ready'; navigate('payments'); } else render(); toast(`${state.selected.id} approved and ready for payment`); }
   if (action === 'fields') { state.fieldsExpanded = !state.fieldsExpanded; render(); }
-  if (action === 'reset') { state.approved.clear(); state.documentOutcomes.clear(); state.paymentSelection.clear(); state.paymentMoves.clear(); state.selected = invoices[0]; state.selectedDocument = documents[0]; state.selectedContract = contracts[0]; state.captureSelected = captureInvoices[0]; state.fieldsExpanded = false; state.scenario = ''; state.journeyStage = 0; state.tourPersona = 'platform'; state.logFilter = 'all'; state.approvalFilter = 'all'; state.roleFilter = 'all'; state.documentTab = 'being-checked'; state.documentCompany = 'all'; state.documentType = 'all'; state.contractTab = 'contract-lines'; state.paymentTab = 'ready'; state.paymentQuery = ''; state.paymentVendor = 'all'; state.paymentMethod = 'all'; state.paymentDate = ''; state.captureScreen = 'queue'; state.captureVendor = 'all'; state.captureInvoice = ''; state.captureAmountMin = ''; state.captureAmountMax = ''; state.captureSettingsField = 'Supplier bank account'; state.captureSettingsTab = 'global'; state.analytics = 0; state.view = 'dashboard'; state.query = ''; document.querySelector('#search').value = ''; history.replaceState(null, '', `${location.pathname}#dashboard`); render(); showTourWelcome(); toast('Demo reset'); }
+  if (action === 'reset') { state.approved.clear(); state.approvalSelection.clear(); state.approvalQueueState.clear(); state.documentOutcomes.clear(); state.paymentSelection.clear(); state.paymentMoves.clear(); state.selected = invoices[0]; state.selectedDocument = documents[0]; state.selectedContract = contracts[0]; state.captureSelected = captureInvoices[0]; state.fieldsExpanded = false; state.scenario = ''; state.journeyStage = 0; state.tourPersona = 'platform'; state.logFilter = 'all'; state.roleFilter = 'all'; state.approvalScreen = 'queue'; state.approvalTab = 'to-be-processed'; state.approvalCompany = 'all'; state.approvalVendor = ''; state.approvalDueFrom = ''; state.approvalDueTo = ''; state.documentTab = 'being-checked'; state.documentCompany = 'all'; state.documentType = 'all'; state.contractTab = 'contract-lines'; state.paymentTab = 'ready'; state.paymentQuery = ''; state.paymentVendor = 'all'; state.paymentMethod = 'all'; state.paymentDate = ''; state.captureScreen = 'queue'; state.captureVendor = 'all'; state.captureInvoice = ''; state.captureAmountMin = ''; state.captureAmountMax = ''; state.captureSettingsField = 'Supplier bank account'; state.captureSettingsTab = 'global'; state.analytics = 0; state.view = 'dashboard'; state.query = ''; document.querySelector('#search').value = ''; history.replaceState(null, '', `${location.pathname}#dashboard`); render(); showTourWelcome(); toast('Demo reset'); }
   if (action === 'tour') showTourWelcome();
   if (action === 'tour-start') { state.tourPersona = 'platform'; state.tour = 0; showTour(); }
   if (action === 'tour-back' && state.tourComplete) { state.tourComplete = false; showTour(); }
@@ -779,7 +846,7 @@ document.addEventListener('click', event => {
   if (action === 'contract-options') toast('Contract options opened in this simulation');
   if (action === 'contract-attachment') toast(`${state.selectedContract.attachment} opened in this simulation`);
   if (action === 'capture-verify') { state.journeyStage = Math.max(state.journeyStage, 1); state.logFilter = 'all'; navigate('invoice-log'); toast(`${journeyInvoiceId} verified and added to Invoice Log`); }
-  if (action === 'journey-approval') { state.journeyStage = Math.max(state.journeyStage, 2); state.selected = invoices.find(inv => inv.id === journeyInvoiceId); state.roleFilter = 'department-manager'; navigate('approval-report'); toast(`${journeyInvoiceId} sent to Department manager`); }
+  if (action === 'journey-approval') { state.journeyStage = Math.max(state.journeyStage, 2); state.selected = invoices.find(inv => inv.id === journeyInvoiceId); state.roleFilter = 'department-manager'; state.approvalScreen = 'queue'; state.approvalTab = 'to-be-processed'; navigate('approval-report'); toast(`${journeyInvoiceId} sent to Department manager`); }
   if (action === 'journey-payment') { state.paymentTab = 'ready'; navigate('payments'); }
   if (action === 'capture-back') { state.captureScreen = 'queue'; toVerify(); }
   if (action === 'capture-settings-back') { state.captureScreen = 'detail'; captureDetail(); }
@@ -797,7 +864,7 @@ document.addEventListener('click', event => {
   if (action === 'payment-send' || action === 'payment-outside') {
     const destination = action === 'payment-send' ? 'in-progress' : 'completed';
     const count = state.paymentSelection.size;
-    state.paymentSelection.forEach(id => state.paymentMoves.set(id, destination));
+    state.paymentSelection.forEach(id => { state.paymentMoves.set(id, destination); });
     if (state.paymentSelection.has(journeyInvoiceId)) state.journeyStage = 4;
     state.paymentSelection.clear();
     state.paymentTab = destination;
@@ -822,17 +889,28 @@ document.addEventListener('keydown', event => {
 
 document.querySelector('#search').addEventListener('input', event => {
   state.query = event.target.value;
-  if (!['dashboard', 'invoice-log', 'to-verify', 'tasks'].includes(state.view)) state.view = 'invoice-log';
+  if (!['dashboard', 'invoice-log', 'to-verify', 'tasks', 'approval-report'].includes(state.view)) state.view = 'invoice-log';
+  if (state.view === 'approval-report') state.approvalSelection.clear();
   render();
 });
 
 document.querySelector('#role-select').addEventListener('change', event => {
   state.roleFilter = event.target.value;
+  state.approvalScreen = 'queue';
+  state.approvalTab = 'to-be-processed';
+  state.approvalSelection.clear();
   navigate('approval-report');
 });
 
 document.addEventListener('change', event => {
   if (event.target.matches('#capture-vendor')) { state.captureVendor = event.target.value; captureQueue(); }
+  if (event.target.matches('#approval-company')) { state.approvalCompany = event.target.value; state.approvalSelection.clear(); approvalReport(); }
+  if (event.target.matches('#approval-due-from')) { state.approvalDueFrom = event.target.value; state.approvalSelection.clear(); approvalReport(); }
+  if (event.target.matches('#approval-due-to')) { state.approvalDueTo = event.target.value; state.approvalSelection.clear(); approvalReport(); }
+  if (event.target.matches('[data-approval-select]')) {
+    event.target.checked ? state.approvalSelection.add(event.target.dataset.approvalSelect) : state.approvalSelection.delete(event.target.dataset.approvalSelect);
+    approvalReport();
+  }
   if (event.target.matches('#document-company')) { state.documentCompany = event.target.value; documentsInbox(); }
   if (event.target.matches('#document-type')) { state.documentType = event.target.value; documentsInbox(); }
   if (event.target.matches('#payment-query')) { state.paymentQuery = event.target.value; paymentsPage(); }
@@ -849,6 +927,7 @@ document.addEventListener('input', event => {
   if (event.target.matches('#capture-invoice')) { state.captureInvoice = event.target.value; captureQueue(); }
   if (event.target.matches('#capture-min')) { state.captureAmountMin = event.target.value; captureQueue(); }
   if (event.target.matches('#capture-max')) { state.captureAmountMax = event.target.value; captureQueue(); }
+  if (event.target.matches('#approval-vendor')) { state.approvalVendor = event.target.value; state.approvalSelection.clear(); approvalReport(); document.querySelector('#approval-vendor')?.focus(); }
 });
 
 window.addEventListener('hashchange', () => {

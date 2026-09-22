@@ -118,7 +118,7 @@ Use the official `assets/rillion-logo-lime.svg` artwork without redrawing, recol
 
 ## Layout
 
-Desktop uses a fixed 236px navigation rail and a three-part workspace: task queue, dominant invoice document, and approval/evidence rail. Document detail uses three columns: source preview, indexed fields, and a stacked flow/lines/comments rail. The layout collapses at 1180px, moving secondary evidence below the primary work. At 820px it becomes one column with a horizontal navigation header; document detail becomes one column, its toolbar scrolls horizontally inside the viewport, and no horizontal page overflow is allowed. The 390px contract keeps the role selector, logo, document actions, and all primary content reachable.
+Desktop uses a fixed 236px navigation rail and a three-part workspace: task queue, dominant invoice document, and approval/evidence rail. Document and approval detail use three columns: source preview, indexed evidence, and a stacked flow/comments rail. The layout collapses at 1180px, moving secondary evidence below the primary work. At 820px it becomes one column with a horizontal navigation header; detail workspaces become one column, action toolbars scroll horizontally inside the viewport, and wide operational tables remain contained in their own scrollers so no horizontal page overflow is allowed. The 390px contract keeps the role selector, logo, document actions, and all primary content reachable.
 
 Spacing follows a compact 6/10/16/24px rhythm. Groups are tight inside evidence blocks and separated generously between workflow regions.
 
@@ -160,13 +160,15 @@ Cards use gently rounded 12px corners, controls use 8px, and status chips use co
 
 ### Navigation
 
-Desktop navigation is a vertical deep-green rail with the official lime Rillion logo, authored line icons, and the recognizable Demo51 hierarchy. Invoices and Reports are expandable groups; their child destinations use an indented dot treatment so To Verify, Invoice Log, and AP performance remain visibly subordinate. AP performance is the only Reports child. Approval is intentionally absent from the sidebar and direct calls to action because the persistent role selector is its primary navigation path. Active state uses lime fill and deep-green copy. Mobile navigation becomes a horizontal rail with accessible names and no badges.
+Desktop navigation is a vertical deep-green rail with the official lime Rillion logo, authored line icons, and the recognizable Demo51 hierarchy. Invoices and Reports are expandable groups; their child destinations use an indented dot treatment so To Verify, Invoice Log, and AP performance remain visibly subordinate. AP performance is the only Reports child. Approval is intentionally absent from the sidebar and generic entry calls to action because the persistent role selector is its primary navigation path. Active state uses lime fill and deep-green copy. Mobile navigation becomes a horizontal rail with accessible names and no badges.
 
-The upper-right Approval role selector is a native select control that lists all synthetic workflow roles. Choosing a role opens the Approval report and makes that role the active grouping lens; approvals remain nested beneath explicit role headings so responsibility is never inferred from a person name alone.
+The upper-right Approval role selector is a native select control that lists all synthetic workflow roles. Choosing a role opens the Approval queue and makes that role the active work lens; the queue heading names the active role so responsibility is never inferred from a person name alone.
 
-### Role-Grouped Approval
+### Approver Queue and Detail
 
-Approval metrics and status filters precede one section per selected role. Each section uses a deep-green heading, short ownership description, and lime count chip, followed by a standard decision table. “All roles” renders every group; a selected role renders only its group. Empty role/status intersections provide a named recovery message.
+The approval queue uses five workflow tabs—Inbound, To be processed, Being checked, Processed, and Return to AP—with per-tab counts. Company, vendor, and due-date-range filters precede selection-gated Approve and Match to PO batch actions. Its dense evidence table includes status, company, vendor invoice, purchasing references, amount, dates, serial number, and latest matching comment; the table scrolls inside its surface, and only the semantic vendor button opens detail. Empty tab/filter intersections provide a named recovery message.
+
+Approval detail pairs the invoice image with invoice fields, AI matching evidence, account posting, and a scroll-contained line table, while flow and comments remain visible in the side rail. A deep-green toolbar provides Back to approval queue, record position, Previous/Next, Save, Approve, Return to AP, Options, and contextual Purchase order actions. At 1180px the flow/comments rail moves beneath the invoice and evidence panes; at 820px all panes stack in one column and the toolbar scrolls within the viewport.
 
 ### Capture / To Verify
 
@@ -194,7 +196,9 @@ Every fresh link load opens a branded, dismissible welcome dialog. Accounts paya
 
 Shareable scenario links encode `scenario`, `view`, and `welcome=0`, landing directly in the relevant module with a visible scenario banner and a control to start that persona's walkthrough.
 
-Detail workspaces use one shared Back control: an authored left-arrow icon, visible “Back to [destination]” label, 44px minimum target, and matching hover/focus states. Capture settings returns to Invoice details rather than skipping directly to the queue; invoice, document, and contract details return to their owning list.
+At journey stage 0, the strip communicates Capture status without a vendor-specific “Open Precision invoice” action. Later stages retain contextual actions for sending to approval, reviewing the approval invoice, and opening ready-for-payment work.
+
+Detail workspaces use one shared Back control: an authored left-arrow icon, visible “Back to [destination]” label, 44px minimum target, and matching hover/focus states. Capture settings returns to Invoice details rather than skipping directly to the queue; invoice, approval, document, and contract details return to their owning list.
 
 ### Invoice Log
 
