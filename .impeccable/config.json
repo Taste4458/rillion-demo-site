@@ -11,6 +11,15 @@
         ],
         "createdAt": "2026-09-22T21:40:42.321Z",
         "reason": "Existing match-summary status rail is confirmed in HEAD and intentionally encodes success, warning, price-variant, and error states."
+      },
+      {
+        "rule": "gray-on-color",
+        "value": "*",
+        "files": [
+          "/Users/samstull/Documents/Claude/Projects/Rillion Demo Site/3-Done/rillion-demo-site/index.html"
+        ],
+        "createdAt": "2026-09-23T02:10:59.424Z",
+        "reason": "Only the app.js cache-busting URL changed; this visual finding predates and is unrelated to the correction."
       }
     ]
   }

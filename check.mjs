@@ -4,6 +4,7 @@ import { existsSync, readFileSync } from 'node:fs';
 const app = readFileSync(new URL('./app.js', import.meta.url), 'utf8');
 const html = readFileSync(new URL('./index.html', import.meta.url), 'utf8');
 const css = readFileSync(new URL('./styles.css', import.meta.url), 'utf8');
+assert.match(html, /src="app\.js\?v=[^"]+"/, 'The static entry point must version app.js so published tour updates replace cached code');
 for (const label of ['To Verify', 'Invoice Log', 'Approval', 'Rillion Analytics']) {
 	assert.match(app, new RegExp(label), `Missing required destination: ${label}`);
 }
