@@ -1362,12 +1362,15 @@ const scenarioConfig = {
 };
 const urlParams = new URLSearchParams(location.search);
 const initialScenario = scenarioConfig[urlParams.get('scenario')] ? urlParams.get('scenario') : '';
-const requestedView = urlParams.get('view') || location.hash.slice(1) || scenarioConfig[initialScenario]?.view || 'dashboard';
+const requestedInvoice = invoices.find((inv) => inv.id === urlParams.get('invoice'));
+const requestedPurchaseOrder = invoices.find((inv) => inv.po === urlParams.get('po'));
+const requestedView = urlParams.get('view') || location.hash.slice(1) || (requestedPurchaseOrder ? 'purchase-order-detail' : requestedInvoice ? 'invoice-detail' : '') || scenarioConfig[initialScenario]?.view || 'dashboard';
+const initialSelected = (requestedView === 'purchase-order-detail' && requestedPurchaseOrder) || requestedInvoice || requestedPurchaseOrder || (initialScenario === 'approver' ? invoices.find((inv) => inv.id === journeyInvoiceId) : invoices[0]);
 const initialTransferredIds = invoices.filter((inv) => inv.type === 'approval' && inv.id !== journeyInvoiceId).map((inv) => inv.id);
 
 const state = {
 	view: requestedView,
-	selected: initialScenario === 'approver' ? invoices.find((inv) => inv.id === journeyInvoiceId) : invoices[0],
+	selected: initialSelected,
 	approved: new Set(),
 	expanded: new Set(['invoices', 'reports']),
 	tour: -1,
@@ -1795,7 +1798,7 @@ function invoiceDetailPanel(inv) {
 
 function purchaseOrderDetail() {
 	const inv = state.selected;
-	if (!inv || inv.matchBasis !== 'po') {
+	if (inv?.matchBasis !== 'po') {
 		navigate('invoice-log');
 		return;
 	}
@@ -2202,13 +2205,23 @@ function syncRoleCounts() {
 	}
 }
 
+function syncUrlState(view) {
+	const url = new URL(location.href);
+	url.hash = view;
+	const isInvoiceDetail = view === 'invoice-detail' || view === 'purchase-order-detail';
+	if (state.scenario || isInvoiceDetail) url.searchParams.set('view', view);
+	else url.searchParams.delete('view');
+	if (isInvoiceDetail) url.searchParams.set('invoice', state.selected.id);
+	else url.searchParams.delete('invoice');
+	if (view === 'purchase-order-detail' && state.selected.po) url.searchParams.set('po', state.selected.po);
+	else url.searchParams.delete('po');
+	history.replaceState(null, '', url);
+}
+
 function navigate(view) {
 	if (view === 'to-verify') state.captureScreen = 'queue';
 	state.view = view;
-	const url = new URL(location.href);
-	url.hash = view;
-	if (state.scenario) url.searchParams.set('view', view);
-	history.replaceState(null, '', url);
+	syncUrlState(view);
 	render();
 	workspace.focus({ preventScroll: true });
 }
@@ -2229,6 +2242,18 @@ const tourSets = {
 			title: 'Follow the Invoice Log',
 			copy: 'The log keeps status, ownership, and purchasing evidence visible from receipt through transfer.',
 			view: 'invoice-log',
+		},
+		{
+			title: 'See why AI chose the coding',
+			copy: 'Open an AI-matched invoice to review its confidence-colored code, coding rationale, and flow-proposal rationale.',
+			view: 'invoice-detail',
+			selected: 'INV-82416',
+		},
+		{
+			title: 'Inspect a purchase-order variance',
+			copy: 'Open the related purchase order to compare ordered, delivered, and invoiced quantities with the price evidence.',
+			view: 'purchase-order-detail',
+			selected: 'INV-80116',
 		},
 		{
 			title: 'Measure approvals',
@@ -2264,6 +2289,18 @@ const tourSets = {
 			title: 'Control the Invoice Log',
 			copy: 'Track flow, coding, purchasing evidence, matching, and ownership in one grid.',
 			view: 'invoice-log',
+		},
+		{
+			title: 'Review AI matching evidence',
+			copy: 'See the proposed code and approval flow with the evidence that explains both choices.',
+			view: 'invoice-detail',
+			selected: 'INV-82416',
+		},
+		{
+			title: 'Review a PO price variance',
+			copy: 'Compare the purchase-order and invoice unit prices before the invoice moves forward.',
+			view: 'purchase-order-detail',
+			selected: 'INV-80116',
 		},
 		{
 			title: 'Prepare payment',
@@ -2357,6 +2394,7 @@ function showTour() {
 	if (step.analytics !== undefined) state.analytics = step.analytics;
 	if (step.selected) state.selected = invoices.find((inv) => inv.id === step.selected) || state.selected;
 	state.view = step.view;
+	syncUrlState(step.view);
 	render();
 	document.querySelector('#tour-status').textContent = `${step.title}. Step ${state.tour + 1} of ${steps.length}.`;
 }
@@ -2556,6 +2594,7 @@ document.addEventListener('click', (event) => {
 		return;
 	}
 	if (purchaseOrder) {
+		state.selected = invoices.find((inv) => inv.po === purchaseOrder) || state.selected;
 		navigate('purchase-order-detail');
 		return;
 	}
@@ -3054,5 +3093,6 @@ window.addEventListener('hashchange', () => {
 	}
 });
 
+if (state.view === 'invoice-detail' || state.view === 'purchase-order-detail') syncUrlState(state.view);
 render();
 if (urlParams.get('welcome') !== '0') showTourWelcome();

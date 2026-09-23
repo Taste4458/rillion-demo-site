@@ -30,9 +30,9 @@ The source reference is the authenticated Demo51 environment and its invoice, re
 
 - Public link with no login.
 - Synthetic company, vendor, invoice, purchase-order, contract, and employee data only.
-- Guided tour and free exploration with deterministic reset. Every fresh public-link load opens a dismissible welcome dialog with Accounts payable, Invoice approver, Finance leader, full-platform, and direct-module paths.
+- Guided tour and free exploration with deterministic reset. Every fresh public-link load opens a dismissible welcome dialog with Accounts payable, Invoice approver, Finance leader, full-platform, and direct-module paths. The AP and full-platform tours open one AI-match example and one purchase-order variance example so the evidence model is demonstrated rather than merely described.
 - One canonical Precision Tools invoice advances locally through Capture, Invoice Log, manager approval, payment readiness, and payment completion so the major modules share visible state.
-- Shareable AP, approver, and finance scenario URLs open the relevant module and role without the welcome dialog; all scenarios remain synthetic and browser-local.
+- Shareable AP, approver, and finance scenario URLs open the relevant module and role without the welcome dialog. Invoice and purchase-order detail URLs also retain the selected synthetic record across reloads; all scenarios remain synthetic and browser-local.
 - Representative interactions are simulated locally in the browser.
 - No production APIs, credentials, customer data, lead forms, behavioral tracking, telemetry, or remote writes.
 - It must identify itself as a product simulation rather than a live Rillion tenant.

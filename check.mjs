@@ -14,8 +14,9 @@ assert.match(app, /data-document-tab/, 'Missing document inbox tabs');
 assert.match(app, /document-detail/, 'Missing document detail route');
 assert.match(app, /class="table-link" data-document=/, 'Document rows need native interactive controls');
 assert.doesNotMatch(app, /<tr data-document=/, 'Document table rows must preserve native table semantics');
-assert.ok(app.indexOf("title: 'Track payments'") < app.indexOf("title: 'Explore Analytics'"), 'Payments must precede Analytics in the guided tour');
-assert.ok(app.indexOf("title: 'Verify captured invoices'") < app.indexOf("title: 'Follow the Invoice Log'"), 'Invoice Log must follow To Verify in the guided tour');
+const platformTour = app.slice(app.indexOf('platform: ['), app.indexOf('\n\tap: [', app.indexOf('platform: [')));
+assert.ok(platformTour.indexOf("title: 'Track payments'") < platformTour.indexOf("title: 'Explore Analytics'"), 'Payments must precede Analytics in the guided tour');
+assert.ok(platformTour.indexOf("title: 'Verify captured invoices'") < platformTour.indexOf("title: 'Follow the Invoice Log'"), 'Invoice Log must follow To Verify in the guided tour');
 for (const label of ['Invoices to verify', 'Invoice details', 'Invoice data settings', 'Supplier bank account', 'Company overrides', 'Vendor overrides', 'Change history']) {
 	assert.match(app, new RegExp(label), `Capture flow is missing ${label}`);
 }
@@ -179,6 +180,16 @@ assert.match(app, /state\.journeyStage = 4/, 'Payment action must complete the c
 assert.match(app, /new URLSearchParams\(location\.search\)/, 'Shareable scenarios need native URL parsing');
 assert.match(app, /welcome.*'0'/, 'Shareable scenarios need a welcome bypass');
 assert.match(app, /function scenarioUrl\(persona\)/, 'Missing shareable scenario link builder');
+assert.match(app, /urlParams\.get\('invoice'\)/, 'Invoice detail links must restore the selected invoice');
+assert.match(app, /urlParams\.get\('po'\)/, 'Purchase-order detail links must restore the selected purchase order');
+assert.match(app, /function syncUrlState\(view\)/, 'Detail navigation needs one shared URL-state boundary');
+assert.match(app, /url\.searchParams\.set\('invoice', state\.selected\.id\)/, 'Invoice detail URLs must carry the selected invoice');
+assert.match(app, /url\.searchParams\.set\('po', state\.selected\.po\)/, 'Purchase-order detail URLs must carry the selected PO');
+assert.match(app, /title: 'See why AI chose the coding'[\s\S]*?selected: 'INV-82416'/, 'The platform tour must open the AI-match example');
+assert.match(app, /title: 'Inspect a purchase-order variance'[\s\S]*?selected: 'INV-80116'/, 'The platform tour must open the PO-variance example');
+assert.match(app, /title: 'Review AI matching evidence'[\s\S]*?selected: 'INV-82416'/, 'The AP tour must open the AI-match example');
+assert.match(app, /title: 'Review a PO price variance'[\s\S]*?selected: 'INV-80116'/, 'The AP tour must open the PO-variance example');
+assert.ok(existsSync(new URL('./browser-smoke.mjs', import.meta.url)), 'Missing real-browser smoke check');
 assert.match(app, /loading="lazy" decoding="async"/, 'Analytics reference images must load lazily');
 assert.match(app, /class="analytics-canvas" data-action="analytics-next"/, 'Analytics board images must advance the platform-ordered sequence');
 assert.equal((app.match(/leftRail: true/g) || []).length, 7, 'Only dark-edge Analytics captures should receive the gray left rail');
