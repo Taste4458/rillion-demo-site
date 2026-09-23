@@ -17,7 +17,7 @@ assert.match(app, /class="table-link" data-document=/, 'Document rows need nativ
 assert.doesNotMatch(app, /<tr data-document=/, 'Document table rows must preserve native table semantics');
 const platformTour = app.slice(app.indexOf('platform: ['), app.indexOf('\n\tap: [', app.indexOf('platform: [')));
 assert.ok(platformTour.indexOf("title: 'Track payments'") < platformTour.indexOf("title: 'Explore Analytics'"), 'Payments must precede Analytics in the guided tour');
-assert.ok(platformTour.indexOf("title: 'Verify captured invoices'") < platformTour.indexOf("title: 'Follow the Invoice Log'"), 'Invoice Log must follow To Verify in the guided tour');
+assert.ok(platformTour.indexOf("title: 'Verify LLM AI captured invoices'") < platformTour.indexOf("title: 'Follow the Invoice Log'"), 'Invoice Log must follow To Verify in the guided tour');
 for (const label of ['Invoices to verify', 'Invoice details', 'Invoice data settings', 'Supplier bank account', 'Company overrides', 'Vendor overrides', 'Change history']) {
 	assert.match(app, new RegExp(label), `Capture flow is missing ${label}`);
 }

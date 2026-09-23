@@ -2234,7 +2234,7 @@ const tourSets = {
 			view: 'dashboard',
 		},
 		{
-			title: 'Verify captured invoices',
+			title: 'Verify LLM AI captured invoices',
 			copy: 'To Verify keeps extracted fields and source evidence together before an invoice enters the log.',
 			view: 'to-verify',
 		},
