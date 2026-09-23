@@ -115,6 +115,17 @@ assert.match(app, /data-action="log-transfer"/, 'Invoice Log needs a selection-g
 assert.match(app, /state\.approvalQueueState\.set\(inv\.id, 'inbound'\)/, 'Transfer must place invoices in Approval Inbound');
 assert.match(app, /const requiresAction = \(?inv\)? => isActionableCandidate\(inv\) && state\.transferred\.has\(inv\.id\)/, 'Approval queues must be gated by transfer state');
 assert.match(app, /function matchSummary\(inv\)/, 'Invoice detail needs shared matching confidence and explanation evidence');
+assert.match(app, /function lineMatchEvidence\(inv, line, index\)/, 'Invoice detail needs one shared AI and PO line-evidence model');
+assert.match(app, /function poLineEvidence\(inv, line\)/, 'PO lines need derived order, delivery, invoice, and price evidence');
+assert.ok(app.indexOf('const health =') < app.indexOf('function invoiceLog()'), 'Status-chip rendering must be shared by Invoice Log and invoice detail');
+assert.match(app, /Coding explanation/, 'AI lines need a coding rationale next to the proposed code');
+assert.match(app, /Flow proposal explanation/, 'AI lines need a reason for the proposed approval flow');
+assert.match(app, /class="po-number-chip \$\{evidence\.tone\}" tabindex="0" aria-describedby=/, 'PO references need color and keyboard-accessible explanations');
+assert.match(app, /class="po-match-tooltip"[^>]*role="tooltip"/, 'PO variance explanations need tooltip semantics');
+assert.match(app, /data-purchase-order="\$\{inv\.po\}" aria-label="Open purchase order/, 'PO lines need an accessible drill-through control');
+assert.match(app, /function purchaseOrderDetail\(\)/, 'The PO info control needs a synthetic purchase-order detail view');
+assert.match(app, /navigate\('purchase-order-detail'\)/, 'The PO info control must navigate to the purchase order');
+assert.match(app, /Invoice quantity \$\{invoiced\} exceeds delivered quantity/, 'Delivery variance evidence must state when invoiced quantity exceeds delivered quantity');
 assert.match(app, /if \(!requiresAction\(inv\)\) return/, 'Direct-recording and log-only invoice details must not show approval actions');
 for (const tone of ['good', 'warn', 'bad']) {
 	assert.match(css, new RegExp(`\\.log-health\\.${tone}`), `Invoice Log is missing ${tone} status styling`);
@@ -122,6 +133,10 @@ for (const tone of ['good', 'warn', 'bad']) {
 }
 assert.match(css, /\.date-chip/, 'Invoice Log needs the real overdue-date treatment');
 assert.match(css, /\.invoice-detail-grid/, 'Invoice detail needs a responsive workspace layout');
+assert.match(css, /\.line-code-chip\.good/, 'AI line code chips need confidence color styling');
+assert.match(css, /\.po-number-chip\.price/, 'Price-variance PO references need the light-orange style');
+assert.match(css, /\.po-match-reference:focus-within \.po-match-tooltip/, 'PO explanations must open for keyboard focus');
+assert.match(css, /\.purchase-order-detail/, 'Purchase-order drill-through needs a contained detail surface');
 assert.match(css, /\.invoice-log-batch/, 'Invoice Log needs a visible Transfer toolbar');
 for (const label of ['Contract image', 'Contract lines', 'Account posting', 'Comments/attachments', 'Window Wizards', 'Accounts Payable', 'CFO']) {
 	assert.match(app, new RegExp(label), `Missing contract workspace content: ${label}`);

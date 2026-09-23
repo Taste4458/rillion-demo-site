@@ -3894,7 +3894,116 @@ a:focus-visible {
 	color: var(--sand);
 }
 .invoice-detail-lines .data-table {
-	min-width: 820px;
+	min-width: 1040px;
+}
+.line-code-chip,
+.po-number-chip {
+	display: inline-flex;
+	align-items: center;
+	min-height: 30px;
+	padding: 5px 10px;
+	border: 1px solid currentColor;
+	border-radius: 5px;
+	font-weight: 700;
+	white-space: nowrap;
+}
+.line-code-chip.good,
+.po-number-chip.good {
+	color: var(--success);
+	background: var(--lime);
+}
+.line-code-chip.warn,
+.po-number-chip.warn {
+	color: var(--green);
+	background: var(--lemon);
+}
+.line-code-chip.price,
+.po-number-chip.price {
+	color: var(--price-variant-text);
+	background: var(--price-variant-bg);
+}
+.line-code-chip.bad,
+.po-number-chip.bad {
+	color: var(--critical);
+	background: color-mix(in srgb, var(--critical) 14%, white);
+}
+.line-evidence-copy,
+.line-flow-reason {
+	min-width: 220px;
+	margin: 0;
+	color: var(--muted);
+	line-height: 1.45;
+}
+.line-flow-reason {
+	margin-top: 5px;
+}
+.po-match-reference {
+	display: inline-flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 6px;
+	min-width: 280px;
+}
+.po-info-button {
+	display: inline-grid;
+	place-items: center;
+	width: 30px;
+	height: 30px;
+	padding: 0;
+	border: 1px solid var(--green);
+	border-radius: 50%;
+	background: var(--white);
+	color: var(--green);
+	font:
+		700 14px / 1 Georgia,
+		serif;
+	cursor: pointer;
+}
+.po-info-button:hover {
+	background: var(--green);
+	color: var(--white);
+}
+.po-match-tooltip {
+	display: none;
+	flex-basis: 100%;
+	width: min(320px, 72vw);
+	padding: 12px;
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	background: var(--white);
+	box-shadow: var(--shadow);
+	color: var(--ink);
+	font-weight: 400;
+	line-height: 1.45;
+}
+.po-match-reference:hover .po-match-tooltip,
+.po-match-reference:focus-within .po-match-tooltip {
+	display: block;
+}
+.purchase-order-detail {
+	overflow: hidden;
+}
+.purchase-order-detail > header {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 1px;
+	background: var(--line);
+}
+.purchase-order-detail > header > div {
+	display: grid;
+	gap: 5px;
+	padding: 16px;
+	background: var(--white);
+}
+.purchase-order-detail > header span {
+	color: var(--muted);
+	font-size: 12px;
+}
+.purchase-order-detail .match-summary {
+	margin: 16px;
+}
+.purchase-order-lines .data-table {
+	min-width: 900px;
 }
 .invoice-posting-summary {
 	display: grid;
@@ -3955,6 +4064,9 @@ a:focus-visible {
 	.invoice-posting-summary {
 		grid-template-columns: 1fr;
 	}
+	.purchase-order-detail > header {
+		grid-template-columns: 1fr 1fr;
+	}
 }
 @media (max-width: 520px) {
 	.invoice-detail-fields dl {
@@ -3962,5 +4074,8 @@ a:focus-visible {
 	}
 	.invoice-detail-fields dd {
 		padding-top: 0;
+	}
+	.purchase-order-detail > header {
+		grid-template-columns: 1fr;
 	}
 }

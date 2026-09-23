@@ -1435,6 +1435,7 @@ const allViews = [
 		.map((item) => item.id)
 		.filter(Boolean),
 	'invoice-detail',
+	'purchase-order-detail',
 	'document-detail',
 	'contract-detail',
 	'approval-report',
@@ -1442,6 +1443,7 @@ const allViews = [
 const labels = {
 	...Object.fromEntries(navTree.flatMap((item) => (item.children ? item.children.map((child) => [child.id, child.label]) : [[item.id, item.label]]))),
 	'invoice-detail': 'Invoice detail',
+	'purchase-order-detail': 'Purchase order',
 	'document-detail': 'Document detail',
 	'contract-detail': 'Contract detail',
 	'approval-report': 'Approval',
@@ -1515,6 +1517,52 @@ const aiMatchTone = (confidence) => (confidence > 80 ? 'good' : confidence >= 50
 const matchTone = (inv) => (inv.aiMatched ? aiMatchTone(inv.confidence) : inv.matchStatus === 'price-variance' ? 'price' : inv.matchTone);
 const matchClass = (inv) => (matchTone(inv) === 'good' ? 'match' : matchTone(inv) === 'warn' ? 'approval' : matchTone(inv) === 'price' ? 'price-variant' : 'exception');
 const matchLabel = (inv) => (inv.aiMatched ? `AI matched · ${inv.confidence}% confidence` : inv.matchStatus === 'delivery-variance' ? 'Delivery variant' : inv.matchStatus === 'price-variance' ? 'Price variant' : inv.matchStatus === 'fully-matched' ? 'Fully matched' : 'Match exception');
+
+const flowReason = (inv) =>
+	inv.role === 'finance-controller'
+		? 'Finance controller was proposed because the amount or annual change needs financial-control review.'
+		: inv.role === 'department-manager'
+			? 'Department manager was proposed to confirm the business purpose and cost ownership.'
+			: 'AP review was proposed because this non-PO invoice follows an established vendor and coding pattern.';
+
+function poLineEvidence(inv, line) {
+	const invoiced = line[1];
+	const delivered = inv.matchStatus === 'delivery-variance' ? Math.max(0, invoiced - 1) : invoiced;
+	const ordered = Math.max(invoiced, delivered);
+	const poUnitPrice = inv.matchStatus === 'price-variance' ? line[2] - inv.varianceAmount / invoiced : line[2];
+	const quantityGap = Math.max(0, invoiced - delivered);
+	const explanation =
+		inv.matchStatus === 'price-variance'
+			? `Invoice unit price ${money(line[2])} is ${Math.round(((line[2] - poUnitPrice) / poUnitPrice) * 100)}% above the purchase-order price ${money(poUnitPrice)}; ordered, delivered, and invoiced quantities are ${invoiced}.`
+			: inv.matchStatus === 'delivery-variance'
+				? `Invoice quantity ${invoiced} exceeds delivered quantity ${delivered} by ${quantityGap}; the purchase-order unit price ${money(poUnitPrice)} matches.`
+				: `Ordered, delivered, and invoiced quantities are ${invoiced}, and the unit price ${money(poUnitPrice)} matches.`;
+	return {
+		ordered,
+		delivered,
+		invoiced,
+		poUnitPrice,
+		invoiceUnitPrice: line[2],
+		explanation,
+	};
+}
+
+function lineMatchEvidence(inv, line, index) {
+	if (inv.aiMatched)
+		return {
+			kind: 'ai',
+			tone: matchTone(inv),
+			coding: `AI proposed account ${invoiceCode(inv)} for “${line[0]}” from the vendor, description, and approved posting history.`,
+			flow: flowReason(inv),
+		};
+	const po = poLineEvidence(inv, line);
+	return {
+		kind: 'po',
+		tone: matchTone(inv),
+		tooltipId: `po-line-${inv.id}-${index}`,
+		...po,
+	};
+}
 
 function matchSummary(inv) {
 	const variance = inv.varianceAmount ? `<span>${inv.varianceLabel}: <strong>${money(inv.varianceAmount)}</strong></span>` : `<span>${inv.varianceLabel || 'No variance'}</span>`;
@@ -1672,6 +1720,8 @@ function captureSettings() {
 	workspace.querySelector('.capture-detail-head > .back-button').insertAdjacentHTML('afterend', '<strong class="capture-current-title">Invoice data settings</strong>');
 }
 
+const health = (tone, label) => `<span class="log-health ${tone}"><span aria-hidden="true"></span>${label}</span>`;
+
 function invoiceLog() {
 	const matches = filtered()
 		.filter((inv) => inv.id !== journeyInvoiceId || state.journeyStage >= 1)
@@ -1683,7 +1733,6 @@ function invoiceLog() {
 		['exception', 'Exceptions'],
 		['approved', 'Approved'],
 	];
-	const health = (tone, label) => `<span class="log-health ${tone}"><span aria-hidden="true"></span>${label}</span>`;
 	const account = (tone, label) => `<span class="account-chip ${tone}"><span aria-hidden="true"></span>${label}</span>`;
 	const logDate = (value) => {
 		const [month, day, year] = value.replace(',', '').split(' ');
@@ -1722,8 +1771,41 @@ function invoiceDetailPanel(inv) {
 	if (state.invoiceDetailTab === 'posting')
 		return `<div class="invoice-posting-summary"><div><span>Code</span><strong>${invoiceCode(inv)}</strong></div><div><span>Account posting</span><strong>${inv.accountPosting}</strong></div><div><span>Flow proposal</span><strong>${inv.flowProposal}</strong></div><div><span>Match result</span><strong>${matchLabel(inv)}</strong></div></div>`;
 	if (state.invoiceDetailTab === 'comments') return `<div class="invoice-detail-comment"><strong>${inv.aiMatched ? 'AI matching evidence' : 'Matching evidence'}</strong><p>${inv.explanation}</p><small>Synthetic audit entry · today</small></div>`;
-	const rows = inv.lines.map((line, index) => `<tr><td>${index + 1}</td><td><strong>${invoiceCode(inv)}</strong></td><td>${line[0]}</td><td>${line[1]}</td><td class="numeric">${money(line[1] * line[2])}</td><td>${inv.varianceLabel}</td></tr>`).join('');
-	return `<div class="table-wrap invoice-detail-lines">${dataTable(['Line', 'Code', 'Description', 'Quantity', 'Amount', 'Match result'], rows)}</div>`;
+	if (inv.aiMatched) {
+		const rows = inv.lines
+			.map((line, index) => {
+				const evidence = lineMatchEvidence(inv, line, index);
+				return `<tr><td>${index + 1}</td><td><span class="line-code-chip ${evidence.tone}">${invoiceCode(inv)}</span></td><td>${line[0]}</td><td>${line[1]}</td><td class="numeric">${money(line[1] * line[2])}</td><td><p class="line-evidence-copy">${evidence.coding}</p></td><td><strong>${inv.flowProposal}</strong><p class="line-flow-reason">${evidence.flow}</p></td><td>${health(evidence.tone, matchLabel(inv))}</td></tr>`;
+			})
+			.join('');
+		return `<div class="table-wrap invoice-detail-lines">${dataTable(['Line', 'Code', 'Description', 'Quantity', 'Amount', 'Coding explanation', 'Flow proposal explanation', 'AI match'], rows)}</div>`;
+	}
+	if (inv.matchBasis === 'po') {
+		const rows = inv.lines
+			.map((line, index) => {
+				const evidence = lineMatchEvidence(inv, line, index);
+				return `<tr><td>${index + 1}</td><td>${line[0]}</td><td><span class="po-match-reference"><span class="po-number-chip ${evidence.tone}" tabindex="0" aria-describedby="${evidence.tooltipId}">${inv.po}</span><button class="po-info-button" data-purchase-order="${inv.po}" aria-label="Open purchase order ${inv.po}">i</button><span class="po-match-tooltip" id="${evidence.tooltipId}" role="tooltip">${evidence.explanation}</span></span></td><td>${evidence.ordered}</td><td>${evidence.delivered}</td><td>${evidence.invoiced}</td><td class="numeric">${money(line[1] * line[2])}</td><td>${health(evidence.tone, matchLabel(inv))}</td></tr>`;
+			})
+			.join('');
+		return `<div class="table-wrap invoice-detail-lines">${dataTable(['Line', 'Description', 'Purchase order', 'Ordered', 'Delivered', 'Invoiced', 'Amount', 'Match result'], rows)}</div>`;
+	}
+	const rows = inv.lines.map((line, index) => `<tr><td>${index + 1}</td><td>${line[0]}</td><td><span class="line-code-chip bad">No purchase order</span></td><td>${line[1]}</td><td class="numeric">${money(line[1] * line[2])}</td><td>${health('bad', matchLabel(inv))}</td></tr>`).join('');
+	return `<div class="table-wrap invoice-detail-lines">${dataTable(['Line', 'Description', 'Purchase order', 'Quantity', 'Amount', 'Match result'], rows)}</div>`;
+}
+
+function purchaseOrderDetail() {
+	const inv = state.selected;
+	if (!inv || inv.matchBasis !== 'po') {
+		navigate('invoice-log');
+		return;
+	}
+	const rows = inv.lines
+		.map((line, index) => {
+			const evidence = poLineEvidence(inv, line);
+			return `<tr><td>${index + 1}</td><td>${line[0]}</td><td>${evidence.ordered}</td><td>${evidence.delivered}</td><td>${evidence.invoiced}</td><td class="numeric">${money(evidence.poUnitPrice)}</td><td class="numeric">${money(evidence.invoiceUnitPrice)}</td><td>${health(matchTone(inv), matchLabel(inv))}</td></tr>`;
+		})
+		.join('');
+	workspace.innerHTML = `<div class="invoice-detail-toolbar">${backButton('Invoice detail', 'data-view="invoice-detail"')}<span>Purchase order ${inv.po}</span></div><section class="panel purchase-order-detail"><div class="document-pane-title">Purchase order</div><header><div><span>Purchase order</span><strong>${inv.po}</strong></div><div><span>Vendor</span><strong>${inv.vendor}</strong></div><div><span>Related invoice</span><strong>${inv.vendorInvoice}</strong></div><div><span>Match result</span><strong>${matchLabel(inv)}</strong></div></header>${matchSummary(inv)}<div class="table-wrap purchase-order-lines">${dataTable(['Line', 'Item description', 'Ordered', 'Delivered', 'Invoiced', 'PO unit price', 'Invoice unit price', 'Result'], rows)}</div></section>`;
 }
 
 function invoiceDetail() {
@@ -2097,6 +2179,7 @@ function render() {
 	else if (state.view === 'to-verify') toVerify();
 	else if (state.view === 'invoice-log') invoiceLog();
 	else if (state.view === 'invoice-detail') invoiceDetail();
+	else if (state.view === 'purchase-order-detail') purchaseOrderDetail();
 	else if (state.view === 'documents') documentsInbox();
 	else if (state.view === 'document-detail') documentDetail();
 	else if (state.view === 'contracts') contractsInbox();
@@ -2427,6 +2510,7 @@ document.addEventListener('click', (event) => {
 	const tourView = event.target.closest('[data-tour-view]')?.dataset.tourView;
 	const tourPersona = event.target.closest('[data-tour-persona]')?.dataset.tourPersona;
 	const shareScenario = event.target.closest('[data-share-scenario]')?.dataset.shareScenario;
+	const purchaseOrder = event.target.closest('[data-purchase-order]')?.dataset.purchaseOrder;
 	const action = event.target.closest('[data-action]')?.dataset.action;
 	if (group) {
 		state.expanded.has(group) ? state.expanded.delete(group) : state.expanded.add(group);
@@ -2469,6 +2553,10 @@ document.addEventListener('click', (event) => {
 			state.selected = invoices.find((inv) => inv.id === invoice) || state.selected;
 			navigate('dashboard');
 		}
+		return;
+	}
+	if (purchaseOrder) {
+		navigate('purchase-order-detail');
 		return;
 	}
 	if (documentId) {
