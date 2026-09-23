@@ -2244,7 +2244,7 @@ const tourSets = {
 			view: 'invoice-log',
 		},
 		{
-			title: 'See why AI chose the coding',
+			title: 'See why AI chose the coding & approvals',
 			copy: 'Open an AI-matched invoice to review its confidence-colored code, coding rationale, and flow-proposal rationale.',
 			view: 'invoice-detail',
 			selected: 'INV-82416',

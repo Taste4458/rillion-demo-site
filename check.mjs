@@ -186,7 +186,7 @@ assert.match(app, /urlParams\.get\('po'\)/, 'Purchase-order detail links must re
 assert.match(app, /function syncUrlState\(view\)/, 'Detail navigation needs one shared URL-state boundary');
 assert.match(app, /url\.searchParams\.set\('invoice', state\.selected\.id\)/, 'Invoice detail URLs must carry the selected invoice');
 assert.match(app, /url\.searchParams\.set\('po', state\.selected\.po\)/, 'Purchase-order detail URLs must carry the selected PO');
-assert.match(app, /title: 'See why AI chose the coding'[\s\S]*?selected: 'INV-82416'/, 'The platform tour must open the AI-match example');
+assert.match(app, /title: 'See why AI chose the coding & approvals'[\s\S]*?selected: 'INV-82416'/, 'The platform tour must open the AI-match example');
 assert.match(app, /title: 'Inspect a purchase-order variance'[\s\S]*?selected: 'INV-80116'/, 'The platform tour must open the PO-variance example');
 assert.match(app, /title: 'Review AI matching evidence'[\s\S]*?selected: 'INV-82416'/, 'The AP tour must open the AI-match example');
 assert.match(app, /title: 'Review a PO price variance'[\s\S]*?selected: 'INV-80116'/, 'The AP tour must open the PO-variance example');
